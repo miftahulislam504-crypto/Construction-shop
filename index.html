@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>নির্মাণ বাজার — Building Materials & Engineering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange: #E85D04;
+      --orange-light: #F48C06;
+      --dark: #1A1A2E;
+      --darker: #0f0f1a;
+      --gray: #f4f4f4;
+      --gray2: #e0e0e0;
+      --text: #222;
+      --white: #fff;
+      --green: #2d9e3a;
+      --radius: 10px;
+    }
+
+    body {
+      font-family: 'Hind Siliguri', sans-serif;
+      background: #f7f7f7;
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ===== TOPBAR ===== */
+    .topbar {
+      background: var(--darker);
+      color: #aaa;
+      font-size: 12px;
+      padding: 6px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .topbar span { color: var(--orange-light); }
+
+    /* ===== HEADER ===== */
+    header {
+      background: var(--dark);
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .logo {
+      font-family: 'Tiro Bangla', serif;
+      font-size: 22px;
+      color: var(--orange);
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      flex-shrink: 0;
+    }
+    .logo span { color: var(--white); font-size: 11px; display: block; font-family: 'Hind Siliguri', sans-serif; font-weight: 400; color: #aaa; }
+    .search-bar {
+      flex: 1;
+      display: flex;
+      background: #fff;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .search-bar input {
+      flex: 1;
+      border: none;
+      outline: none;
+      padding: 9px 12px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px;
+    }
+    .search-bar button {
+      background: var(--orange);
+      border: none;
+      padding: 0 14px;
+      cursor: pointer;
+      font-size: 16px;
+      color: white;
+    }
+    .header-icons {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+    .icon-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #ccc;
+      font-size: 10px;
+      gap: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      position: relative;
+    }
+    .icon-btn svg { width: 22px; height: 22px; }
+    .icon-btn:hover { color: var(--orange); }
+    .badge {
+      position: absolute;
+      top: -4px; right: -6px;
+      background: var(--orange);
+      color: white;
+      font-size: 9px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+    }
+
+    /* NAV */
+    .nav-bar {
+      background: var(--orange);
+      padding: 0 16px;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-bar::-webkit-scrollbar { display: none; }
+    .nav-bar a {
+      color: white;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 10px 14px;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: border-color 0.2s;
+    }
+    .nav-bar a:hover, .nav-bar a.active { border-bottom-color: white; }
+
+    /* ===== HERO BANNER ===== */
+    .hero {
+      background: linear-gradient(135deg, var(--darker) 0%, #2c1810 50%, var(--dark) 100%);
+      padding: 28px 16px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23E85D04' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-tag {
+      display: inline-block;
+      background: var(--orange);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+    .hero h1 {
+      font-family: 'Tiro Bangla', serif;
+      color: white;
+      font-size: 26px;
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .hero h1 span { color: var(--orange-light); }
+    .hero p {
+      color: #aaa;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+    .hero-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 11px 24px;
+      border-radius: 6px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn-primary:hover { background: var(--orange-light); transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent;
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+      padding: 11px 24px;
+      border-radius: 6px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+
+    /* STATS */
+    .stats-bar {
+      display: flex;
+      background: var(--orange);
+      padding: 12px 16px;
+      gap: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .stats-bar::-webkit-scrollbar { display: none; }
+    .stat {
+      flex: 1;
+      min-width: 80px;
+      text-align: center;
+      color: white;
+      border-right: 1px solid rgba(255,255,255,0.3);
+      padding: 4px 8px;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num { font-size: 18px; font-weight: 700; display: block; }
+    .stat-label { font-size: 10px; opacity: 0.85; }
+
+    /* ===== CATEGORIES ===== */
+    .section { padding: 20px 16px; }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--dark);
+      position: relative;
+      padding-left: 12px;
+    }
+    .section-title::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 2px; bottom: 2px;
+      width: 4px;
+      background: var(--orange);
+      border-radius: 2px;
+    }
+    .see-all {
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .cat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 14px 8px;
+      text-align: center;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: var(--text);
+    }
+    .cat-card:hover { transform: translateY(-3px); box-shadow: 0 4px 16px rgba(232,93,4,0.15); }
+    .cat-icon {
+      font-size: 28px;
+      margin-bottom: 6px;
+      display: block;
+    }
+    .cat-name {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--dark);
+      line-height: 1.3;
+    }
+
+    /* ===== PRODUCTS ===== */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .product-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
+    .product-img {
+      width: 100%;
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      position: relative;
+    }
+    .product-badge {
+      position: absolute;
+      top: 8px; left: 8px;
+      background: var(--orange);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 4px;
+    }
+    .product-badge.new { background: var(--green); }
+    .product-info { padding: 10px 12px 12px; }
+    .product-brand {
+      font-size: 10px;
+      color: var(--orange);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 3px;
+    }
+    .product-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .product-price {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--orange);
+    }
+    .product-price .unit { font-size: 11px; color: #888; font-weight: 400; }
+    .product-old-price {
+      font-size: 12px;
+      color: #999;
+      text-decoration: line-through;
+      margin-left: 6px;
+    }
+    .add-cart-btn {
+      width: 100%;
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 6px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+    .add-cart-btn:hover { background: var(--orange-light); }
+
+    /* BANNER STRIP */
+    .promo-banner {
+      margin: 0 16px 20px;
+      background: linear-gradient(135deg, #1A1A2E, #16213e);
+      border-radius: var(--radius);
+      padding: 20px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .promo-banner .text h3 {
+      color: var(--orange-light);
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .promo-banner .text p { color: #aaa; font-size: 12px; }
+    .promo-banner .emoji { font-size: 40px; }
+
+    /* SERVICE SECTION */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .service-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      border-left: 4px solid var(--orange);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .service-card:hover { transform: translateY(-2px); }
+    .service-icon { font-size: 28px; margin-bottom: 8px; }
+    .service-name { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
+    .service-desc { font-size: 11px; color: #888; line-height: 1.4; }
+    .service-price { font-size: 12px; color: var(--orange); font-weight: 600; margin-top: 8px; }
+
+    /* TRUST BADGES */
+    .trust-section {
+      background: white;
+      padding: 20px 16px;
+      margin-top: 8px;
+    }
+    .trust-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .trust-icon { font-size: 24px; flex-shrink: 0; }
+    .trust-text { font-size: 12px; }
+    .trust-text strong { display: block; font-size: 13px; color: var(--dark); }
+
+    /* FOOTER */
+    footer {
+      background: var(--darker);
+      color: #aaa;
+      padding: 24px 16px 80px;
+      margin-top: 8px;
+    }
+    .footer-logo {
+      font-family: 'Tiro Bangla', serif;
+      font-size: 20px;
+      color: var(--orange);
+      margin-bottom: 8px;
+    }
+    footer p { font-size: 12px; line-height: 1.6; margin-bottom: 16px; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+    .footer-links a { color: #aaa; text-decoration: none; font-size: 12px; }
+    .footer-links a:hover { color: var(--orange); }
+    .footer-bottom { border-top: 1px solid #333; padding-top: 12px; font-size: 11px; text-align: center; }
+
+    /* BOTTOM NAV (mobile) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: var(--dark);
+      display: flex;
+      border-top: 1px solid #333;
+      z-index: 200;
+    }
+    .bnav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 4px 8px;
+      color: #888;
+      font-size: 10px;
+      gap: 3px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .bnav-item svg { width: 22px; height: 22px; }
+    .bnav-item.active, .bnav-item:hover { color: var(--orange); }
+    .bnav-item .badge { top: 6px; right: 16px; }
+
+    /* CART SIDEBAR */
+    .cart-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 300;
+    }
+    .cart-overlay.open { display: block; }
+    .cart-panel {
+      position: fixed;
+      right: -100%;
+      top: 0; bottom: 0;
+      width: min(360px, 92vw);
+      background: white;
+      z-index: 301;
+      transition: right 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .cart-panel.open { right: 0; }
+    .cart-header {
+      background: var(--dark);
+      color: white;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+    .cart-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .cart-body { flex: 1; overflow-y: auto; padding: 16px; }
+    .cart-empty { text-align: center; padding: 40px 0; color: #999; }
+    .cart-empty span { font-size: 48px; display: block; margin-bottom: 12px; }
+    .cart-item {
+      display: flex;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--gray2);
+    }
+    .cart-item-icon { font-size: 32px; flex-shrink: 0; }
+    .cart-item-info { flex: 1; }
+    .cart-item-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .cart-item-price { font-size: 14px; color: var(--orange); font-weight: 700; }
+    .cart-item-qty {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .qty-btn {
+      width: 26px; height: 26px;
+      border: 1px solid var(--gray2);
+      background: var(--gray);
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qty-num { font-size: 14px; font-weight: 600; min-width: 20px; text-align: center; }
+    .cart-footer {
+      padding: 16px;
+      border-top: 2px solid var(--gray2);
+      background: var(--gray);
+    }
+    .cart-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .cart-total span:last-child { color: var(--orange); }
+    .checkout-btn {
+      width: 100%;
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .checkout-btn:hover { background: var(--orange-light); }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--dark);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 400;
+      white-space: nowrap;
+      border-left: 4px solid var(--orange);
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <span>📍 সিরাজগঞ্জ — ডেলিভারি চলছে</span>
+  <span>☎ 01700-000000</span>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div class="logo">
+      নির্মাণ বাজার
+      <span>Building Materials & Engineering</span>
+    </div>
+    <div class="search-bar">
+      <input type="text" placeholder="সিমেন্ট, রড, পেইন্ট..." id="searchInput"/>
+      <button onclick="handleSearch()">🔍</button>
+    </div>
+    <div class="header-icons">
+      <a class="icon-btn" onclick="toggleCart()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        কার্ট
+        <span class="badge" id="cartBadge">0</span>
+      </a>
+    </div>
+  </div>
+  <!-- NAV -->
+  <nav class="nav-bar">
+    <a href="#" class="active">🏠 হোম</a>
+    <a href="#categories">🧱 সিমেন্ট</a>
+    <a href="#categories">🔩 রড/স্টিল</a>
+    <a href="#categories">🎨 পেইন্ট</a>
+    <a href="#categories">💡 ইলেকট্রিক্যাল</a>
+    <a href="#categories">🚿 স্যানিটারি</a>
+    <a href="#categories">🪟 দরজা/জানালা</a>
+    <a href="#services">⚙️ সার্ভিস</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">🏗️ নির্মাণের সেরা ঠিকানা</div>
+  <h1>বাড়ি বানানোর <span>সব কিছু</span><br/>এক জায়গায়</h1>
+  <p>সিমেন্ট থেকে শুরু করে স্যানিটারি — সব ব্র্যান্ডের অরিজিনাল পণ্য<br/>ইঞ্জিনিয়ারিং সার্ভিস সহ</p>
+  <div class="hero-btns">
+    <a href="#products" class="btn-primary">🛍️ পণ্য দেখুন</a>
+    <a href="#services" class="btn-outline">⚙️ সার্ভিস নিন</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat"><span class="stat-num">৫০০+</span><span class="stat-label">পণ্য</span></div>
+  <div class="stat"><span class="stat-num">১৫+</span><span class="stat-label">ব্র্যান্ড</span></div>
+  <div class="stat"><span class="stat-num">১০০%</span><span class="stat-label">অরিজিনাল</span></div>
+  <div class="stat"><span class="stat-num">২৪ঘন্টা</span><span class="stat-label">ডেলিভারি</span></div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="section" id="categories">
+  <div class="section-header">
+    <h2 class="section-title">ক্যাটাগরি</h2>
+    <a class="see-all">সব দেখুন →</a>
+  </div>
+  <div class="categories-grid">
+    <a class="cat-card" href="#">
+      <span class="cat-icon">🧱</span>
+      <span class="cat-name">সিমেন্ট</span>
+    </a>
+    <a class="cat-card" href="#">
+      <span class="cat-icon">🔩</span>
+      <span class="cat-name">রড / স্টিল</span>
+    </a>
+    <a class="cat-card" href="#">
+      <span class="cat-icon">🎨</span>
+      <span class="cat-name">পেইন্ট</span>
+    </a>
+    <a class="cat-card" href="#">
+      <span class="cat-icon">💡</span>
+      <span class="cat-name">ইলেকট্রিক্যাল</span>
+    </a>
+    <a class="cat-card" href="#">
+      <span class="cat-icon">🚿</span>
+      <span class="cat-name">স্যানিটারি</span>
+    </a>
+    <a class="cat-card" href="#">
+      <span class="cat-icon">🪟</span>
+      <span class="cat-name">দরজা/জানালা</span>
+    </a>
+    <a class="cat-card" href="#">
+      <span class="cat-icon">🔷</span>
+      <span class="cat-name">টাইলস</span>
+    </a>
+    <a class="cat-card" href="#">
+      <span class="cat-icon">🧰</span>
+      <span class="cat-name">ছোট সরঞ্জাম</span>
+    </a>
+  </div>
+</section>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner">
+  <div class="text">
+    <h3>ইঞ্জিনিয়ারিং সার্ভিস</h3>
+    <p>বাড়ির ড্রয়িং, এস্টিমেট ও সুপারভিশন<br/>এখন অনলাইনে বুক করুন</p>
+    <a href="#services" class="btn-primary" style="margin-top:10px; display:inline-block; font-size:12px; padding:8px 16px;">বিস্তারিত দেখুন</a>
+  </div>
+  <div class="emoji">🏗️</div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-header">
+    <h2 class="section-title">জনপ্রিয় পণ্য</h2>
+    <a class="see-all">সব দেখুন →</a>
+  </div>
+  <div class="products-grid" id="productsGrid">
+    <!-- Products inserted by JS -->
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="section" id="services">
+  <div class="section-header">
+    <h2 class="section-title">ইঞ্জিনিয়ারিং সার্ভিস</h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">📐</div>
+      <div class="service-name">বিল্ডিং ড্রয়িং</div>
+      <div class="service-desc">আর্কিটেকচারাল ও স্ট্রাকচারাল ড্রয়িং তৈরি</div>
+      <div class="service-price">যোগাযোগ করুন →</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🧮</div>
+      <div class="service-name">বিল্ডিং এস্টিমেট</div>
+      <div class="service-desc">পুরো বাড়ির মালামালের হিসাব ও খরচের তালিকা</div>
+      <div class="service-price">যোগাযোগ করুন →</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">👷</div>
+      <div class="service-name">সাইট সুপারভিশন</div>
+      <div class="service-desc">নির্মাণ কাজের সার্বক্ষণিক তদারকি</div>
+      <div class="service-price">যোগাযোগ করুন →</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">💬</div>
+      <div class="service-name">পরামর্শ সেবা</div>
+      <div class="service-desc">অনলাইন বা সরাসরি ইঞ্জিনিয়ারিং পরামর্শ</div>
+      <div class="service-price">যোগাযোগ করুন →</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<div class="trust-section">
+  <h2 class="section-title">কেন আমাদের বেছে নেবেন?</h2>
+  <div class="trust-grid">
+    <div class="trust-item">
+      <span class="trust-icon">✅</span>
+      <div class="trust-text"><strong>১০০% অরিজিনাল</strong>সব পণ্য ডিলারশিপ থেকে সরাসরি</div>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">🚚</span>
+      <div class="trust-text"><strong>দ্রুত ডেলিভারি</strong>সিরাজগঞ্জে ২৪ ঘন্টার মধ্যে</div>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">👷</span>
+      <div class="trust-text"><strong>সিভিল ইঞ্জিনিয়ার</strong>পণ্যের পাশাপাশি বিশেষজ্ঞ পরামর্শ</div>
+    </div>
+    <div class="trust-item">
+      <span class="trust-icon">💰</span>
+      <div class="trust-text"><strong>সেরা দাম</strong>বাজারের সাথে প্রতিযোগিতামূলক মূল্য</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">নির্মাণ বাজার</div>
+  <p>সিরাজগঞ্জের বিশ্বস্ত নির্মাণ সামগ্রী ও ইঞ্জিনিয়ারিং সার্ভিস প্রতিষ্ঠান। সিমেন্ট, রড, পেইন্ট থেকে শুরু করে সব ধরনের বিল্ডিং ম্যাটেরিয়ালস।</p>
+  <div class="footer-links">
+    <a href="#">হোম</a>
+    <a href="#">পণ্যসমূহ</a>
+    <a href="#">সার্ভিস</a>
+    <a href="#">যোগাযোগ</a>
+    <a href="#">গোপনীয়তা নীতি</a>
+  </div>
+  <div class="footer-bottom">© ২০২৫ নির্মাণ বাজার — সিরাজগঞ্জ | সর্বস্বত্ব সংরক্ষিত</div>
+</footer>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a class="bnav-item active" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    হোম
+  </a>
+  <a class="bnav-item" href="#categories">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+    ক্যাটাগরি
+  </a>
+  <a class="bnav-item" href="#services">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg>
+    সার্ভিস
+  </a>
+  <a class="bnav-item" onclick="toggleCart()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
+    কার্ট
+    <span class="badge" id="cartBadge2">0</span>
+  </a>
+  <a class="bnav-item" href="#">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    আমার
+  </a>
+</nav>
+
+<!-- CART PANEL -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-panel" id="cartPanel">
+  <div class="cart-header">
+    🛒 আমার কার্ট
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody">
+    <div class="cart-empty">
+      <span>🛒</span>
+      কার্ট খালি আছে<br/>
+      <small>পণ্য যোগ করুন</small>
+    </div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total">
+      <span>মোট:</span>
+      <span id="cartTotal">৳০</span>
+    </div>
+    <button class="checkout-btn" onclick="checkout()">অর্ডার করুন →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ===== PRODUCT DATA =====
+  const products = [
+    { id:1, name:"Holcim সিমেন্ট (৫০ কেজি)", brand:"Holcim", price:580, oldPrice:620, icon:"🧱", category:"cement", badge:"জনপ্রিয়", unit:"ব্যাগ" },
+    { id:2, name:"Shah সিমেন্ট (৫০ কেজি)", brand:"Shah", price:560, oldPrice:600, icon:"🧱", category:"cement", badge:"", unit:"ব্যাগ" },
+    { id:3, name:"BSRM রড (১২মিমি)", brand:"BSRM", price:95, oldPrice:0, icon:"🔩", category:"steel", badge:"নতুন", unit:"কেজি" },
+    { id:4, name:"Berger Interior Paint (4L)", brand:"Berger", price:1450, oldPrice:1600, icon:"🎨", category:"paint", badge:"ছাড়", unit:"টিন" },
+    { id:5, name:"LED Bulb 18W", brand:"General", price:180, oldPrice:220, icon:"💡", category:"electrical", badge:"", unit:"পিস" },
+    { id:6, name:"Safety Helmet", brand:"Local", price:350, oldPrice:0, icon:"⛑️", category:"safety", badge:"", unit:"পিস" },
+    { id:7, name:"RAK Tiles (60x60)", brand:"RAK", price:85, oldPrice:95, icon:"🔷", category:"tiles", badge:"জনপ্রিয়", unit:"পিস" },
+    { id:8, name:"Teflon Tape (5m)", brand:"Local", price:30, oldPrice:0, icon:"🪛", category:"plumbing", badge:"", unit:"রোল" },
+  ];
+
+  let cart = [];
+
+  // Render products
+  function renderProducts() {
+    const grid = document.getElementById('productsGrid');
+    grid.innerHTML = products.map(p => `
+      <div class="product-card" onclick="addToCart(${p.id})">
+        <div class="product-img">
+          ${p.icon}
+          ${p.badge ? `<span class="product-badge ${p.badge==='নতুন'?'new':''}">${p.badge}</span>` : ''}
+        </div>
+        <div class="product-info">
+          <div class="product-brand">${p.brand}</div>
+          <div class="product-name">${p.name}</div>
+          <div>
+            <span class="product-price">৳${p.price.toLocaleString('bn-BD')} <span class="unit">/ ${p.unit}</span></span>
+            ${p.oldPrice ? `<span class="product-old-price">৳${p.oldPrice}</span>` : ''}
+          </div>
+          <button class="add-cart-btn">🛒 কার্টে যোগ করুন</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Cart functions
+  function addToCart(id) {
+    const product = products.find(p => p.id === id);
+    const existing = cart.find(i => i.id === id);
+    if (existing) {
+      existing.qty++;
+    } else {
+      cart.push({ ...product, qty: 1 });
+    }
+    updateCart();
+    showToast(`✅ ${product.name} কার্টে যোগ হয়েছে`);
+  }
+
+  function updateCart() {
+    const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
+    const count = cart.reduce((sum, i) => sum + i.qty, 0);
+    document.getElementById('cartBadge').textContent = count;
+    document.getElementById('cartBadge2').textContent = count;
+    document.getElementById('cartTotal').textContent = `৳${total.toLocaleString('bn-BD')}`;
+
+    const body = document.getElementById('cartBody');
+    const footer = document.getElementById('cartFooter');
+
+    if (cart.length === 0) {
+      body.innerHTML = `<div class="cart-empty"><span>🛒</span>কার্ট খালি আছে<br/><small>পণ্য যোগ করুন</small></div>`;
+      footer.style.display = 'none';
+    } else {
+      footer.style.display = 'block';
+      body.innerHTML = cart.map(item => `
+        <div class="cart-item">
+          <div class="cart-item-icon">${item.icon}</div>
+          <div class="cart-item-info">
+            <div class="cart-item-name">${item.name}</div>
+            <div class="cart-item-price">৳${(item.price * item.qty).toLocaleString('bn-BD')}</div>
+            <div class="cart-item-qty">
+              <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+              <span class="qty-num">${item.qty}</span>
+              <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+  }
+
+  function changeQty(id, delta) {
+    const item = cart.find(i => i.id === id);
+    if (!item) return;
+    item.qty += delta;
+    if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+    updateCart();
+  }
+
+  function toggleCart() {
+    document.getElementById('cartOverlay').classList.toggle('open');
+    document.getElementById('cartPanel').classList.toggle('open');
+  }
+
+  function checkout() {
+    showToast('📞 অর্ডার নিশ্চিত করতে কল করুন: 01700-000000');
+    toggleCart();
+  }
+
+  function handleSearch() {
+    const q = document.getElementById('searchInput').value;
+    if (q) showToast(`🔍 "${q}" খোঁজা হচ্ছে...`);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Init
+  renderProducts();
+</script>
+</body>
+</html>
