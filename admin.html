@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel — নির্মাণ বাজার</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #E85D04;
+      --orange-light: #F48C06;
+      --dark: #1A1A2E;
+      --darker: #0f0f1a;
+      --gray: #f4f4f4;
+      --gray2: #e0e0e0;
+      --text: #222;
+      --green: #2d9e3a;
+      --red: #e53935;
+      --blue: #1565c0;
+      --radius: 10px;
+    }
+    body { font-family: 'Hind Siliguri', sans-serif; background: #f0f2f5; color: var(--text); min-height: 100vh; }
+
+    /* LOGIN */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, var(--darker), #2c1810);
+      padding: 20px;
+    }
+    .login-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      width: min(380px, 100%);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+    .login-logo {
+      font-family: 'Tiro Bangla', serif;
+      font-size: 24px;
+      color: var(--orange);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .login-sub { text-align: center; color: #888; font-size: 13px; margin-bottom: 24px; }
+    .login-title { font-size: 18px; font-weight: 700; color: var(--dark); margin-bottom: 20px; text-align: center; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+    .form-input {
+      width: 100%; border: 1.5px solid var(--gray2); border-radius: 8px;
+      padding: 12px 14px; font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px; outline: none; transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--orange); }
+    .login-btn {
+      width: 100%; background: var(--orange); color: white; border: none;
+      padding: 14px; border-radius: 8px; font-family: 'Hind Siliguri', sans-serif;
+      font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 8px;
+    }
+    .login-err { color: var(--red); font-size: 12px; text-align: center; margin-top: 8px; display: none; }
+
+    /* ADMIN LAYOUT */
+    .admin-layout { display: none; min-height: 100vh; }
+
+    /* TOP BAR */
+    .admin-topbar {
+      background: var(--dark);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    }
+    .admin-logo { font-family: 'Tiro Bangla', serif; color: var(--orange); font-size: 18px; }
+    .admin-logo span { color: #aaa; font-size: 11px; font-family: 'Hind Siliguri', sans-serif; display: block; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .admin-name { color: #ccc; font-size: 13px; }
+    .logout-btn {
+      background: rgba(232,93,4,0.2); color: var(--orange);
+      border: 1px solid var(--orange); border-radius: 6px;
+      padding: 6px 12px; font-family: 'Hind Siliguri', sans-serif;
+      font-size: 12px; cursor: pointer;
+    }
+
+    /* NAV TABS */
+    .admin-nav {
+      background: white;
+      display: flex;
+      overflow-x: auto;
+      scrollbar-width: none;
+      border-bottom: 2px solid var(--gray2);
+      position: sticky; top: 57px; z-index: 99;
+    }
+    .admin-nav::-webkit-scrollbar { display: none; }
+    .anav-item {
+      flex-shrink: 0;
+      padding: 13px 16px;
+      font-size: 13px; font-weight: 600; color: #888;
+      cursor: pointer; white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: color 0.2s;
+    }
+    .anav-item.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+    /* CONTENT */
+    .admin-content { padding: 16px; }
+
+    /* STATS CARDS */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      border-left: 4px solid var(--orange);
+    }
+    .stat-card.green { border-left-color: var(--green); }
+    .stat-card.blue { border-left-color: var(--blue); }
+    .stat-card.red { border-left-color: var(--red); }
+    .stat-icon { font-size: 24px; margin-bottom: 8px; }
+    .stat-num { font-size: 24px; font-weight: 700; color: var(--dark); }
+    .stat-label { font-size: 11px; color: #888; margin-top: 2px; }
+    .stat-change { font-size: 11px; color: var(--green); font-weight: 600; margin-top: 4px; }
+
+    /* SECTION CARD */
+    .section-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .section-card-header {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--gray2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .section-card-title { font-size: 15px; font-weight: 700; color: var(--dark); }
+    .btn-add {
+      background: var(--orange); color: white; border: none;
+      padding: 8px 14px; border-radius: 6px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    .btn-sm {
+      padding: 5px 10px; border-radius: 5px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 11px; font-weight: 600; cursor: pointer; border: none;
+    }
+    .btn-edit { background: rgba(21,101,192,0.1); color: var(--blue); }
+    .btn-delete { background: rgba(229,57,53,0.1); color: var(--red); }
+    .btn-status { background: rgba(45,158,58,0.1); color: var(--green); }
+
+    /* TABLE */
+    .admin-table { width: 100%; border-collapse: collapse; }
+    .admin-table th {
+      background: var(--gray); padding: 10px 12px;
+      text-align: left; font-size: 12px; font-weight: 700;
+      color: #666; white-space: nowrap;
+    }
+    .admin-table td {
+      padding: 10px 12px; border-bottom: 1px solid var(--gray);
+      font-size: 13px; vertical-align: middle;
+    }
+    .admin-table tr:last-child td { border-bottom: none; }
+    .admin-table tr:hover td { background: rgba(232,93,4,0.02); }
+
+    /* STATUS BADGES */
+    .badge-pending { background: rgba(244,140,6,0.15); color: #b45309; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-confirmed { background: rgba(21,101,192,0.12); color: var(--blue); padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-delivered { background: rgba(45,158,58,0.12); color: var(--green); padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-cancelled { background: rgba(229,57,53,0.12); color: var(--red); padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-instock { background: rgba(45,158,58,0.12); color: var(--green); padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-low { background: rgba(244,140,6,0.15); color: #b45309; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge-out { background: rgba(229,57,53,0.12); color: var(--red); padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+    /* PRODUCT FORM */
+    .product-form {
+      padding: 16px;
+      display: none;
+      border-top: 1px solid var(--gray2);
+      background: #fafafa;
+    }
+    .product-form.open { display: block; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-group-sm { margin-bottom: 12px; }
+    .form-label-sm { display: block; font-size: 12px; font-weight: 600; color: var(--dark); margin-bottom: 4px; }
+    .form-input-sm {
+      width: 100%; border: 1.5px solid var(--gray2); border-radius: 6px;
+      padding: 9px 12px; font-family: 'Hind Siliguri', sans-serif;
+      font-size: 13px; outline: none;
+    }
+    .form-input-sm:focus { border-color: var(--orange); }
+    .form-save-btn {
+      background: var(--green); color: white; border: none;
+      padding: 10px 20px; border-radius: 6px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      margin-right: 8px;
+    }
+    .form-cancel-btn {
+      background: var(--gray); color: #666; border: none;
+      padding: 10px 20px; border-radius: 6px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+    }
+
+    /* QUICK ACTIONS */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .quick-btn {
+      background: white;
+      border: 2px solid var(--gray2);
+      border-radius: var(--radius);
+      padding: 14px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.1s;
+      text-decoration: none;
+    }
+    .quick-btn:hover { border-color: var(--orange); transform: translateY(-2px); }
+    .quick-btn-icon { font-size: 24px; margin-bottom: 6px; }
+    .quick-btn-label { font-size: 12px; font-weight: 600; color: var(--dark); }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--dark); color: white;
+      padding: 10px 20px; border-radius: 24px;
+      font-size: 13px; opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 400; white-space: nowrap;
+      border-left: 4px solid var(--orange);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 300; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: white; border-radius: 14px; padding: 24px; width: min(340px, 90vw); text-align: center; }
+    .modal h3 { font-size: 18px; font-weight: 700; color: var(--dark); margin-bottom: 10px; }
+    .modal p { font-size: 13px; color: #666; margin-bottom: 20px; }
+    .modal-btns { display: flex; gap: 10px; }
+    .modal-cancel { flex: 1; background: var(--gray); color: #666; border: none; padding: 12px; border-radius: 8px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; cursor: pointer; }
+    .modal-confirm { flex: 1; background: var(--red); color: white; border: none; padding: 12px; border-radius: 8px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
+
+    /* OVERFLOW TABLE WRAPPER */
+    .table-wrap { overflow-x: auto; }
+
+    /* CHART BAR */
+    .mini-chart { padding: 16px; }
+    .chart-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .chart-label { font-size: 12px; color: #555; min-width: 80px; }
+    .chart-bar-wrap { flex: 1; background: var(--gray); border-radius: 4px; height: 18px; overflow: hidden; }
+    .chart-bar { height: 100%; background: var(--orange); border-radius: 4px; transition: width 1s ease; }
+    .chart-val { font-size: 12px; font-weight: 700; color: var(--dark); min-width: 60px; text-align: right; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">নির্মাণ বাজার</div>
+    <div class="login-sub">Admin Panel</div>
+    <div class="login-title">🔐 লগইন করুন</div>
+    <div class="form-group">
+      <label class="form-label">ইউজারনেম</label>
+      <input class="form-input" type="text" id="loginUser" placeholder="admin"/>
+    </div>
+    <div class="form-group">
+      <label class="form-label">পাসওয়ার্ড</label>
+      <input class="form-input" type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔓 লগইন</button>
+    <div class="login-err" id="loginErr">❌ ইউজারনেম বা পাসওয়ার্ড ভুল</div>
+  </div>
+</div>
+
+<!-- ADMIN LAYOUT -->
+<div class="admin-layout" id="adminLayout">
+
+  <!-- TOP BAR -->
+  <div class="admin-topbar">
+    <div class="admin-logo">
+      নির্মাণ বাজার
+      <span>Admin Panel</span>
+    </div>
+    <div class="topbar-right">
+      <span class="admin-name">👤 Admin</span>
+      <button class="logout-btn" onclick="doLogout()">লগআউট</button>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <div class="admin-nav">
+    <div class="anav-item active" onclick="switchSection('dashboard')">📊 ড্যাশবোর্ড</div>
+    <div class="anav-item" onclick="switchSection('orders')">📦 অর্ডার</div>
+    <div class="anav-item" onclick="switchSection('products')">🧱 পণ্য</div>
+    <div class="anav-item" onclick="switchSection('stock')">🏪 স্টক</div>
+    <div class="anav-item" onclick="switchSection('customers')">👥 কাস্টমার</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="admin-content">
+
+    <!-- DASHBOARD -->
+    <div id="sec-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">📦</div>
+          <div class="stat-num" id="totalOrders">০</div>
+          <div class="stat-label">মোট অর্ডার</div>
+          <div class="stat-change">↑ আজ ৩টি নতুন</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-icon">💰</div>
+          <div class="stat-num" id="totalRevenue">৳০</div>
+          <div class="stat-label">মোট বিক্রয়</div>
+          <div class="stat-change">↑ এই মাসে ভালো</div>
+        </div>
+        <div class="stat-card blue">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-num" id="pendingOrders">০</div>
+          <div class="stat-label">পেন্ডিং অর্ডার</div>
+          <div class="stat-change" style="color:var(--orange)">দ্রুত প্রক্রিয়া করুন</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-icon">🧱</div>
+          <div class="stat-num" id="totalProducts">০</div>
+          <div class="stat-label">মোট পণ্য</div>
+          <div class="stat-change">স্টকে আছে</div>
+        </div>
+      </div>
+
+      <!-- QUICK ACTIONS -->
+      <div class="quick-actions">
+        <div class="quick-btn" onclick="switchSection('orders')">
+          <div class="quick-btn-icon">📦</div>
+          <div class="quick-btn-label">অর্ডার দেখুন</div>
+        </div>
+        <div class="quick-btn" onclick="switchSection('products'); toggleProductForm()">
+          <div class="quick-btn-icon">➕</div>
+          <div class="quick-btn-label">পণ্য যোগ করুন</div>
+        </div>
+        <div class="quick-btn" onclick="switchSection('stock')">
+          <div class="quick-btn-icon">🏪</div>
+          <div class="quick-btn-label">স্টক আপডেট</div>
+        </div>
+        <div class="quick-btn" href="index.html">
+          <div class="quick-btn-icon">🌐</div>
+          <div class="quick-btn-label" onclick="window.open('index.html')">সাইট দেখুন</div>
+        </div>
+      </div>
+
+      <!-- SALES CHART -->
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">📈 বিক্রয় চিত্র (এই সপ্তাহ)</div>
+        </div>
+        <div class="mini-chart">
+          <div class="chart-bar-row">
+            <div class="chart-label">সোমবার</div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="width:60%"></div></div>
+            <div class="chart-val">৳৩,৪৮০</div>
+          </div>
+          <div class="chart-bar-row">
+            <div class="chart-label">মঙ্গলবার</div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="width:80%"></div></div>
+            <div class="chart-val">৳৪,৬৪০</div>
+          </div>
+          <div class="chart-bar-row">
+            <div class="chart-label">বুধবার</div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="width:45%"></div></div>
+            <div class="chart-val">৳২,৬১০</div>
+          </div>
+          <div class="chart-bar-row">
+            <div class="chart-label">বৃহস্পতি</div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="width:90%"></div></div>
+            <div class="chart-val">৳৫,২২০</div>
+          </div>
+          <div class="chart-bar-row">
+            <div class="chart-label">শুক্রবার</div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="width:70%"></div></div>
+            <div class="chart-val">৳৪,০৬০</div>
+          </div>
+          <div class="chart-bar-row">
+            <div class="chart-label">শনিবার</div>
+            <div class="chart-bar-wrap"><div class="chart-bar" style="width:100%"></div></div>
+            <div class="chart-val">৳৫,৮০০</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT ORDERS -->
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">🕐 সাম্প্রতিক অর্ডার</div>
+          <button class="btn-add" onclick="switchSection('orders')">সব দেখুন</button>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table" id="recentOrdersTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS -->
+    <div id="sec-orders" style="display:none">
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">📦 সব অর্ডার</div>
+          <select onchange="filterOrders(this.value)" style="border:1px solid var(--gray2); border-radius:6px; padding:6px 10px; font-family:'Hind Siliguri',sans-serif; font-size:12px; outline:none;">
+            <option value="all">সব</option>
+            <option value="পেন্ডিং">পেন্ডিং</option>
+            <option value="কনফার্মড">কনফার্মড</option>
+            <option value="ডেলিভারড">ডেলিভারড</option>
+            <option value="বাতিল">বাতিল</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table" id="ordersTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div id="sec-products" style="display:none">
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">🧱 পণ্য তালিকা</div>
+          <button class="btn-add" onclick="toggleProductForm()">➕ নতুন পণ্য</button>
+        </div>
+
+        <!-- ADD PRODUCT FORM -->
+        <div class="product-form" id="productForm">
+          <div class="form-row-2">
+            <div class="form-group-sm">
+              <label class="form-label-sm">পণ্যের নাম *</label>
+              <input class="form-input-sm" type="text" id="pName" placeholder="যেমন: Holcim সিমেন্ট"/>
+            </div>
+            <div class="form-group-sm">
+              <label class="form-label-sm">ব্র্যান্ড *</label>
+              <input class="form-input-sm" type="text" id="pBrand" placeholder="যেমন: Holcim"/>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group-sm">
+              <label class="form-label-sm">দাম (৳) *</label>
+              <input class="form-input-sm" type="number" id="pPrice" placeholder="০"/>
+            </div>
+            <div class="form-group-sm">
+              <label class="form-label-sm">ইউনিট</label>
+              <select class="form-input-sm" id="pUnit">
+                <option>ব্যাগ</option>
+                <option>কেজি</option>
+                <option>পিস</option>
+                <option>লিটার</option>
+                <option>মিটার</option>
+                <option>রোল</option>
+                <option>সেট</option>
+                <option>ঘনফুট</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group-sm">
+              <label class="form-label-sm">ক্যাটাগরি</label>
+              <select class="form-input-sm" id="pCat">
+                <option>সিমেন্ট</option>
+                <option>রড/স্টিল</option>
+                <option>পেইন্ট</option>
+                <option>ইলেকট্রিক্যাল</option>
+                <option>স্যানিটারি</option>
+                <option>টাইলস</option>
+                <option>দরজা/জানালা</option>
+                <option>কন্ট্রাক্ট আইটেম</option>
+                <option>সেফটি</option>
+                <option>অন্যান্য</option>
+              </select>
+            </div>
+            <div class="form-group-sm">
+              <label class="form-label-sm">স্টক পরিমাণ</label>
+              <input class="form-input-sm" type="number" id="pStock" placeholder="০"/>
+            </div>
+          </div>
+          <div class="form-group-sm">
+            <label class="form-label-sm">আইকন (ইমোজি)</label>
+            <input class="form-input-sm" type="text" id="pIcon" placeholder="🧱"/>
+          </div>
+          <button class="form-save-btn" onclick="saveProduct()">✅ সংরক্ষণ করুন</button>
+          <button class="form-cancel-btn" onclick="toggleProductForm()">বাতিল</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="admin-table" id="productsTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STOCK -->
+    <div id="sec-stock" style="display:none">
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">🏪 স্টক ম্যানেজমেন্ট</div>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table" id="stockTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div id="sec-customers" style="display:none">
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">👥 কাস্টমার তালিকা</div>
+        </div>
+        <div class="table-wrap">
+          <table class="admin-table" id="customersTable"></table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal">
+    <h3>⚠️ নিশ্চিত করুন</h3>
+    <p>এই আইটেমটি মুছে ফেলতে চান? এই কাজ পূর্বাবস্থায় ফেরানো যাবে না।</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">বাতিল</button>
+      <button class="modal-confirm" onclick="confirmDelete()">মুছুন</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ===== DATA =====
+  let orders = [
+    { id: '#NB-10021', name: 'রাশেদুল ইসলাম', phone: '01712-345678', area: 'সিরাজগঞ্জ সদর', items: 'Holcim সিমেন্ট ×৫', total: 2900, status: 'পেন্ডিং', date: '২৩ মে ২০২৫' },
+    { id: '#NB-10020', name: 'মোঃ কামাল হোসেন', phone: '01819-456789', area: 'শাহজাদপুর', items: 'BSRM রড ×৫০কেজি', total: 4750, status: 'কনফার্মড', date: '২২ মে ২০২৫' },
+    { id: '#NB-10019', name: 'নাজমুল হক', phone: '01611-567890', area: 'উল্লাপাড়া', items: 'Berger পেইন্ট ×৩', total: 4350, status: 'ডেলিভারড', date: '২১ মে ২০২৫' },
+    { id: '#NB-10018', name: 'সালমা বেগম', phone: '01911-678901', area: 'কামারখন্দ', items: 'LED বাল্ব ×১০', total: 1800, status: 'ডেলিভারড', date: '২০ মে ২০২৫' },
+    { id: '#NB-10017', name: 'আবু তালেব', phone: '01512-789012', area: 'রায়গঞ্জ', items: 'RAK টাইলস ×৫০', total: 4250, status: 'বাতিল', date: '১৯ মে ২০২৫' },
+  ];
+
+  let products = [
+    { id: 1, name: 'Holcim সিমেন্ট (৫০কেজি)', brand: 'Holcim', price: 580, unit: 'ব্যাগ', category: 'সিমেন্ট', stock: 120, icon: '🧱' },
+    { id: 2, name: 'Shah সিমেন্ট (৫০কেজি)', brand: 'Shah', price: 560, unit: 'ব্যাগ', category: 'সিমেন্ট', stock: 85, icon: '🧱' },
+    { id: 3, name: 'BSRM রড (১২মিমি)', brand: 'BSRM', price: 95, unit: 'কেজি', category: 'রড/স্টিল', stock: 500, icon: '🔩' },
+    { id: 4, name: 'Berger Interior Paint (4L)', brand: 'Berger', price: 1450, unit: 'টিন', category: 'পেইন্ট', stock: 40, icon: '🎨' },
+    { id: 5, name: 'LED Bulb 18W', brand: 'General', price: 180, unit: 'পিস', category: 'ইলেকট্রিক্যাল', stock: 8, icon: '💡' },
+    { id: 6, name: 'RAK Tiles (60x60)', brand: 'RAK', price: 85, unit: 'পিস', category: 'টাইলস', stock: 0, icon: '🔷' },
+  ];
+
+  let customers = [
+    { name: 'রাশেদুল ইসলাম', phone: '01712-345678', area: 'সিরাজগঞ্জ সদর', orders: 3, total: 8700 },
+    { name: 'মোঃ কামাল হোসেন', phone: '01819-456789', area: 'শাহজাদপুর', orders: 2, total: 9500 },
+    { name: 'নাজমুল হক', phone: '01611-567890', area: 'উল্লাপাড়া', orders: 1, total: 4350 },
+    { name: 'সালমা বেগম', phone: '01911-678901', area: 'কামারখন্দ', orders: 2, total: 3600 },
+  ];
+
+  let deleteTarget = null;
+  let filterStatus = 'all';
+
+  // ===== LOGIN =====
+  function doLogin() {
+    const u = document.getElementById('loginUser').value;
+    const p = document.getElementById('loginPass').value;
+    if (u === 'admin' && p === 'admin123') {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('adminLayout').style.display = 'block';
+      renderAll();
+    } else {
+      document.getElementById('loginErr').style.display = 'block';
+    }
+  }
+
+  function doLogout() {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('adminLayout').style.display = 'none';
+    document.getElementById('loginUser').value = '';
+    document.getElementById('loginPass').value = '';
+  }
+
+  // ===== NAV =====
+  function switchSection(name) {
+    ['dashboard','orders','products','stock','customers'].forEach(s => {
+      document.getElementById('sec-' + s).style.display = s === name ? 'block' : 'none';
+    });
+    document.querySelectorAll('.anav-item').forEach((el, i) => {
+      const names = ['dashboard','orders','products','stock','customers'];
+      el.classList.toggle('active', names[i] === name);
+    });
+  }
+
+  // ===== RENDER =====
+  function renderAll() {
+    renderDashboard();
+    renderOrders();
+    renderProducts();
+    renderStock();
+    renderCustomers();
+  }
+
+  function renderDashboard() {
+    const totalRev = orders.filter(o => o.status === 'ডেলিভারড').reduce((s, o) => s + o.total, 0);
+    const pending = orders.filter(o => o.status === 'পেন্ডিং').length;
+    document.getElementById('totalOrders').textContent = orders.length;
+    document.getElementById('totalRevenue').textContent = '৳' + totalRev.toLocaleString('bn-BD');
+    document.getElementById('pendingOrders').textContent = pending;
+    document.getElementById('totalProducts').textContent = products.length;
+
+    const recent = orders.slice(0, 3);
+    document.getElementById('recentOrdersTable').innerHTML = `
+      <tr><th>অর্ডার ID</th><th>নাম</th><th>মোট</th><th>স্ট্যাটাস</th></tr>
+      ${recent.map(o => `
+        <tr>
+          <td><b>${o.id}</b></td>
+          <td>${o.name}</td>
+          <td>৳${o.total.toLocaleString('bn-BD')}</td>
+          <td>${statusBadge(o.status)}</td>
+        </tr>`).join('')}
+    `;
+  }
+
+  function statusBadge(s) {
+    const map = { 'পেন্ডিং': 'pending', 'কনফার্মড': 'confirmed', 'ডেলিভারড': 'delivered', 'বাতিল': 'cancelled' };
+    return `<span class="badge-${map[s] || 'pending'}">${s}</span>`;
+  }
+
+  function renderOrders() {
+    const filtered = filterStatus === 'all' ? orders : orders.filter(o => o.status === filterStatus);
+    document.getElementById('ordersTable').innerHTML = `
+      <tr><th>অর্ডার ID</th><th>নাম</th><th>ফোন</th><th>এলাকা</th><th>পণ্য</th><th>মোট</th><th>স্ট্যাটাস</th><th>অ্যাকশন</th></tr>
+      ${filtered.map((o, i) => `
+        <tr>
+          <td><b>${o.id}</b><br/><small style="color:#999">${o.date}</small></td>
+          <td>${o.name}</td>
+          <td>${o.phone}</td>
+          <td>${o.area}</td>
+          <td style="font-size:12px">${o.items}</td>
+          <td><b>৳${o.total.toLocaleString('bn-BD')}</b></td>
+          <td>${statusBadge(o.status)}</td>
+          <td>
+            <select onchange="changeOrderStatus(${i}, this.value)" style="border:1px solid var(--gray2); border-radius:5px; padding:4px 6px; font-size:11px; font-family:'Hind Siliguri',sans-serif; outline:none;">
+              <option ${o.status==='পেন্ডিং'?'selected':''}>পেন্ডিং</option>
+              <option ${o.status==='কনফার্মড'?'selected':''}>কনফার্মড</option>
+              <option ${o.status==='ডেলিভারড'?'selected':''}>ডেলিভারড</option>
+              <option ${o.status==='বাতিল'?'selected':''}>বাতিল</option>
+            </select>
+          </td>
+        </tr>`).join('')}
+    `;
+  }
+
+  function filterOrders(val) { filterStatus = val; renderOrders(); }
+
+  function changeOrderStatus(i, val) {
+    orders[i].status = val;
+    renderOrders();
+    renderDashboard();
+    showToast('✅ স্ট্যাটাস আপডেট হয়েছে');
+  }
+
+  function renderProducts() {
+    document.getElementById('productsTable').innerHTML = `
+      <tr><th>আইকন</th><th>নাম</th><th>ব্র্যান্ড</th><th>ক্যাটাগরি</th><th>দাম</th><th>স্টক</th><th>অ্যাকশন</th></tr>
+      ${products.map((p, i) => `
+        <tr>
+          <td style="font-size:22px">${p.icon}</td>
+          <td><b>${p.name}</b></td>
+          <td>${p.brand}</td>
+          <td><small>${p.category}</small></td>
+          <td><b>৳${p.price}</b>/${p.unit}</td>
+          <td>${stockBadge(p.stock)}</td>
+          <td style="display:flex; gap:4px; flex-wrap:wrap;">
+            <button class="btn-sm btn-edit" onclick="editProduct(${i})">✏️ সম্পাদনা</button>
+            <button class="btn-sm btn-delete" onclick="openDeleteModal('product', ${i})">🗑️</button>
+          </td>
+        </tr>`).join('')}
+    `;
+  }
+
+  function stockBadge(s) {
+    if (s === 0) return `<span class="badge-out">স্টক শেষ</span>`;
+    if (s < 10) return `<span class="badge-low">${s} (কম)</span>`;
+    return `<span class="badge-instock">${s}</span>`;
+  }
+
+  function renderStock() {
+    document.getElementById('stockTable').innerHTML = `
+      <tr><th>পণ্য</th><th>বর্তমান স্টক</th><th>স্ট্যাটাস</th><th>স্টক আপডেট</th></tr>
+      ${products.map((p, i) => `
+        <tr>
+          <td>${p.icon} <b>${p.name}</b></td>
+          <td>${p.stock} ${p.unit}</td>
+          <td>${stockBadge(p.stock)}</td>
+          <td style="display:flex; gap:6px; align-items:center;">
+            <input type="number" value="${p.stock}" id="stock-${i}" style="width:70px; border:1px solid var(--gray2); border-radius:5px; padding:5px 8px; font-size:13px; outline:none;" min="0"/>
+            <button class="btn-sm btn-status" onclick="updateStock(${i})">আপডেট</button>
+          </td>
+        </tr>`).join('')}
+    `;
+  }
+
+  function updateStock(i) {
+    const val = parseInt(document.getElementById('stock-' + i).value) || 0;
+    products[i].stock = val;
+    renderStock();
+    renderProducts();
+    showToast('✅ স্টক আপডেট হয়েছে');
+  }
+
+  function renderCustomers() {
+    document.getElementById('customersTable').innerHTML = `
+      <tr><th>নাম</th><th>ফোন</th><th>এলাকা</th><th>অর্ডার</th><th>মোট কেনাকাটা</th></tr>
+      ${customers.map(c => `
+        <tr>
+          <td><b>${c.name}</b></td>
+          <td>${c.phone}</td>
+          <td>${c.area}</td>
+          <td>${c.orders}টি</td>
+          <td><b>৳${c.total.toLocaleString('bn-BD')}</b></td>
+        </tr>`).join('')}
+    `;
+  }
+
+  // ===== PRODUCT FORM =====
+  function toggleProductForm() {
+    const form = document.getElementById('productForm');
+    form.classList.toggle('open');
+  }
+
+  function saveProduct() {
+    const name = document.getElementById('pName').value.trim();
+    const brand = document.getElementById('pBrand').value.trim();
+    const price = parseInt(document.getElementById('pPrice').value) || 0;
+    const unit = document.getElementById('pUnit').value;
+    const category = document.getElementById('pCat').value;
+    const stock = parseInt(document.getElementById('pStock').value) || 0;
+    const icon = document.getElementById('pIcon').value || '📦';
+
+    if (!name || !brand || !price) { showToast('⚠️ নাম, ব্র্যান্ড ও দাম আবশ্যক'); return; }
+
+    products.push({ id: Date.now(), name, brand, price, unit, category, stock, icon });
+    renderProducts(); renderStock(); renderDashboard();
+    toggleProductForm();
+    ['pName','pBrand','pPrice','pStock','pIcon'].forEach(id => document.getElementById(id).value = '');
+    showToast('✅ পণ্য যোগ হয়েছে');
+  }
+
+  function editProduct(i) {
+    const p = products[i];
+    document.getElementById('pName').value = p.name;
+    document.getElementById('pBrand').value = p.brand;
+    document.getElementById('pPrice').value = p.price;
+    document.getElementById('pStock').value = p.stock;
+    document.getElementById('pIcon').value = p.icon;
+    document.getElementById('productForm').classList.add('open');
+    showToast('✏️ সম্পাদনা মোড চালু — পরিবর্তন করে সংরক্ষণ করুন');
+  }
+
+  // ===== DELETE =====
+  function openDeleteModal(type, index) {
+    deleteTarget = { type, index };
+    document.getElementById('deleteModal').classList.add('open');
+  }
+  function closeModal() {
+    document.getElementById('deleteModal').classList.remove('open');
+    deleteTarget = null;
+  }
+  function confirmDelete() {
+    if (!deleteTarget) return;
+    if (deleteTarget.type === 'product') {
+      products.splice(deleteTarget.index, 1);
+      renderProducts(); renderStock(); renderDashboard();
+      showToast('🗑️ পণ্য মুছে ফেলা হয়েছে');
+    }
+    closeModal();
+  }
+
+  // ===== TOAST =====
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
