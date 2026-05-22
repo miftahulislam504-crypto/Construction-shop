@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>প্রাইস ক্যালকুলেটর — নির্মাণ বাজার</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #E85D04;
+      --orange-light: #F48C06;
+      --dark: #1A1A2E;
+      --darker: #0f0f1a;
+      --gray: #f4f4f4;
+      --gray2: #e0e0e0;
+      --text: #222;
+      --green: #2d9e3a;
+      --radius: 10px;
+    }
+    body { font-family: 'Hind Siliguri', sans-serif; background: #f7f7f7; color: var(--text); min-height: 100vh; padding-bottom: 120px; }
+
+    header {
+      background: var(--dark);
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    .back-btn { color: white; font-size: 22px; text-decoration: none; }
+    .header-title { color: white; font-size: 17px; font-weight: 700; flex: 1; }
+    .header-sub { color: #aaa; font-size: 11px; }
+
+    /* HERO */
+    .calc-hero {
+      background: linear-gradient(135deg, var(--darker), #2c1810);
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .calc-hero h2 {
+      font-family: 'Tiro Bangla', serif;
+      color: white;
+      font-size: 20px;
+      margin-bottom: 6px;
+    }
+    .calc-hero h2 span { color: var(--orange-light); }
+    .calc-hero p { color: #aaa; font-size: 13px; }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      background: white;
+      border-bottom: 2px solid var(--gray2);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab {
+      flex-shrink: 0;
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #888;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .tab.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+    /* SECTION */
+    .calc-section {
+      background: white;
+      margin: 12px 16px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .calc-section-header {
+      background: var(--dark);
+      color: white;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .calc-section-header span { font-size: 18px; }
+
+    /* PRODUCT ROW */
+    .product-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--gray);
+    }
+    .product-row:last-child { border-bottom: none; }
+    .prod-icon { font-size: 24px; flex-shrink: 0; }
+    .prod-info { flex: 1; }
+    .prod-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+    .prod-price { font-size: 11px; color: var(--orange); font-weight: 600; }
+    .prod-unit { font-size: 10px; color: #999; }
+    .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1.5px solid var(--gray2);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .qbtn {
+      width: 32px; height: 32px;
+      background: var(--gray);
+      border: none;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      color: var(--dark);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qbtn:hover { background: var(--gray2); }
+    .qinput {
+      width: 44px; height: 32px;
+      text-align: center;
+      border: none; outline: none;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px; font-weight: 700;
+      color: var(--dark);
+    }
+    .prod-subtotal {
+      min-width: 70px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    /* BRAND SELECT */
+    .brand-select {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 11px;
+      color: #666;
+      background: transparent;
+      cursor: pointer;
+      margin-top: 2px;
+    }
+
+    /* SUMMARY */
+    .summary-card {
+      background: white;
+      margin: 0 16px 12px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(232,93,4,0.15);
+      border: 2px solid var(--orange);
+    }
+    .summary-card-header {
+      background: var(--orange);
+      color: white;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+    .summary-list { padding: 0; }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--gray);
+      font-size: 13px;
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-row .name { color: #555; }
+    .summary-row .amount { font-weight: 700; color: var(--dark); }
+    .summary-row.total {
+      background: var(--gray);
+      font-size: 16px;
+    }
+    .summary-row.total .name { color: var(--dark); font-weight: 700; }
+    .summary-row.total .amount { color: var(--orange); font-size: 20px; }
+
+    /* ACTION BUTTONS */
+    .action-row {
+      display: flex;
+      gap: 10px;
+      padding: 0 16px 12px;
+    }
+    .btn-print {
+      flex: 1;
+      background: white;
+      color: var(--dark);
+      border: 2px solid var(--gray2);
+      padding: 12px;
+      border-radius: 8px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-order {
+      flex: 2;
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-reset {
+      width: 100%;
+      background: transparent;
+      color: #999;
+      border: 1.5px dashed var(--gray2);
+      padding: 10px;
+      border-radius: 8px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 13px;
+      cursor: pointer;
+      margin: 0 16px 12px;
+      width: calc(100% - 32px);
+    }
+
+    /* TIPS */
+    .tip-box {
+      background: linear-gradient(135deg, rgba(232,93,4,0.06), rgba(244,140,6,0.06));
+      border: 1px solid rgba(232,93,4,0.2);
+      border-radius: var(--radius);
+      margin: 0 16px 12px;
+      padding: 14px 16px;
+    }
+    .tip-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 8px; }
+    .tip-item { font-size: 12px; color: #555; margin-bottom: 4px; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 80px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--dark); color: white;
+      padding: 10px 20px; border-radius: 24px;
+      font-size: 13px; opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 400; white-space: nowrap;
+      border-left: 4px solid var(--orange);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* BOTTOM BAR */
+    .bottom-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: white;
+      padding: 12px 16px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+      display: flex; align-items: center; gap: 12px;
+      z-index: 200;
+    }
+    .bottom-total { flex: 1; }
+    .bottom-total-label { font-size: 11px; color: #888; }
+    .bottom-total-amount { font-size: 20px; font-weight: 700; color: var(--orange); }
+    .bottom-order-btn {
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 13px 20px;
+      border-radius: 8px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    @media print {
+      header, .tabs, .calc-hero, .action-row, .bottom-bar, .btn-reset, .tip-box { display: none !important; }
+      body { background: white; }
+      .calc-section, .summary-card { box-shadow: none; margin: 8px 0; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a class="back-btn" href="index.html">←</a>
+  <div>
+    <div class="header-title">প্রাইস ক্যালকুলেটর</div>
+    <div class="header-sub">নিজের বাজেট নিজেই হিসাব করুন</div>
+  </div>
+</header>
+
+<div class="calc-hero">
+  <h2>বাড়ির <span>খরচ হিসাব</span> করুন</h2>
+  <p>পণ্য ও পরিমাণ সিলেক্ট করুন — সাথে সাথে মোট দেখাবে</p>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab(0)">🧱 সিমেন্ট ও রড</div>
+  <div class="tab" onclick="switchTab(1)">🎨 পেইন্ট</div>
+  <div class="tab" onclick="switchTab(2)">💡 ইলেকট্রিক্যাল</div>
+  <div class="tab" onclick="switchTab(3)">🚿 স্যানিটারি</div>
+  <div class="tab" onclick="switchTab(4)">🧰 অন্যান্য</div>
+</div>
+
+<!-- TAB 0: সিমেন্ট ও রড -->
+<div id="tab0">
+  <div class="calc-section">
+    <div class="calc-section-header"><span>🧱</span> সিমেন্ট</div>
+
+    <div class="product-row">
+      <div class="prod-icon">🧱</div>
+      <div class="prod-info">
+        <div class="prod-name">সিমেন্ট (৫০ কেজি)</div>
+        <select class="brand-select" onchange="updatePrice('cement', this.value)">
+          <option value="580">Holcim — ৳৫৮০/ব্যাগ</option>
+          <option value="560">Shah — ৳৫৬০/ব্যাগ</option>
+          <option value="550">Crown — ৳৫৫০/ব্যাগ</option>
+        </select>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('cement',-1)">−</button>
+        <input class="qinput" type="number" id="cement-qty" value="0" min="0" onchange="calcRow('cement')"/>
+        <button class="qbtn" onclick="changeQty('cement',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="cement-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">⬜</div>
+      <div class="prod-info">
+        <div class="prod-name">সাদা সিমেন্ট</div>
+        <div class="prod-price">৳৯৫০/ব্যাগ</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('wcement',-1)">−</button>
+        <input class="qinput" type="number" id="wcement-qty" value="0" min="0" onchange="calcRow('wcement')"/>
+        <button class="qbtn" onclick="changeQty('wcement',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="wcement-sub">৳০</div>
+    </div>
+  </div>
+
+  <div class="calc-section">
+    <div class="calc-section-header"><span>🔩</span> রড / স্টিল</div>
+
+    <div class="product-row">
+      <div class="prod-icon">🔩</div>
+      <div class="prod-info">
+        <div class="prod-name">রড (৮মিমি)</div>
+        <select class="brand-select" onchange="updatePrice('rod8', this.value)">
+          <option value="78">BSRM — ৳৭৮/কেজি</option>
+          <option value="76">GPH Ispat — ৳৭৬/কেজি</option>
+          <option value="75">KSRM — ৳৭৫/কেজি</option>
+        </select>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('rod8',-1)">−</button>
+        <input class="qinput" type="number" id="rod8-qty" value="0" min="0" onchange="calcRow('rod8')"/>
+        <button class="qbtn" onclick="changeQty('rod8',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="rod8-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">🔩</div>
+      <div class="prod-info">
+        <div class="prod-name">রড (১২মিমি)</div>
+        <select class="brand-select" onchange="updatePrice('rod12', this.value)">
+          <option value="95">BSRM — ৳৯৫/কেজি</option>
+          <option value="93">GPH Ispat — ৳৯৩/কেজি</option>
+          <option value="92">KSRM — ৳৯২/কেজি</option>
+        </select>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('rod12',-1)">−</button>
+        <input class="qinput" type="number" id="rod12-qty" value="0" min="0" onchange="calcRow('rod12')"/>
+        <button class="qbtn" onclick="changeQty('rod12',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="rod12-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">🧵</div>
+      <div class="prod-info">
+        <div class="prod-name">বাইন্ডিং ওয়্যার (১কেজি)</div>
+        <div class="prod-price">৳১২০/কেজি</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('bwire',-1)">−</button>
+        <input class="qinput" type="number" id="bwire-qty" value="0" min="0" onchange="calcRow('bwire')"/>
+        <button class="qbtn" onclick="changeQty('bwire',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="bwire-sub">৳০</div>
+    </div>
+  </div>
+
+  <div class="calc-section">
+    <div class="calc-section-header"><span>🧱</span> কন্ট্রাক্ট আইটেম</div>
+
+    <div class="product-row">
+      <div class="prod-icon">🧱</div>
+      <div class="prod-info">
+        <div class="prod-name">ইট (১ম শ্রেণি)</div>
+        <div class="prod-price">৳১২/পিস</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('brick',-100)">−</button>
+        <input class="qinput" type="number" id="brick-qty" value="0" min="0" onchange="calcRow('brick')"/>
+        <button class="qbtn" onclick="changeQty('brick',100)">+</button>
+      </div>
+      <div class="prod-subtotal" id="brick-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">🪨</div>
+      <div class="prod-info">
+        <div class="prod-name">পাথর চিপস (২০মিমি)</div>
+        <div class="prod-price">৳২,২০০/ঘনফুট</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('chips',-1)">−</button>
+        <input class="qinput" type="number" id="chips-qty" value="0" min="0" onchange="calcRow('chips')"/>
+        <button class="qbtn" onclick="changeQty('chips',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="chips-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">⚗️</div>
+      <div class="prod-info">
+        <div class="prod-name">বালু (মিডিয়াম)</div>
+        <div class="prod-price">৳১,৮০০/ঘনফুট</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('sand',-1)">−</button>
+        <input class="qinput" type="number" id="sand-qty" value="0" min="0" onchange="calcRow('sand')"/>
+        <button class="qbtn" onclick="changeQty('sand',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="sand-sub">৳০</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 1: পেইন্ট -->
+<div id="tab1" style="display:none">
+  <div class="calc-section">
+    <div class="calc-section-header"><span>🎨</span> পেইন্ট</div>
+
+    <div class="product-row">
+      <div class="prod-icon">🎨</div>
+      <div class="prod-info">
+        <div class="prod-name">ইন্টেরিয়র পেইন্ট (৪ লিটার)</div>
+        <select class="brand-select" onchange="updatePrice('intpaint', this.value)">
+          <option value="1450">Berger — ৳১,৪৫০</option>
+          <option value="1380">Asian — ৳১,৩৮০</option>
+          <option value="1200">Elite — ৳১,২০০</option>
+        </select>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('intpaint',-1)">−</button>
+        <input class="qinput" type="number" id="intpaint-qty" value="0" min="0" onchange="calcRow('intpaint')"/>
+        <button class="qbtn" onclick="changeQty('intpaint',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="intpaint-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">🏠</div>
+      <div class="prod-info">
+        <div class="prod-name">এক্সটেরিয়র পেইন্ট (৪ লিটার)</div>
+        <select class="brand-select" onchange="updatePrice('extpaint', this.value)">
+          <option value="1800">Berger — ৳১,৮০০</option>
+          <option value="1700">Asian — ৳১,৭০০</option>
+        </select>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('extpaint',-1)">−</button>
+        <input class="qinput" type="number" id="extpaint-qty" value="0" min="0" onchange="calcRow('extpaint')"/>
+        <button class="qbtn" onclick="changeQty('extpaint',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="extpaint-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">⬜</div>
+      <div class="prod-info">
+        <div class="prod-name">ওয়াল পুটি (২০ কেজি)</div>
+        <div class="prod-price">৳৬৫০/ব্যাগ</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('putty',-1)">−</button>
+        <input class="qinput" type="number" id="putty-qty" value="0" min="0" onchange="calcRow('putty')"/>
+        <button class="qbtn" onclick="changeQty('putty',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="putty-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">🖌️</div>
+      <div class="prod-info">
+        <div class="prod-name">পেইন্ট রোলার</div>
+        <div class="prod-price">৳১৮০/পিস</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('roller',-1)">−</button>
+        <input class="qinput" type="number" id="roller-qty" value="0" min="0" onchange="calcRow('roller')"/>
+        <button class="qbtn" onclick="changeQty('roller',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="roller-sub">৳০</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 2: ইলেকট্রিক্যাল -->
+<div id="tab2" style="display:none">
+  <div class="calc-section">
+    <div class="calc-section-header"><span>💡</span> ইলেকট্রিক্যাল</div>
+
+    <div class="product-row">
+      <div class="prod-icon">💡</div>
+      <div class="prod-info">
+        <div class="prod-name">LED বাল্ব (১৮W)</div>
+        <div class="prod-price">৳১৮০/পিস</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('bulb',-1)">−</button>
+        <input class="qinput" type="number" id="bulb-qty" value="0" min="0" onchange="calcRow('bulb')"/>
+        <button class="qbtn" onclick="changeQty('bulb',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="bulb-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">🔌</div>
+      <div class="prod-info">
+        <div class="prod-name">ক্যাবল ওয়্যার (১.৫rm)</div>
+        <div class="prod-price">৳৩৮/মিটার</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('wire',-10)">−</button>
+        <input class="qinput" type="number" id="wire-qty" value="0" min="0" onchange="calcRow('wire')"/>
+        <button class="qbtn" onclick="changeQty('wire',10)">+</button>
+      </div>
+      <div class="prod-subtotal" id="wire-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">⚡</div>
+      <div class="prod-info">
+        <div class="prod-name">সুইচ সকেট (সেট)</div>
+        <div class="prod-price">৳২৫০/সেট</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('switch',-1)">−</button>
+        <input class="qinput" type="number" id="switch-qty" value="0" min="0" onchange="calcRow('switch')"/>
+        <button class="qbtn" onclick="changeQty('switch',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="switch-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">🔲</div>
+      <div class="prod-info">
+        <div class="prod-name">MCB (1P)</div>
+        <div class="prod-price">৳৩৫০/পিস</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('mcb',-1)">−</button>
+        <input class="qinput" type="number" id="mcb-qty" value="0" min="0" onchange="calcRow('mcb')"/>
+        <button class="qbtn" onclick="changeQty('mcb',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="mcb-sub">৳০</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 3: স্যানিটারি -->
+<div id="tab3" style="display:none">
+  <div class="calc-section">
+    <div class="calc-section-header"><span>🚿</span> স্যানিটারি / প্লাম্বিং</div>
+
+    <div class="product-row">
+      <div class="prod-icon">🚿</div>
+      <div class="prod-info">
+        <div class="prod-name">হ্যান্ড শাওয়ার</div>
+        <div class="prod-price">৳৬৫০/পিস</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('shower',-1)">−</button>
+        <input class="qinput" type="number" id="shower-qty" value="0" min="0" onchange="calcRow('shower')"/>
+        <button class="qbtn" onclick="changeQty('shower',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="shower-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">🪛</div>
+      <div class="prod-info">
+        <div class="prod-name">PVC পাইপ (½", ১ মিটার)</div>
+        <div class="prod-price">৳৪৫/পিস</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('pipe',-1)">−</button>
+        <input class="qinput" type="number" id="pipe-qty" value="0" min="0" onchange="calcRow('pipe')"/>
+        <button class="qbtn" onclick="changeQty('pipe',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="pipe-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">🔧</div>
+      <div class="prod-info">
+        <div class="prod-name">টেফলন টেপ</div>
+        <div class="prod-price">৳৩০/রোল</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('teflon',-1)">−</button>
+        <input class="qinput" type="number" id="teflon-qty" value="0" min="0" onchange="calcRow('teflon')"/>
+        <button class="qbtn" onclick="changeQty('teflon',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="teflon-sub">৳০</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAB 4: অন্যান্য -->
+<div id="tab4" style="display:none">
+  <div class="calc-section">
+    <div class="calc-section-header"><span>🧰</span> সেফটি ও অন্যান্য</div>
+
+    <div class="product-row">
+      <div class="prod-icon">⛑️</div>
+      <div class="prod-info">
+        <div class="prod-name">সেফটি হেলমেট</div>
+        <div class="prod-price">৳৩৫০/পিস</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('helmet',-1)">−</button>
+        <input class="qinput" type="number" id="helmet-qty" value="0" min="0" onchange="calcRow('helmet')"/>
+        <button class="qbtn" onclick="changeQty('helmet',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="helmet-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">🔷</div>
+      <div class="prod-info">
+        <div class="prod-name">টাইলস (60x60, RAK)</div>
+        <div class="prod-price">৳৮৫/পিস</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('tile',-1)">−</button>
+        <input class="qinput" type="number" id="tile-qty" value="0" min="0" onchange="calcRow('tile')"/>
+        <button class="qbtn" onclick="changeQty('tile',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="tile-sub">৳০</div>
+    </div>
+
+    <div class="product-row">
+      <div class="prod-icon">💧</div>
+      <div class="prod-info">
+        <div class="prod-name">ওয়াটারপ্রুফিং (Sika)</div>
+        <div class="prod-price">৳৮৫০/লিটার</div>
+      </div>
+      <div class="qty-control">
+        <button class="qbtn" onclick="changeQty('waterproof',-1)">−</button>
+        <input class="qinput" type="number" id="waterproof-qty" value="0" min="0" onchange="calcRow('waterproof')"/>
+        <button class="qbtn" onclick="changeQty('waterproof',1)">+</button>
+      </div>
+      <div class="prod-subtotal" id="waterproof-sub">৳০</div>
+    </div>
+  </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="summary-card">
+  <div class="summary-card-header">💰 মোট হিসাব</div>
+  <div class="summary-list" id="summaryList">
+    <div class="summary-row"><span class="name" style="color:#aaa; font-style:italic;">কোনো পণ্য সিলেক্ট করা হয়নি</span><span></span></div>
+  </div>
+  <div class="summary-row total">
+    <span class="name">সর্বমোট</span>
+    <span class="amount" id="grandTotal">৳০</span>
+  </div>
+</div>
+
+<div class="action-row">
+  <button class="btn-print" onclick="window.print()">🖨️ প্রিন্ট</button>
+  <button class="btn-order" onclick="addAllToCart()">🛒 সব কার্টে যোগ করুন</button>
+</div>
+
+<button class="btn-reset" onclick="resetAll()">🔄 সব রিসেট করুন</button>
+
+<div class="tip-box">
+  <div class="tip-title">💡 ইঞ্জিনিয়ারের টিপস</div>
+  <div class="tip-item">✅ সিমেন্ট: ১০০ বর্গফুট ছাদের জন্য প্রায় ৩-৪ ব্যাগ</div>
+  <div class="tip-item">✅ রড: কলামের জন্য মোট খরচের ২৫-৩০%</div>
+  <div class="tip-item">✅ পেইন্ট: ১ লিটারে প্রায় ৮০-১০০ বর্গফুট (দুই কোট)</div>
+  <div class="tip-item">✅ ইট: প্রতি ঘনফুট দেওয়ালে প্রায় ১৩-১৪টি ইট</div>
+</div>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <div class="bottom-total">
+    <div class="bottom-total-label">মোট হিসাব</div>
+    <div class="bottom-total-amount" id="bottomTotal">৳০</div>
+  </div>
+  <button class="bottom-order-btn" onclick="addAllToCart()">🛒 অর্ডার করুন</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // Product prices
+  const prices = {
+    cement: 580, wcement: 950,
+    rod8: 78, rod12: 95, bwire: 120,
+    brick: 12, chips: 2200, sand: 1800,
+    intpaint: 1450, extpaint: 1800, putty: 650, roller: 180,
+    bulb: 180, wire: 38, switch: 250, mcb: 350,
+    shower: 650, pipe: 45, teflon: 30,
+    helmet: 350, tile: 85, waterproof: 850
+  };
+
+  const names = {
+    cement: 'সিমেন্ট', wcement: 'সাদা সিমেন্ট',
+    rod8: 'রড (৮মিমি)', rod12: 'রড (১২মিমি)', bwire: 'বাইন্ডিং ওয়্যার',
+    brick: 'ইট', chips: 'পাথর চিপস', sand: 'বালু',
+    intpaint: 'ইন্টেরিয়র পেইন্ট', extpaint: 'এক্সটেরিয়র পেইন্ট', putty: 'ওয়াল পুটি', roller: 'পেইন্ট রোলার',
+    bulb: 'LED বাল্ব', wire: 'ক্যাবল ওয়্যার', switch: 'সুইচ সকেট', mcb: 'MCB',
+    shower: 'হ্যান্ড শাওয়ার', pipe: 'PVC পাইপ', teflon: 'টেফলন টেপ',
+    helmet: 'সেফটি হেলমেট', tile: 'টাইলস', waterproof: 'ওয়াটারপ্রুফিং'
+  };
+
+  function updatePrice(key, val) {
+    prices[key] = parseInt(val);
+    calcRow(key);
+  }
+
+  function changeQty(key, delta) {
+    const input = document.getElementById(key + '-qty');
+    input.value = Math.max(0, parseInt(input.value || 0) + delta);
+    calcRow(key);
+  }
+
+  function calcRow(key) {
+    const qty = parseInt(document.getElementById(key + '-qty').value) || 0;
+    const sub = qty * prices[key];
+    document.getElementById(key + '-sub').textContent = sub > 0 ? `৳${sub.toLocaleString('bn-BD')}` : '৳০';
+    updateSummary();
+  }
+
+  function updateSummary() {
+    let total = 0;
+    let rows = '';
+    Object.keys(prices).forEach(key => {
+      const el = document.getElementById(key + '-qty');
+      if (!el) return;
+      const qty = parseInt(el.value) || 0;
+      if (qty > 0) {
+        const sub = qty * prices[key];
+        total += sub;
+        rows += `<div class="summary-row"><span class="name">${names[key]} ×${qty}</span><span class="amount">৳${sub.toLocaleString('bn-BD')}</span></div>`;
+      }
+    });
+    document.getElementById('summaryList').innerHTML = rows || `<div class="summary-row"><span class="name" style="color:#aaa; font-style:italic;">কোনো পণ্য সিলেক্ট করা হয়নি</span><span></span></div>`;
+    document.getElementById('grandTotal').textContent = `৳${total.toLocaleString('bn-BD')}`;
+    document.getElementById('bottomTotal').textContent = `৳${total.toLocaleString('bn-BD')}`;
+  }
+
+  function resetAll() {
+    Object.keys(prices).forEach(key => {
+      const el = document.getElementById(key + '-qty');
+      if (el) el.value = 0;
+      const sub = document.getElementById(key + '-sub');
+      if (sub) sub.textContent = '৳০';
+    });
+    updateSummary();
+    showToast('🔄 সব রিসেট হয়েছে');
+  }
+
+  function addAllToCart() {
+    let added = 0;
+    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    Object.keys(prices).forEach(key => {
+      const el = document.getElementById(key + '-qty');
+      if (!el) return;
+      const qty = parseInt(el.value) || 0;
+      if (qty > 0) {
+        const existing = cart.find(i => i.id === key);
+        if (existing) existing.qty += qty;
+        else cart.push({ id: key, name: names[key], price: prices[key], icon: '🧱', qty });
+        added++;
+      }
+    });
+    if (added > 0) {
+      localStorage.setItem('cart', JSON.stringify(cart));
+      showToast(`✅ ${added}টি পণ্য কার্টে যোগ হয়েছে`);
+      setTimeout(() => window.location.href = 'order.html', 1500);
+    } else {
+      showToast('⚠️ কোনো পণ্য সিলেক্ট করা হয়নি');
+    }
+  }
+
+  function switchTab(index) {
+    document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === index));
+    for (let i = 0; i < 5; i++) {
+      const el = document.getElementById('tab' + i);
+      if (el) el.style.display = i === index ? 'block' : 'none';
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+</script>
+</body>
+</html>
