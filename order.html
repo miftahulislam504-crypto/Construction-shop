@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>অর্ডার করুন — নির্মাণ বাজার</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --orange: #E85D04;
+      --orange-light: #F48C06;
+      --dark: #1A1A2E;
+      --gray: #f4f4f4;
+      --gray2: #e0e0e0;
+      --text: #222;
+      --green: #2d9e3a;
+      --radius: 10px;
+    }
+    body { font-family: 'Hind Siliguri', sans-serif; background: #f7f7f7; color: var(--text); min-height: 100vh; padding-bottom: 100px; }
+
+    /* HEADER */
+    header {
+      background: var(--dark);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    }
+    .back-btn { color: white; font-size: 22px; text-decoration: none; }
+    .header-title { color: white; font-size: 17px; font-weight: 700; }
+
+    /* STEPS */
+    .steps-bar {
+      background: white;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .step-circle {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--gray2);
+      color: #999;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .step.active .step-circle { background: var(--orange); color: white; }
+    .step.done .step-circle { background: var(--green); color: white; }
+    .step-label { font-size: 10px; color: #999; font-weight: 500; }
+    .step.active .step-label { color: var(--orange); font-weight: 700; }
+    .step.done .step-label { color: var(--green); }
+    .step-line { width: 40px; height: 2px; background: var(--gray2); margin: 0 4px; margin-bottom: 14px; }
+    .step-line.done { background: var(--green); }
+
+    /* CART SUMMARY */
+    .cart-summary {
+      background: white;
+      margin: 12px 16px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .summary-header {
+      background: var(--dark);
+      color: white;
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .summary-header span { color: var(--orange-light); font-size: 12px; cursor: pointer; }
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--gray);
+    }
+    .summary-item:last-child { border-bottom: none; }
+    .summary-icon { font-size: 28px; }
+    .summary-info { flex: 1; }
+    .summary-name { font-size: 13px; font-weight: 600; }
+    .summary-qty { font-size: 11px; color: #888; }
+    .summary-price { font-size: 14px; font-weight: 700; color: var(--orange); }
+
+    .price-breakdown {
+      background: white;
+      margin: 0 16px 12px;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .price-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      font-size: 13px;
+      color: #555;
+      border-bottom: 1px solid var(--gray);
+    }
+    .price-row:last-child {
+      border-bottom: none;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--dark);
+      padding-top: 10px;
+    }
+    .price-row:last-child span:last-child { color: var(--orange); }
+
+    /* FORM SECTION */
+    .form-section {
+      background: white;
+      margin: 0 16px 12px;
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .form-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 14px;
+      padding-left: 10px;
+      border-left: 4px solid var(--orange);
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .form-label span { color: var(--orange); }
+    .form-input {
+      width: 100%;
+      border: 1.5px solid var(--gray2);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+      background: white;
+    }
+    .form-input:focus { border-color: var(--orange); }
+    .form-input.error { border-color: #e53935; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-hint { font-size: 11px; color: #999; margin-top: 4px; }
+    .error-msg { font-size: 11px; color: #e53935; margin-top: 4px; display: none; }
+    .error-msg.show { display: block; }
+
+    /* PAYMENT METHOD */
+    .payment-options { display: flex; flex-direction: column; gap: 8px; }
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 2px solid var(--gray2);
+      border-radius: 8px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .payment-option.selected { border-color: var(--orange); background: rgba(232,93,4,0.04); }
+    .payment-option input[type="radio"] { accent-color: var(--orange); width: 18px; height: 18px; }
+    .payment-icon { font-size: 24px; }
+    .payment-info { flex: 1; }
+    .payment-name { font-size: 14px; font-weight: 600; color: var(--dark); }
+    .payment-desc { font-size: 11px; color: #888; }
+
+    /* DELIVERY TIME */
+    .time-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .time-option {
+      border: 2px solid var(--gray2);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .time-option.selected { border-color: var(--orange); background: rgba(232,93,4,0.04); }
+    .time-icon { font-size: 20px; margin-bottom: 4px; }
+    .time-name { font-size: 12px; font-weight: 600; color: var(--dark); }
+    .time-desc { font-size: 10px; color: #888; }
+
+    /* NOTE */
+    .form-textarea {
+      width: 100%;
+      border: 1.5px solid var(--gray2);
+      border-radius: 8px;
+      padding: 11px 14px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      resize: none;
+      height: 80px;
+      transition: border-color 0.2s;
+    }
+    .form-textarea:focus { border-color: var(--orange); }
+
+    /* SUBMIT */
+    .submit-btn {
+      width: 100%;
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 10px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      margin-top: 4px;
+    }
+    .submit-btn:hover { background: var(--orange-light); transform: translateY(-1px); }
+    .submit-btn:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+
+    /* SUCCESS MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 400;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 16px;
+      padding: 32px 24px;
+      text-align: center;
+      width: min(340px, 90vw);
+      animation: popIn 0.3s ease;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .modal-icon { font-size: 64px; margin-bottom: 16px; }
+    .modal-title { font-size: 22px; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+    .modal-msg { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 8px; }
+    .order-id { display: inline-block; background: var(--gray); border-radius: 8px; padding: 8px 16px; font-size: 16px; font-weight: 700; color: var(--orange); margin: 8px 0 20px; }
+    .modal-btn {
+      width: 100%;
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-family: 'Hind Siliguri', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .modal-call {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--gray);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--dark);
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="back-btn" href="index.html">←</a>
+  <div class="header-title">অর্ডার করুন</div>
+</header>
+
+<!-- STEPS -->
+<div class="steps-bar">
+  <div class="step done">
+    <div class="step-circle">✓</div>
+    <div class="step-label">কার্ট</div>
+  </div>
+  <div class="step-line done"></div>
+  <div class="step active">
+    <div class="step-circle">২</div>
+    <div class="step-label">তথ্য দিন</div>
+  </div>
+  <div class="step-line"></div>
+  <div class="step">
+    <div class="step-circle">৩</div>
+    <div class="step-label">নিশ্চিত</div>
+  </div>
+</div>
+
+<!-- CART SUMMARY -->
+<div class="cart-summary">
+  <div class="summary-header">
+    আপনার অর্ডার
+    <span onclick="window.history.back()">← পরিবর্তন করুন</span>
+  </div>
+  <div id="summaryItems">
+    <!-- JS দিয়ে ভরবে -->
+  </div>
+</div>
+
+<!-- PRICE BREAKDOWN -->
+<div class="price-breakdown">
+  <div class="price-row"><span>পণ্যের মূল্য</span><span id="subtotal">৳০</span></div>
+  <div class="price-row"><span>ডেলিভারি চার্জ</span><span id="deliveryCharge">৳০</span></div>
+  <div class="price-row"><span>মোট পরিশোধযোগ্য</span><span id="grandTotal">৳০</span></div>
+</div>
+
+<!-- CUSTOMER INFO -->
+<div class="form-section">
+  <div class="form-title">আপনার তথ্য</div>
+
+  <div class="form-group">
+    <label class="form-label">পূর্ণ নাম <span>*</span></label>
+    <input class="form-input" type="text" id="name" placeholder="আপনার পুরো নাম লিখুন"/>
+    <div class="error-msg" id="nameErr">নাম দেওয়া আবশ্যক</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">মোবাইল নম্বর <span>*</span></label>
+    <input class="form-input" type="tel" id="phone" placeholder="01XXXXXXXXX"/>
+    <div class="error-msg" id="phoneErr">সঠিক মোবাইল নম্বর দিন</div>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">বিকল্প নম্বর</label>
+    <input class="form-input" type="tel" id="altPhone" placeholder="(ঐচ্ছিক)"/>
+  </div>
+
+  <div class="form-group">
+    <label class="form-label">ডেলিভারি ঠিকানা <span>*</span></label>
+    <input class="form-input" type="text" id="address" placeholder="বাড়ি নং, রাস্তা, এলাকা"/>
+    <div class="error-msg" id="addressErr">ঠিকানা দেওয়া আবশ্যক</div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <label class="form-label">উপজেলা <span>*</span></label>
+      <select class="form-input" id="upazila">
+        <option value="">বেছে নিন</option>
+        <option>সিরাজগঞ্জ সদর</option>
+        <option>কামারখন্দ</option>
+        <option>কাজীপুর</option>
+        <option>রায়গঞ্জ</option>
+        <option>শাহজাদপুর</option>
+        <option>তাড়াশ</option>
+        <option>উল্লাপাড়া</option>
+        <option>বেলকুচি</option>
+        <option>চৌহালি</option>
+      </select>
+      <div class="error-msg" id="upazilaErr">উপজেলা বেছে নিন</div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">জেলা</label>
+      <input class="form-input" value="সিরাজগঞ্জ" readonly style="background:#f9f9f9; color:#888;"/>
+    </div>
+  </div>
+</div>
+
+<!-- DELIVERY TIME -->
+<div class="form-section">
+  <div class="form-title">ডেলিভারির সময়</div>
+  <div class="time-options">
+    <div class="time-option selected" onclick="selectTime(this)">
+      <div class="time-icon">⚡</div>
+      <div class="time-name">দ্রুত ডেলিভারি</div>
+      <div class="time-desc">২৪ ঘন্টার মধ্যে</div>
+    </div>
+    <div class="time-option" onclick="selectTime(this)">
+      <div class="time-icon">📅</div>
+      <div class="time-name">নির্দিষ্ট সময়</div>
+      <div class="time-desc">তারিখ বেছে নিন</div>
+    </div>
+  </div>
+  <div class="form-group" style="margin-top:10px;">
+    <label class="form-label">পছন্দের তারিখ/সময় (ঐচ্ছিক)</label>
+    <input class="form-input" type="datetime-local" id="deliveryTime"/>
+  </div>
+</div>
+
+<!-- PAYMENT -->
+<div class="form-section">
+  <div class="form-title">পেমেন্ট পদ্ধতি</div>
+  <div class="payment-options">
+    <label class="payment-option selected" onclick="selectPayment(this)">
+      <input type="radio" name="payment" value="cod" checked/>
+      <span class="payment-icon">💵</span>
+      <div class="payment-info">
+        <div class="payment-name">ক্যাশ অন ডেলিভারি</div>
+        <div class="payment-desc">পণ্য পেয়ে টাকা দিন</div>
+      </div>
+    </label>
+    <label class="payment-option" onclick="selectPayment(this)">
+      <input type="radio" name="payment" value="bkash"/>
+      <span class="payment-icon">📱</span>
+      <div class="payment-info">
+        <div class="payment-name">বিকাশ</div>
+        <div class="payment-desc">অগ্রিম পেমেন্ট — বিকাশ নম্বর: 01700-000000</div>
+      </div>
+    </label>
+    <label class="payment-option" onclick="selectPayment(this)">
+      <input type="radio" name="payment" value="nagad"/>
+      <span class="payment-icon">💳</span>
+      <div class="payment-info">
+        <div class="payment-name">নগদ</div>
+        <div class="payment-desc">অগ্রিম পেমেন্ট — নগদ নম্বর: 01700-000000</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+<!-- NOTE -->
+<div class="form-section">
+  <div class="form-title">বিশেষ নির্দেশনা</div>
+  <div class="form-group">
+    <label class="form-label">অর্ডার নোট (ঐচ্ছিক)</label>
+    <textarea class="form-textarea" id="note" placeholder="যেকোনো বিশেষ নির্দেশনা লিখুন..."></textarea>
+  </div>
+  <button class="submit-btn" onclick="submitOrder()" id="submitBtn">
+    ✅ অর্ডার নিশ্চিত করুন
+  </button>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <div class="modal-title">অর্ডার সফল!</div>
+    <div class="modal-msg">আপনার অর্ডার পাওয়া গেছে। শীঘ্রই আমরা আপনাকে কল করব।</div>
+    <div class="order-id" id="orderIdDisplay">#NB-00001</div>
+    <div class="modal-call">📞 01700-000000</div>
+    <button class="modal-btn" onclick="goHome()">🏠 হোমে ফিরুন</button>
+  </div>
+</div>
+
+<script>
+  // Load cart
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+  // If cart empty, add demo item
+  if (cart.length === 0) {
+    cart = [{ id: 1, name: 'Holcim সিমেন্ট (৫০ কেজি)', price: 580, icon: '🧱', qty: 2 }];
+  }
+
+  function renderSummary() {
+    const container = document.getElementById('summaryItems');
+    container.innerHTML = cart.map(item => `
+      <div class="summary-item">
+        <div class="summary-icon">${item.icon}</div>
+        <div class="summary-info">
+          <div class="summary-name">${item.name}</div>
+          <div class="summary-qty">${item.qty} টি × ৳${item.price}</div>
+        </div>
+        <div class="summary-price">৳${(item.price * item.qty).toLocaleString('bn-BD')}</div>
+      </div>
+    `).join('');
+
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const delivery = subtotal > 5000 ? 0 : 100;
+    document.getElementById('subtotal').textContent = `৳${subtotal.toLocaleString('bn-BD')}`;
+    document.getElementById('deliveryCharge').textContent = delivery === 0 ? 'ফ্রি' : `৳${delivery}`;
+    document.getElementById('grandTotal').textContent = `৳${(subtotal + delivery).toLocaleString('bn-BD')}`;
+  }
+
+  function selectTime(el) {
+    document.querySelectorAll('.time-option').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectPayment(el) {
+    document.querySelectorAll('.payment-option').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function validate() {
+    let valid = true;
+    const fields = [
+      { id: 'name', errId: 'nameErr', check: v => v.trim().length >= 2 },
+      { id: 'phone', errId: 'phoneErr', check: v => /^01[3-9]\d{8}$/.test(v.trim()) },
+      { id: 'address', errId: 'addressErr', check: v => v.trim().length >= 5 },
+      { id: 'upazila', errId: 'upazilaErr', check: v => v !== '' },
+    ];
+    fields.forEach(({ id, errId, check }) => {
+      const input = document.getElementById(id);
+      const err = document.getElementById(errId);
+      if (!check(input.value)) {
+        input.classList.add('error');
+        err.classList.add('show');
+        valid = false;
+      } else {
+        input.classList.remove('error');
+        err.classList.remove('show');
+      }
+    });
+    return valid;
+  }
+
+  function submitOrder() {
+    if (!validate()) return;
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ প্রক্রিয়া হচ্ছে...';
+
+    setTimeout(() => {
+      // Generate order ID
+      const orderId = '#NB-' + String(Math.floor(10000 + Math.random() * 90000));
+      document.getElementById('orderIdDisplay').textContent = orderId;
+
+      // Clear cart
+      localStorage.removeItem('cart');
+
+      // Show modal
+      document.getElementById('successModal').classList.add('open');
+      btn.disabled = false;
+      btn.textContent = '✅ অর্ডার নিশ্চিত করুন';
+    }, 1500);
+  }
+
+  function goHome() {
+    window.location.href = 'index.html';
+  }
+
+  renderSummary();
+</script>
+</body>
+</html>
