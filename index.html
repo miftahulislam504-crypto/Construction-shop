@@ -1,602 +1,273 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>নির্মাণ বাজার — Building Materials & Engineering</title>
+  <title>Build Engineering & Construction Hub</title>
   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --orange: #E85D04;
-      --orange-light: #F48C06;
-      --dark: #1A1A2E;
-      --darker: #0f0f1a;
-      --gray: #f4f4f4;
-      --gray2: #e0e0e0;
-      --text: #222;
-      --white: #fff;
-      --green: #2d9e3a;
+      --blue: #0d2b6e;
+      --blue2: #1a3f9f;
+      --blue-light: #e8edf8;
+      --orange: #e8700a;
+      --white: #ffffff;
+      --gray: #f5f6fa;
+      --gray2: #e2e6f0;
+      --text: #1a2340;
+      --text2: #5a6480;
+      --green: #1a8a3c;
       --radius: 10px;
     }
+    body { font-family: 'Hind Siliguri', sans-serif; background: var(--white); color: var(--text); min-height: 100vh; }
 
-    body {
-      font-family: 'Hind Siliguri', sans-serif;
-      background: #f7f7f7;
-      color: var(--text);
-      min-height: 100vh;
-    }
+    /* TOPBAR */
+    .topbar { background: var(--blue); color: #b8c8f0; font-size: 12px; padding: 6px 16px; display: flex; justify-content: space-between; align-items: center; }
+    .topbar a { color: #b8c8f0; text-decoration: none; }
 
-    /* ===== TOPBAR ===== */
-    .topbar {
-      background: var(--darker);
-      color: #aaa;
-      font-size: 12px;
-      padding: 6px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .topbar span { color: var(--orange-light); }
+    /* HEADER */
+    header { background: var(--white); padding: 10px 16px; position: sticky; top: 0; z-index: 200; box-shadow: 0 2px 12px rgba(13,43,110,0.10); border-bottom: 2px solid var(--blue-light); }
+    .header-row1 { display: flex; align-items: center; gap: 10px; }
 
-    /* ===== HEADER ===== */
-    header {
-      background: var(--dark);
-      padding: 12px 16px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.4);
-    }
-    .header-top {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .logo {
-      font-family: 'Tiro Bangla', serif;
-      font-size: 22px;
-      color: var(--orange);
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      line-height: 1.1;
-      flex-shrink: 0;
-    }
-    .logo span { color: var(--white); font-size: 11px; display: block; font-family: 'Hind Siliguri', sans-serif; font-weight: 400; color: #aaa; }
-    .search-bar {
-      flex: 1;
-      display: flex;
-      background: #fff;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-    .search-bar input {
-      flex: 1;
-      border: none;
-      outline: none;
-      padding: 9px 12px;
-      font-family: 'Hind Siliguri', sans-serif;
-      font-size: 14px;
-    }
-    .search-bar button {
-      background: var(--orange);
-      border: none;
-      padding: 0 14px;
-      cursor: pointer;
-      font-size: 16px;
-      color: white;
-    }
-    .header-icons {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-    .icon-btn {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: #ccc;
-      font-size: 10px;
-      gap: 2px;
-      cursor: pointer;
-      text-decoration: none;
-      position: relative;
-    }
-    .icon-btn svg { width: 22px; height: 22px; }
+    /* HAMBURGER */
+    .hamburger { background: none; border: none; cursor: pointer; padding: 6px; display: flex; flex-direction: column; gap: 5px; flex-shrink: 0; }
+    .hamburger span { display: block; width: 24px; height: 2.5px; background: var(--blue); border-radius: 2px; transition: all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+    /* LOGO */
+    .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; flex: 1; justify-content: center; }
+    .logo-icon { font-size: 28px; }
+    .logo-text { line-height: 1.1; }
+    .logo-text .name1 { font-family: 'Tiro Bangla', serif; font-size: 13px; font-weight: 700; color: var(--blue); display: block; }
+    .logo-text .name2 { font-size: 10px; color: var(--orange); font-weight: 600; display: block; letter-spacing: 0.3px; }
+
+    /* HEADER ICONS */
+    .header-icons { display: flex; align-items: center; gap: 10px; }
+    .icon-btn { position: relative; background: none; border: none; cursor: pointer; color: var(--blue); font-size: 22px; padding: 4px; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 2px; color: var(--text2); }
+    .icon-btn svg { width: 22px; height: 22px; color: var(--blue); }
     .icon-btn:hover { color: var(--orange); }
-    .badge {
-      position: absolute;
-      top: -4px; right: -6px;
-      background: var(--orange);
-      color: white;
-      font-size: 9px;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700;
-    }
+    .icon-btn:hover svg { color: var(--orange); }
+    .badge { position: absolute; top: -4px; right: -4px; background: var(--orange); color: white; font-size: 9px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
 
-    /* NAV */
-    .nav-bar {
-      background: var(--orange);
-      padding: 0 16px;
-      display: flex;
-      gap: 0;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
+    /* SEARCH BAR */
+    .search-row { margin-top: 10px; display: flex; gap: 8px; }
+    .search-bar { flex: 1; display: flex; background: var(--gray); border: 1.5px solid var(--gray2); border-radius: 24px; overflow: hidden; align-items: center; padding: 0 14px; gap: 8px; }
+    .search-bar input { flex: 1; border: none; background: transparent; outline: none; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; color: var(--text); padding: 9px 0; }
+    .search-bar input::placeholder { color: #aab; }
+    .search-bar button { background: none; border: none; cursor: pointer; color: var(--blue); font-size: 18px; padding: 0; display: flex; align-items: center; }
+
+    /* NAV BAR */
+    .nav-bar { background: var(--blue); padding: 0 16px; display: flex; overflow-x: auto; scrollbar-width: none; }
     .nav-bar::-webkit-scrollbar { display: none; }
-    .nav-bar a {
-      color: white;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 10px 14px;
-      white-space: nowrap;
-      border-bottom: 3px solid transparent;
-      transition: border-color 0.2s;
-    }
-    .nav-bar a:hover, .nav-bar a.active { border-bottom-color: white; }
+    .nav-bar a { color: #c8d8f8; text-decoration: none; font-size: 13px; font-weight: 500; padding: 9px 13px; white-space: nowrap; border-bottom: 3px solid transparent; transition: all 0.2s; display: block; }
+    .nav-bar a:hover, .nav-bar a.active { color: white; border-bottom-color: var(--orange); }
 
-    /* ===== HERO BANNER ===== */
-    .hero {
-      background: linear-gradient(135deg, var(--darker) 0%, #2c1810 50%, var(--dark) 100%);
-      padding: 28px 16px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23E85D04' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-    }
-    .hero-tag {
-      display: inline-block;
-      background: var(--orange);
-      color: white;
-      font-size: 11px;
-      font-weight: 600;
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 12px;
-      letter-spacing: 1px;
-    }
-    .hero h1 {
-      font-family: 'Tiro Bangla', serif;
-      color: white;
-      font-size: 26px;
-      line-height: 1.3;
-      margin-bottom: 8px;
-    }
-    .hero h1 span { color: var(--orange-light); }
-    .hero p {
-      color: #aaa;
-      font-size: 14px;
-      margin-bottom: 20px;
-    }
+    /* SIDEBAR MENU */
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(13,43,110,0.35); z-index: 300; }
+    .sidebar-overlay.open { display: block; }
+    .sidebar { position: fixed; left: -280px; top: 0; bottom: 0; width: 280px; background: var(--white); z-index: 301; transition: left 0.3s ease; overflow-y: auto; box-shadow: 4px 0 24px rgba(13,43,110,0.15); }
+    .sidebar.open { left: 0; }
+    .sidebar-header { background: var(--blue); padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .sidebar-logo { color: white; font-family: 'Tiro Bangla', serif; font-size: 16px; }
+    .sidebar-close { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
+    .sidebar-section { border-bottom: 1px solid var(--gray2); }
+    .sidebar-cat { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; font-size: 14px; font-weight: 700; color: var(--blue); cursor: pointer; transition: background 0.2s; }
+    .sidebar-cat:hover { background: var(--blue-light); }
+    .sidebar-cat .icon { font-size: 18px; margin-right: 8px; }
+    .sidebar-cat .arrow { font-size: 12px; color: var(--text2); transition: transform 0.2s; }
+    .sidebar-cat.expanded .arrow { transform: rotate(90deg); }
+    .sidebar-sublist { display: none; background: var(--gray); padding: 4px 0; }
+    .sidebar-sublist.open { display: block; }
+    .sidebar-subitem { padding: 9px 16px 9px 46px; font-size: 13px; color: var(--text2); cursor: pointer; transition: background 0.2s; border-left: 3px solid transparent; }
+    .sidebar-subitem:hover { background: var(--blue-light); color: var(--blue); border-left-color: var(--blue2); }
+    .sidebar-footer { padding: 16px; }
+    .sidebar-footer a { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 8px; text-decoration: none; color: var(--text); font-size: 13px; font-weight: 600; transition: background 0.2s; }
+    .sidebar-footer a:hover { background: var(--blue-light); color: var(--blue); }
+
+    /* HERO */
+    .hero { background: linear-gradient(135deg, var(--blue) 0%, var(--blue2) 60%, #2255c0 100%); padding: 28px 16px; text-align: center; position: relative; overflow: hidden; }
+    .hero::after { content: '🏗️'; position: absolute; right: -10px; bottom: -10px; font-size: 100px; opacity: 0.07; }
+    .hero-tag { display: inline-block; background: var(--orange); color: white; font-size: 11px; font-weight: 600; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; }
+    .hero h1 { font-family: 'Tiro Bangla', serif; color: white; font-size: 24px; line-height: 1.35; margin-bottom: 8px; }
+    .hero h1 span { color: #fbbf24; }
+    .hero p { color: #b8cef0; font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
     .hero-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-    .btn-primary {
-      background: var(--orange);
-      color: white;
-      border: none;
-      padding: 11px 24px;
-      border-radius: 6px;
-      font-family: 'Hind Siliguri', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s, transform 0.1s;
-    }
-    .btn-primary:hover { background: var(--orange-light); transform: translateY(-1px); }
-    .btn-outline {
-      background: transparent;
-      color: white;
-      border: 2px solid rgba(255,255,255,0.3);
-      padding: 11px 24px;
-      border-radius: 6px;
-      font-family: 'Hind Siliguri', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      transition: border-color 0.2s;
-    }
-    .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+    .btn-primary { background: var(--orange); color: white; border: none; padding: 11px 22px; border-radius: 8px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.2s, transform 0.1s; }
+    .btn-primary:hover { background: #c45e08; transform: translateY(-1px); }
+    .btn-white { background: white; color: var(--blue); border: none; padding: 11px 22px; border-radius: 8px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.2s; }
+    .btn-white:hover { background: var(--blue-light); }
 
     /* STATS */
-    .stats-bar {
-      display: flex;
-      background: var(--orange);
-      padding: 12px 16px;
-      gap: 0;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .stats-bar::-webkit-scrollbar { display: none; }
-    .stat {
-      flex: 1;
-      min-width: 80px;
-      text-align: center;
-      color: white;
-      border-right: 1px solid rgba(255,255,255,0.3);
-      padding: 4px 8px;
-    }
+    .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--white); border-bottom: 2px solid var(--blue-light); }
+    .stat { text-align: center; padding: 12px 4px; border-right: 1px solid var(--blue-light); }
     .stat:last-child { border-right: none; }
-    .stat-num { font-size: 18px; font-weight: 700; display: block; }
-    .stat-label { font-size: 10px; opacity: 0.85; }
+    .stat-num { font-size: 17px; font-weight: 700; color: var(--blue); display: block; }
+    .stat-label { font-size: 10px; color: var(--text2); }
 
-    /* ===== CATEGORIES ===== */
-    .section { padding: 20px 16px; }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-    }
-    .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--dark);
-      position: relative;
-      padding-left: 12px;
-    }
-    .section-title::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 2px; bottom: 2px;
-      width: 4px;
-      background: var(--orange);
-      border-radius: 2px;
-    }
-    .see-all {
-      color: var(--orange);
-      font-size: 13px;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-    }
+    /* SECTION */
+    .section { padding: 20px 16px; background: var(--white); }
+    .section.gray { background: var(--gray); }
+    .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .section-title { font-size: 17px; font-weight: 700; color: var(--blue); position: relative; padding-left: 12px; }
+    .section-title::before { content: ''; position: absolute; left: 0; top: 2px; bottom: 2px; width: 4px; background: var(--orange); border-radius: 2px; }
+    .see-all { color: var(--blue2); font-size: 13px; font-weight: 600; text-decoration: none; }
+    .see-all:hover { color: var(--orange); }
 
-    .categories-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
-    .cat-card {
-      background: white;
-      border-radius: var(--radius);
-      padding: 14px 8px;
-      text-align: center;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
-      text-decoration: none;
-      color: var(--text);
-    }
-    .cat-card:hover { transform: translateY(-3px); box-shadow: 0 4px 16px rgba(232,93,4,0.15); }
-    .cat-icon {
-      font-size: 28px;
-      margin-bottom: 6px;
-      display: block;
-    }
-    .cat-name {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--dark);
-      line-height: 1.3;
-    }
+    /* BREADCRUMB */
+    .breadcrumb { background: var(--blue-light); padding: 8px 16px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text2); overflow-x: auto; white-space: nowrap; }
+    .breadcrumb a { color: var(--blue2); text-decoration: none; font-weight: 600; }
+    .breadcrumb a:hover { color: var(--orange); }
+    .breadcrumb .sep { color: var(--blue2); opacity: 0.4; }
 
-    /* ===== PRODUCTS ===== */
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-    .product-card {
-      background: white;
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
-    }
-    .product-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.12); }
-    .product-img {
-      width: 100%;
-      aspect-ratio: 1;
-      background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-      position: relative;
-    }
-    .product-badge {
-      position: absolute;
-      top: 8px; left: 8px;
-      background: var(--orange);
-      color: white;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 3px 7px;
-      border-radius: 4px;
-    }
+    /* CATEGORIES */
+    .categories-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .cat-card { background: var(--white); border: 1.5px solid var(--blue-light); border-radius: var(--radius); padding: 14px 6px; text-align: center; text-decoration: none; color: var(--text); display: block; transition: all 0.2s; }
+    .cat-card:hover { border-color: var(--blue2); background: var(--blue-light); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(13,43,110,0.10); }
+    .cat-icon { font-size: 26px; margin-bottom: 6px; display: block; }
+    .cat-name { font-size: 11px; font-weight: 600; color: var(--blue); line-height: 1.3; }
+
+    /* PRODUCTS */
+    .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .product-card { background: var(--white); border: 1.5px solid var(--blue-light); border-radius: var(--radius); overflow: hidden; cursor: pointer; transition: all 0.2s; }
+    .product-card:hover { border-color: var(--blue2); box-shadow: 0 6px 20px rgba(13,43,110,0.12); transform: translateY(-2px); }
+    .product-img { width: 100%; aspect-ratio: 1; background: var(--blue-light); display: flex; align-items: center; justify-content: center; font-size: 48px; position: relative; }
+    .product-badge { position: absolute; top: 8px; left: 8px; background: var(--orange); color: white; font-size: 10px; font-weight: 700; padding: 3px 7px; border-radius: 4px; }
     .product-badge.new { background: var(--green); }
+    .product-badge.hot { background: var(--blue); }
     .product-info { padding: 10px 12px 12px; }
-    .product-brand {
-      font-size: 10px;
-      color: var(--orange);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 3px;
-    }
-    .product-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--dark);
-      margin-bottom: 6px;
-      line-height: 1.3;
-    }
-    .product-price {
-      font-size: 16px;
-      font-weight: 700;
-      color: var(--orange);
-    }
-    .product-price .unit { font-size: 11px; color: #888; font-weight: 400; }
-    .product-old-price {
-      font-size: 12px;
-      color: #999;
-      text-decoration: line-through;
-      margin-left: 6px;
-    }
-    .add-cart-btn {
-      width: 100%;
-      background: var(--orange);
-      color: white;
-      border: none;
-      padding: 8px;
-      border-radius: 6px;
-      font-family: 'Hind Siliguri', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: background 0.2s;
-    }
-    .add-cart-btn:hover { background: var(--orange-light); }
+    .product-brand { font-size: 10px; color: var(--blue2); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+    .product-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.3; }
+    .product-price { font-size: 16px; font-weight: 700; color: var(--blue); }
+    .product-price .unit { font-size: 11px; color: var(--text2); font-weight: 400; }
+    .product-old-price { font-size: 12px; color: #bbb; text-decoration: line-through; margin-left: 6px; }
+    .add-cart-btn { width: 100%; background: var(--blue); color: white; border: none; padding: 9px; border-radius: 6px; font-family: 'Hind Siliguri', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: background 0.2s; }
+    .add-cart-btn:hover { background: var(--blue2); }
 
-    /* BANNER STRIP */
-    .promo-banner {
-      margin: 0 16px 20px;
-      background: linear-gradient(135deg, #1A1A2E, #16213e);
-      border-radius: var(--radius);
-      padding: 20px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-    .promo-banner .text h3 {
-      color: var(--orange-light);
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .promo-banner .text p { color: #aaa; font-size: 12px; }
-    .promo-banner .emoji { font-size: 40px; }
+    /* BILLBOARD SLIDER */
+    .billboard-wrap { position: relative; margin: 0 0 4px; overflow: hidden; }
+    .billboard-track { display: flex; transition: transform 0.45s cubic-bezier(0.4,0,0.2,1); will-change: transform; }
+    .billboard-slide { min-width: 100%; padding: 20px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-sizing: border-box; }
+    .billboard-slide .bs-text h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .billboard-slide .bs-text p { font-size: 12px; line-height: 1.6; opacity: 0.85; }
+    .billboard-slide .bs-text a { display: inline-block; margin-top: 12px; font-size: 12px; font-weight: 700; padding: 8px 18px; border-radius: 7px; text-decoration: none; }
+    .billboard-slide .bs-emoji { font-size: 48px; flex-shrink: 0; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18)); }
+    .billboard-dots { display: flex; justify-content: center; gap: 6px; padding: 10px 0 6px; background: white; }
+    .billboard-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray2); cursor: pointer; transition: all 0.25s; border: none; padding: 0; }
+    .billboard-dot.active { background: var(--orange); width: 22px; border-radius: 4px; }
+    .billboard-arrow { position: absolute; top: 50%; transform: translateY(-60%); background: rgba(255,255,255,0.25); border: none; color: white; font-size: 26px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: background 0.2s; z-index: 2; line-height: 1; }
+    .billboard-arrow:hover { background: rgba(255,255,255,0.45); }
+    .billboard-arrow.left { left: 8px; }
+    .billboard-arrow.right { right: 8px; }
 
-    /* SERVICE SECTION */
-    .services-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-    }
-    .service-card {
-      background: white;
-      border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
-      border-left: 4px solid var(--orange);
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .service-card:hover { transform: translateY(-2px); }
+    /* PROMO BANNERS */
+    .promo-banner { margin: 0 16px 16px; background: linear-gradient(135deg, var(--blue), var(--blue2)); border-radius: var(--radius); padding: 18px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .promo-banner .text h3 { color: #fbbf24; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .promo-banner .text p { color: #b8cef0; font-size: 12px; line-height: 1.5; }
+    .promo-banner .emoji { font-size: 40px; flex-shrink: 0; }
+    .calc-banner { margin: 0 16px 16px; background: linear-gradient(135deg, #0d3b1e, #1a5c2e); border-radius: var(--radius); padding: 18px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .calc-banner .text h3 { color: #4ade80; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .calc-banner .text p { color: #a7d9b8; font-size: 12px; }
+
+    /* SERVICE */
+    .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .service-card { background: var(--white); border: 1.5px solid var(--blue-light); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.2s; border-left: 4px solid var(--blue); }
+    .service-card:hover { border-color: var(--blue2); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(13,43,110,0.10); }
     .service-icon { font-size: 28px; margin-bottom: 8px; }
-    .service-name { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 4px; }
-    .service-desc { font-size: 11px; color: #888; line-height: 1.4; }
+    .service-name { font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+    .service-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
     .service-price { font-size: 12px; color: var(--orange); font-weight: 600; margin-top: 8px; }
 
-    /* TRUST BADGES */
-    .trust-section {
-      background: white;
-      padding: 20px 16px;
-      margin-top: 8px;
-    }
-    .trust-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-top: 14px;
-    }
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    /* TRUST */
+    .trust-section { background: var(--blue); padding: 20px 16px; }
+    .trust-section .section-title { color: white; }
+    .trust-section .section-title::before { background: var(--orange); }
+    .trust-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 14px; }
+    .trust-item { display: flex; align-items: flex-start; gap: 10px; background: rgba(255,255,255,0.08); border-radius: 8px; padding: 12px; }
     .trust-icon { font-size: 24px; flex-shrink: 0; }
-    .trust-text { font-size: 12px; }
-    .trust-text strong { display: block; font-size: 13px; color: var(--dark); }
+    .trust-text { font-size: 12px; color: #b8cef0; }
+    .trust-text strong { display: block; font-size: 13px; color: white; margin-bottom: 2px; }
 
     /* FOOTER */
-    footer {
-      background: var(--darker);
-      color: #aaa;
-      padding: 24px 16px 80px;
-      margin-top: 8px;
-    }
-    .footer-logo {
-      font-family: 'Tiro Bangla', serif;
-      font-size: 20px;
-      color: var(--orange);
-      margin-bottom: 8px;
-    }
-    footer p { font-size: 12px; line-height: 1.6; margin-bottom: 16px; }
+    footer { background: #08183d; color: #8899cc; padding: 24px 16px 32px; }
+    .footer-logo { font-family: 'Tiro Bangla', serif; font-size: 18px; color: white; margin-bottom: 4px; }
+    .footer-sub { color: var(--orange); font-size: 11px; margin-bottom: 12px; }
+    footer p { font-size: 12px; line-height: 1.7; margin-bottom: 16px; }
     .footer-links { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
-    .footer-links a { color: #aaa; text-decoration: none; font-size: 12px; }
-    .footer-links a:hover { color: var(--orange); }
-    .footer-bottom { border-top: 1px solid #333; padding-top: 12px; font-size: 11px; text-align: center; }
+    .footer-links a { color: #8899cc; text-decoration: none; font-size: 12px; }
+    .footer-links a:hover { color: white; }
+    .footer-bottom { border-top: 1px solid #1a2a5a; padding-top: 12px; font-size: 11px; text-align: center; }
 
-    /* BOTTOM NAV (mobile) */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0; left: 0; right: 0;
-      background: var(--dark);
-      display: flex;
-      border-top: 1px solid #333;
-      z-index: 200;
-    }
-    .bnav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 10px 4px 8px;
-      color: #888;
-      font-size: 10px;
-      gap: 3px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: color 0.2s;
-      position: relative;
-    }
+    /* BOTTOM NAV */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); display: flex; border-top: 2px solid var(--blue-light); z-index: 200; box-shadow: 0 -4px 16px rgba(13,43,110,0.08); }
+    .bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 8px 4px 6px; color: var(--text2); font-size: 10px; gap: 3px; cursor: pointer; text-decoration: none; transition: color 0.2s; position: relative; }
     .bnav-item svg { width: 22px; height: 22px; }
-    .bnav-item.active, .bnav-item:hover { color: var(--orange); }
-    .bnav-item .badge { top: 6px; right: 16px; }
+    .bnav-item.active, .bnav-item:hover { color: var(--blue); }
+    .bnav-item .badge { top: 4px; right: 14px; }
 
-    /* CART SIDEBAR */
-    .cart-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.5);
-      z-index: 300;
-    }
+    /* CART PANEL */
+    .cart-overlay { display: none; position: fixed; inset: 0; background: rgba(13,43,110,0.4); z-index: 300; }
     .cart-overlay.open { display: block; }
-    .cart-panel {
-      position: fixed;
-      right: -100%;
-      top: 0; bottom: 0;
-      width: min(360px, 92vw);
-      background: white;
-      z-index: 301;
-      transition: right 0.3s ease;
-      display: flex;
-      flex-direction: column;
-    }
+    .cart-panel { position: fixed; right: -100%; top: 0; bottom: 0; width: min(360px, 92vw); background: white; z-index: 301; transition: right 0.3s ease; display: flex; flex-direction: column; }
     .cart-panel.open { right: 0; }
-    .cart-header {
-      background: var(--dark);
-      color: white;
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-      font-size: 16px;
-    }
-    .cart-close {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 22px;
-      cursor: pointer;
-      line-height: 1;
-    }
+    .cart-header { background: var(--blue); color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 16px; }
+    .cart-close { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
     .cart-body { flex: 1; overflow-y: auto; padding: 16px; }
-    .cart-empty { text-align: center; padding: 40px 0; color: #999; }
+    .cart-empty { text-align: center; padding: 40px 0; color: #aaa; }
     .cart-empty span { font-size: 48px; display: block; margin-bottom: 12px; }
-    .cart-item {
-      display: flex;
-      gap: 10px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--gray2);
-    }
+    .cart-item { display: flex; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--gray2); }
     .cart-item-icon { font-size: 32px; flex-shrink: 0; }
     .cart-item-info { flex: 1; }
     .cart-item-name { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-    .cart-item-price { font-size: 14px; color: var(--orange); font-weight: 700; }
-    .cart-item-qty {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 6px;
-    }
-    .qty-btn {
-      width: 26px; height: 26px;
-      border: 1px solid var(--gray2);
-      background: var(--gray);
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .qty-num { font-size: 14px; font-weight: 600; min-width: 20px; text-align: center; }
-    .cart-footer {
-      padding: 16px;
-      border-top: 2px solid var(--gray2);
-      background: var(--gray);
-    }
-    .cart-total {
-      display: flex;
-      justify-content: space-between;
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-    .cart-total span:last-child { color: var(--orange); }
-    .checkout-btn {
-      width: 100%;
-      background: var(--orange);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 8px;
-      font-family: 'Hind Siliguri', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .checkout-btn:hover { background: var(--orange-light); }
+    .cart-item-price { font-size: 14px; color: var(--blue); font-weight: 700; }
+    .cart-item-qty { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .qty-btn { width: 28px; height: 28px; border: 1.5px solid var(--blue-light); background: var(--gray); border-radius: 6px; cursor: pointer; font-size: 15px; font-weight: 700; display: flex; align-items: center; justify-content: center; color: var(--blue); }
+    .qty-num { font-size: 14px; font-weight: 700; min-width: 24px; text-align: center; color: var(--blue); }
+    .cart-footer { padding: 16px; border-top: 2px solid var(--blue-light); background: var(--gray); }
+    .cart-total { display: flex; justify-content: space-between; font-size: 16px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+    .cart-total span:last-child { color: var(--blue); }
+    .checkout-btn { width: 100%; background: var(--blue); color: white; border: none; padding: 14px; border-radius: 8px; font-family: 'Hind Siliguri', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .checkout-btn:hover { background: var(--blue2); }
+
+    /* NOTIFICATION PANEL */
+    .notif-overlay { display: none; position: fixed; inset: 0; z-index: 298; }
+    .notif-overlay.open { display: block; }
+    .notif-panel { position: fixed; top: 60px; right: 12px; width: min(320px, 92vw); background: white; border-radius: 12px; box-shadow: 0 8px 32px rgba(13,43,110,0.18); z-index: 299; overflow: hidden; transform: scale(0.95) translateY(-8px); opacity: 0; pointer-events: none; transition: all 0.2s ease; transform-origin: top right; }
+    .notif-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+    .notif-header { background: var(--blue); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px; }
+    .notif-close { background: none; border: none; color: white; font-size: 18px; cursor: pointer; }
+    .notif-body { max-height: 320px; overflow-y: auto; }
+    .notif-item { padding: 12px 16px; border-bottom: 1px solid var(--gray2); display: flex; gap: 10px; align-items: flex-start; cursor: pointer; transition: background 0.15s; }
+    .notif-item:hover { background: var(--gray); }
+    .notif-item.unread { background: var(--blue-light); }
+    .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--orange); flex-shrink: 0; margin-top: 5px; }
+    .notif-dot.read { background: transparent; }
+    .notif-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+    .notif-time { font-size: 11px; color: var(--text2); margin-top: 3px; }
+    .notif-empty { text-align: center; padding: 32px 16px; color: var(--text2); font-size: 13px; }
+
+    /* ACCOUNT DROPDOWN */
+    .account-overlay { display: none; position: fixed; inset: 0; z-index: 298; }
+    .account-overlay.open { display: block; }
+    .account-panel { position: fixed; top: 60px; right: 12px; width: min(260px, 88vw); background: white; border-radius: 12px; box-shadow: 0 8px 32px rgba(13,43,110,0.18); z-index: 299; overflow: hidden; transform: scale(0.95) translateY(-8px); opacity: 0; pointer-events: none; transition: all 0.2s ease; transform-origin: top right; }
+    .account-panel.open { transform: scale(1) translateY(0); opacity: 1; pointer-events: all; }
+    .account-header { background: linear-gradient(135deg, var(--blue), var(--blue2)); padding: 16px; display: flex; align-items: center; gap: 12px; }
+    .account-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--orange); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; font-weight: 700; flex-shrink: 0; }
+    .account-name { color: white; font-size: 14px; font-weight: 700; }
+    .account-sub { color: #b8cef0; font-size: 11px; margin-top: 2px; }
+    .account-menu { padding: 8px 0; }
+    .account-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 13px; color: var(--text); cursor: pointer; text-decoration: none; transition: background 0.15s; }
+    .account-item:hover { background: var(--blue-light); color: var(--blue); }
+    .account-item .ai { font-size: 16px; flex-shrink: 0; }
+    .account-divider { height: 1px; background: var(--gray2); margin: 4px 0; }
+    .account-item.logout { color: #e53e3e; }
+    .account-item.logout:hover { background: #fff5f5; }
 
     /* TOAST */
-    .toast {
-      position: fixed;
-      bottom: 80px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--dark);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 24px;
-      font-size: 13px;
-      font-weight: 500;
-      opacity: 0;
-      transition: opacity 0.3s, transform 0.3s;
-      z-index: 400;
-      white-space: nowrap;
-      border-left: 4px solid var(--orange);
-    }
-    .toast.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
+    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--blue); color: white; padding: 10px 20px; border-radius: 24px; font-size: 13px; opacity: 0; transition: opacity 0.3s, transform 0.3s; z-index: 400; white-space: nowrap; border-left: 4px solid var(--orange); box-shadow: 0 4px 16px rgba(13,43,110,0.25); }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
 </head>
 <body>
@@ -604,153 +275,262 @@
 <!-- TOPBAR -->
 <div class="topbar">
   <span>📍 সিরাজগঞ্জ — ডেলিভারি চলছে</span>
-  <span>☎ 01700-000000</span>
+  <a href="tel:01700000000">☎ 01700-000000</a>
 </div>
 
 <!-- HEADER -->
 <header>
-  <div class="header-top">
-    <div class="logo">
-      নির্মাণ বাজার
-      <span>Building Materials & Engineering</span>
-    </div>
-    <div class="search-bar">
-      <input type="text" placeholder="সিমেন্ট, রড, পেইন্ট..." id="searchInput"/>
-      <button onclick="handleSearch()">🔍</button>
-    </div>
+  <div class="header-row1">
+    <!-- HAMBURGER -->
+    <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+
+    <!-- LOGO -->
+    <a href="index.html" class="logo">
+      <div class="logo-icon">🏗️</div>
+      <div class="logo-text">
+        <span class="name1">Build Engineering</span>
+        <span class="name2">& Construction Hub</span>
+      </div>
+    </a>
+
+    <!-- ICONS -->
     <div class="header-icons">
-      <a class="icon-btn" onclick="toggleCart()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-        কার্ট
+      <!-- NOTIFICATION -->
+      <a class="icon-btn" onclick="toggleNotifications()" title="নোটিফিকেশন">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="badge" id="notifBadge" style="display:none">0</span>
+      </a>
+      <!-- CART -->
+      <a class="icon-btn" onclick="toggleCart()" title="কার্ট">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
         <span class="badge" id="cartBadge">0</span>
+      </a>
+      <!-- ACCOUNT -->
+      <a class="icon-btn" onclick="toggleAccountMenu()" title="অ্যাকাউন্ট" id="accountBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </a>
     </div>
   </div>
-  <!-- NAV -->
-  <nav class="nav-bar">
-    <a href="#" class="active">🏠 হোম</a>
-    <a href="#categories">🧱 সিমেন্ট</a>
-    <a href="#categories">🔩 রড/স্টিল</a>
-    <a href="#categories">🎨 পেইন্ট</a>
-    <a href="#categories">💡 ইলেকট্রিক্যাল</a>
-    <a href="#categories">🚿 স্যানিটারি</a>
-    <a href="#categories">🪟 দরজা/জানালা</a>
-    <a href="#services">⚙️ সার্ভিস</a>
-  </nav>
+
+  <!-- SEARCH -->
+  <div class="search-row">
+    <div class="search-bar">
+      <button onclick="handleSearch()">🔍</button>
+      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন... সিমেন্ট, রড, পেইন্ট"/>
+    </div>
+  </div>
+
+
 </header>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <a href="index.html">🏠 হোম</a>
+  <span class="sep">›</span>
+  <span>সব পণ্য</span>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">🏗️ Build Engineering</div>
+    <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+  </div>
+
+  <!-- CEMENT -->
+  <div class="sidebar-section">
+    <div class="sidebar-cat" onclick="toggleSubcat(this)">
+      <span><span class="icon">🧱</span>সিমেন্ট</span>
+      <span class="arrow">›</span>
+    </div>
+    <div class="sidebar-sublist">
+      <div class="sidebar-subitem" onclick="goProduct()">Holcim সিমেন্ট</div>
+      <div class="sidebar-subitem" onclick="goProduct()">Shah সিমেন্ট</div>
+      <div class="sidebar-subitem" onclick="goProduct()">Crown সিমেন্ট</div>
+      <div class="sidebar-subitem" onclick="goProduct()">সাদা সিমেন্ট</div>
+    </div>
+  </div>
+
+  <!-- STEEL -->
+  <div class="sidebar-section">
+    <div class="sidebar-cat" onclick="toggleSubcat(this)">
+      <span><span class="icon">🔩</span>রড / স্টিল</span>
+      <span class="arrow">›</span>
+    </div>
+    <div class="sidebar-sublist">
+      <div class="sidebar-subitem" onclick="goProduct()">BSRM রড</div>
+      <div class="sidebar-subitem" onclick="goProduct()">GPH Ispat রড</div>
+      <div class="sidebar-subitem" onclick="goProduct()">KSRM রড</div>
+      <div class="sidebar-subitem" onclick="goProduct()">বাইন্ডিং ওয়্যার</div>
+    </div>
+  </div>
+
+  <!-- PAINT -->
+  <div class="sidebar-section">
+    <div class="sidebar-cat" onclick="toggleSubcat(this)">
+      <span><span class="icon">🎨</span>পেইন্ট</span>
+      <span class="arrow">›</span>
+    </div>
+    <div class="sidebar-sublist">
+      <div class="sidebar-subitem" onclick="goProduct()">Berger পেইন্ট</div>
+      <div class="sidebar-subitem" onclick="goProduct()">Asian পেইন্ট</div>
+      <div class="sidebar-subitem" onclick="goProduct()">Elite / Rainbow</div>
+      <div class="sidebar-subitem" onclick="goProduct()">ওয়াল পুটি</div>
+      <div class="sidebar-subitem" onclick="goProduct()">প্রাইমার</div>
+    </div>
+  </div>
+
+  <!-- ELECTRICAL -->
+  <div class="sidebar-section">
+    <div class="sidebar-cat" onclick="toggleSubcat(this)">
+      <span><span class="icon">💡</span>ইলেকট্রিক্যাল</span>
+      <span class="arrow">›</span>
+    </div>
+    <div class="sidebar-sublist">
+      <div class="sidebar-subitem" onclick="goProduct()">BRB / Bizli ক্যাবল</div>
+      <div class="sidebar-subitem" onclick="goProduct()">Super Star</div>
+      <div class="sidebar-subitem" onclick="goProduct()">LED বাল্ব</div>
+      <div class="sidebar-subitem" onclick="goProduct()">সুইচ সকেট</div>
+      <div class="sidebar-subitem" onclick="goProduct()">MCB / বোর্ড</div>
+    </div>
+  </div>
+
+  <!-- SANITARY -->
+  <div class="sidebar-section">
+    <div class="sidebar-cat" onclick="toggleSubcat(this)">
+      <span><span class="icon">🚿</span>স্যানিটারি</span>
+      <span class="arrow">›</span>
+    </div>
+    <div class="sidebar-sublist">
+      <div class="sidebar-subitem" onclick="goProduct()">Kohler / Grohe</div>
+      <div class="sidebar-subitem" onclick="goProduct()">Shine</div>
+      <div class="sidebar-subitem" onclick="goProduct()">Bengal Sanitary</div>
+      <div class="sidebar-subitem" onclick="goProduct()">শাওয়ার</div>
+      <div class="sidebar-subitem" onclick="goProduct()">বেসিন ট্যাপ</div>
+    </div>
+  </div>
+
+  <!-- TILES -->
+  <div class="sidebar-section">
+    <div class="sidebar-cat" onclick="toggleSubcat(this)">
+      <span><span class="icon">🔷</span>টাইলস ও সিরামিক</span>
+      <span class="arrow">›</span>
+    </div>
+    <div class="sidebar-sublist">
+      <div class="sidebar-subitem" onclick="goProduct()">RAK টাইলস</div>
+      <div class="sidebar-subitem" onclick="goProduct()">Akij টাইলস</div>
+      <div class="sidebar-subitem" onclick="goProduct()">Great Wall</div>
+      <div class="sidebar-subitem" onclick="goProduct()">টাইল অ্যাডহেসিভ</div>
+    </div>
+  </div>
+
+  <!-- DOORS -->
+  <div class="sidebar-section">
+    <div class="sidebar-cat" onclick="toggleSubcat(this)">
+      <span><span class="icon">🪟</span>দরজা ও জানালা</span>
+      <span class="arrow">›</span>
+    </div>
+    <div class="sidebar-sublist">
+      <div class="sidebar-subitem" onclick="goProduct()">Bashundhara</div>
+      <div class="sidebar-subitem" onclick="goProduct()">RFL</div>
+      <div class="sidebar-subitem" onclick="goProduct()">হিঞ্জ ও লক</div>
+      <div class="sidebar-subitem" onclick="goProduct()">UPVC অ্যাকসেসরিজ</div>
+    </div>
+  </div>
+
+  <!-- CONTRACT -->
+  <div class="sidebar-section">
+    <div class="sidebar-cat" onclick="toggleSubcat(this)">
+      <span><span class="icon">🧱</span>কন্ট্রাক্ট আইটেম</span>
+      <span class="arrow">›</span>
+    </div>
+    <div class="sidebar-sublist">
+      <div class="sidebar-subitem" onclick="goProduct()">ইট (১ম শ্রেণি)</div>
+      <div class="sidebar-subitem" onclick="goProduct()">বালু (মিডিয়াম/ফাইন)</div>
+      <div class="sidebar-subitem" onclick="goProduct()">পাথর চিপস (20mm)</div>
+      <div class="sidebar-subitem" onclick="goProduct()">সিলেট বালু</div>
+    </div>
+  </div>
+
+  <!-- SAFETY -->
+  <div class="sidebar-section">
+    <div class="sidebar-cat" onclick="toggleSubcat(this)">
+      <span><span class="icon">⛑️</span>সেফটি ও সরঞ্জাম</span>
+      <span class="arrow">›</span>
+    </div>
+    <div class="sidebar-sublist">
+      <div class="sidebar-subitem" onclick="goProduct()">সেফটি হেলমেট</div>
+      <div class="sidebar-subitem" onclick="goProduct()">সেফটি গ্লাভস</div>
+      <div class="sidebar-subitem" onclick="goProduct()">মাস্ক (N95)</div>
+      <div class="sidebar-subitem" onclick="goProduct()">মেজারিং টেপ</div>
+    </div>
+  </div>
+
+  <!-- CHEMICAL -->
+  <div class="sidebar-section">
+    <div class="sidebar-cat" onclick="toggleSubcat(this)">
+      <span><span class="icon">💧</span>কেমিক্যাল / ওয়াটারপ্রুফিং</span>
+      <span class="arrow">›</span>
+    </div>
+    <div class="sidebar-sublist">
+      <div class="sidebar-subitem" onclick="goProduct()">Sika</div>
+      <div class="sidebar-subitem" onclick="goProduct()">D. Fixit</div>
+      <div class="sidebar-subitem" onclick="goProduct()">বন্ডিং এজেন্ট</div>
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <a href="calculator.html">🧮 প্রাইস ক্যালকুলেটর</a>
+    <a href="#services">⚙️ ইঞ্জিনিয়ারিং সার্ভিস</a>
+    <a href="order.html">📦 আমার অর্ডার</a>
+    <a href="admin.html">🔐 Admin Panel</a>
+    <a href="admin.html" onclick="localStorage.setItem('adminGoto','billboard')" style="color:var(--orange);font-weight:700">🖼️ বিলবোর্ড এডিট</a>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-tag">🏗️ নির্মাণের সেরা ঠিকানা</div>
+  <div class="hero-tag">🏗️ সিরাজগঞ্জের সেরা নির্মাণ হাব</div>
   <h1>বাড়ি বানানোর <span>সব কিছু</span><br/>এক জায়গায়</h1>
-  <p>সিমেন্ট থেকে শুরু করে স্যানিটারি — সব ব্র্যান্ডের অরিজিনাল পণ্য<br/>ইঞ্জিনিয়ারিং সার্ভিস সহ</p>
+  <p>সিমেন্ট থেকে শুরু করে স্যানিটারি — সব ব্র্যান্ডের অরিজিনাল পণ্য<br/>+ সিভিল ইঞ্জিনিয়ারিং সার্ভিস</p>
   <div class="hero-btns">
-    <a href="#products" class="btn-primary">🛍️ পণ্য দেখুন</a>
-    <a href="#services" class="btn-outline">⚙️ সার্ভিস নিন</a>
+    <a href="product.html" class="btn-primary">🛍️ পণ্য দেখুন</a>
+    <a href="calculator.html" class="btn-white">🧮 হিসাব করুন</a>
   </div>
 </section>
 
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stat"><span class="stat-num">৫০০+</span><span class="stat-label">পণ্য</span></div>
-  <div class="stat"><span class="stat-num">১৫+</span><span class="stat-label">ব্র্যান্ড</span></div>
-  <div class="stat"><span class="stat-num">১০০%</span><span class="stat-label">অরিজিনাল</span></div>
-  <div class="stat"><span class="stat-num">২৪ঘন্টা</span><span class="stat-label">ডেলিভারি</span></div>
-</div>
 
-<!-- CATEGORIES -->
-<section class="section" id="categories">
-  <div class="section-header">
-    <h2 class="section-title">ক্যাটাগরি</h2>
-    <a class="see-all">সব দেখুন →</a>
-  </div>
-  <div class="categories-grid">
-    <a class="cat-card" href="#">
-      <span class="cat-icon">🧱</span>
-      <span class="cat-name">সিমেন্ট</span>
-    </a>
-    <a class="cat-card" href="#">
-      <span class="cat-icon">🔩</span>
-      <span class="cat-name">রড / স্টিল</span>
-    </a>
-    <a class="cat-card" href="#">
-      <span class="cat-icon">🎨</span>
-      <span class="cat-name">পেইন্ট</span>
-    </a>
-    <a class="cat-card" href="#">
-      <span class="cat-icon">💡</span>
-      <span class="cat-name">ইলেকট্রিক্যাল</span>
-    </a>
-    <a class="cat-card" href="#">
-      <span class="cat-icon">🚿</span>
-      <span class="cat-name">স্যানিটারি</span>
-    </a>
-    <a class="cat-card" href="#">
-      <span class="cat-icon">🪟</span>
-      <span class="cat-name">দরজা/জানালা</span>
-    </a>
-    <a class="cat-card" href="#">
-      <span class="cat-icon">🔷</span>
-      <span class="cat-name">টাইলস</span>
-    </a>
-    <a class="cat-card" href="#">
-      <span class="cat-icon">🧰</span>
-      <span class="cat-name">ছোট সরঞ্জাম</span>
-    </a>
-  </div>
-</section>
 
-<!-- PROMO BANNER -->
-<div class="promo-banner">
-  <div class="text">
-    <h3>ইঞ্জিনিয়ারিং সার্ভিস</h3>
-    <p>বাড়ির ড্রয়িং, এস্টিমেট ও সুপারভিশন<br/>এখন অনলাইনে বুক করুন</p>
-    <a href="#services" class="btn-primary" style="margin-top:10px; display:inline-block; font-size:12px; padding:8px 16px;">বিস্তারিত দেখুন</a>
-  </div>
-  <div class="emoji">🏗️</div>
+
+
+<!-- SLIDING BILLBOARD -->
+<div class="billboard-wrap">
+  <div class="billboard-track" id="billboardTrack"></div>
+  <div class="billboard-dots" id="billboardDots"></div>
+  <button class="billboard-arrow left" onclick="billboardPrev()">&#8249;</button>
+  <button class="billboard-arrow right" onclick="billboardNext()">&#8250;</button>
 </div>
 
 <!-- PRODUCTS -->
-<section class="section" id="products">
+<section class="section gray">
   <div class="section-header">
     <h2 class="section-title">জনপ্রিয় পণ্য</h2>
-    <a class="see-all">সব দেখুন →</a>
+    <a class="see-all" href="product.html">সব দেখুন →</a>
   </div>
-  <div class="products-grid" id="productsGrid">
-    <!-- Products inserted by JS -->
-  </div>
+  <div class="products-grid" id="productsGrid"></div>
 </section>
 
 <!-- SERVICES -->
 <section class="section" id="services">
-  <div class="section-header">
-    <h2 class="section-title">ইঞ্জিনিয়ারিং সার্ভিস</h2>
-  </div>
+  <div class="section-header"><h2 class="section-title">ইঞ্জিনিয়ারিং সার্ভিস</h2></div>
   <div class="services-grid">
-    <div class="service-card">
-      <div class="service-icon">📐</div>
-      <div class="service-name">বিল্ডিং ড্রয়িং</div>
-      <div class="service-desc">আর্কিটেকচারাল ও স্ট্রাকচারাল ড্রয়িং তৈরি</div>
-      <div class="service-price">যোগাযোগ করুন →</div>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">🧮</div>
-      <div class="service-name">বিল্ডিং এস্টিমেট</div>
-      <div class="service-desc">পুরো বাড়ির মালামালের হিসাব ও খরচের তালিকা</div>
-      <div class="service-price">যোগাযোগ করুন →</div>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">👷</div>
-      <div class="service-name">সাইট সুপারভিশন</div>
-      <div class="service-desc">নির্মাণ কাজের সার্বক্ষণিক তদারকি</div>
-      <div class="service-price">যোগাযোগ করুন →</div>
-    </div>
-    <div class="service-card">
-      <div class="service-icon">💬</div>
-      <div class="service-name">পরামর্শ সেবা</div>
-      <div class="service-desc">অনলাইন বা সরাসরি ইঞ্জিনিয়ারিং পরামর্শ</div>
-      <div class="service-price">যোগাযোগ করুন →</div>
-    </div>
+    <div class="service-card"><div class="service-icon">📐</div><div class="service-name">বিল্ডিং ড্রয়িং</div><div class="service-desc">আর্কিটেকচারাল ও স্ট্রাকচারাল ড্রয়িং তৈরি</div><div class="service-price">যোগাযোগ করুন →</div></div>
+    <div class="service-card"><div class="service-icon">🧮</div><div class="service-name">বিল্ডিং এস্টিমেট</div><div class="service-desc">পুরো বাড়ির মালামালের হিসাব ও খরচ</div><div class="service-price">যোগাযোগ করুন →</div></div>
+    <div class="service-card"><div class="service-icon">👷</div><div class="service-name">সাইট সুপারভিশন</div><div class="service-desc">নির্মাণ কাজের সার্বক্ষণিক তদারকি</div><div class="service-price">যোগাযোগ করুন →</div></div>
+    <div class="service-card"><div class="service-icon">💬</div><div class="service-name">পরামর্শ সেবা</div><div class="service-desc">অনলাইন বা সরাসরি ইঞ্জিনিয়ারিং পরামর্শ</div><div class="service-price">যোগাযোগ করুন →</div></div>
   </div>
 </section>
 
@@ -758,152 +538,123 @@
 <div class="trust-section">
   <h2 class="section-title">কেন আমাদের বেছে নেবেন?</h2>
   <div class="trust-grid">
-    <div class="trust-item">
-      <span class="trust-icon">✅</span>
-      <div class="trust-text"><strong>১০০% অরিজিনাল</strong>সব পণ্য ডিলারশিপ থেকে সরাসরি</div>
-    </div>
-    <div class="trust-item">
-      <span class="trust-icon">🚚</span>
-      <div class="trust-text"><strong>দ্রুত ডেলিভারি</strong>সিরাজগঞ্জে ২৪ ঘন্টার মধ্যে</div>
-    </div>
-    <div class="trust-item">
-      <span class="trust-icon">👷</span>
-      <div class="trust-text"><strong>সিভিল ইঞ্জিনিয়ার</strong>পণ্যের পাশাপাশি বিশেষজ্ঞ পরামর্শ</div>
-    </div>
-    <div class="trust-item">
-      <span class="trust-icon">💰</span>
-      <div class="trust-text"><strong>সেরা দাম</strong>বাজারের সাথে প্রতিযোগিতামূলক মূল্য</div>
-    </div>
+    <div class="trust-item"><span class="trust-icon">✅</span><div class="trust-text"><strong>১০০% অরিজিনাল</strong>ডিলারশিপ থেকে সরাসরি</div></div>
+    <div class="trust-item"><span class="trust-icon">🚚</span><div class="trust-text"><strong>দ্রুত ডেলিভারি</strong>২৪ ঘন্টার মধ্যে</div></div>
+    <div class="trust-item"><span class="trust-icon">👷</span><div class="trust-text"><strong>সিভিল ইঞ্জিনিয়ার</strong>বিশেষজ্ঞ পরামর্শ</div></div>
+    <div class="trust-item"><span class="trust-icon">💰</span><div class="trust-text"><strong>সেরা দাম</strong>প্রতিযোগিতামূলক মূল্য</div></div>
   </div>
 </div>
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">নির্মাণ বাজার</div>
+  <div class="footer-logo">Build Engineering</div>
+  <div class="footer-sub">& Construction Hub — সিরাজগঞ্জ</div>
   <p>সিরাজগঞ্জের বিশ্বস্ত নির্মাণ সামগ্রী ও ইঞ্জিনিয়ারিং সার্ভিস প্রতিষ্ঠান। সিমেন্ট, রড, পেইন্ট থেকে শুরু করে সব ধরনের বিল্ডিং ম্যাটেরিয়ালস।</p>
   <div class="footer-links">
-    <a href="#">হোম</a>
-    <a href="#">পণ্যসমূহ</a>
-    <a href="#">সার্ভিস</a>
-    <a href="#">যোগাযোগ</a>
-    <a href="#">গোপনীয়তা নীতি</a>
+    <a href="index.html">হোম</a>
+    <a href="product.html">পণ্যসমূহ</a>
+    <a href="calculator.html">ক্যালকুলেটর</a>
+    <a href="#services">সার্ভিস</a>
+    <a href="order.html">অর্ডার</a>
+    <a href="admin.html">Admin</a>
   </div>
-  <div class="footer-bottom">© ২০২৫ নির্মাণ বাজার — সিরাজগঞ্জ | সর্বস্বত্ব সংরক্ষিত</div>
+  <div class="footer-bottom">© ২০২৫ Build Engineering & Construction Hub — সিরাজগঞ্জ</div>
 </footer>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav">
-  <a class="bnav-item active" href="#">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-    হোম
-  </a>
-  <a class="bnav-item" href="#categories">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-    ক্যাটাগরি
-  </a>
-  <a class="bnav-item" href="#services">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg>
-    সার্ভিস
-  </a>
-  <a class="bnav-item" onclick="toggleCart()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"/></svg>
-    কার্ট
-    <span class="badge" id="cartBadge2">0</span>
-  </a>
-  <a class="bnav-item" href="#">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-    আমার
-  </a>
-</nav>
+
+
+<!-- NOTIFICATION PANEL -->
+<div class="notif-overlay" id="notifOverlay" onclick="toggleNotifications()"></div>
+<div class="notif-panel" id="notifPanel">
+  <div class="notif-header">
+    🔔 নোটিফিকেশন
+    <button class="notif-close" onclick="toggleNotifications()">✕</button>
+  </div>
+  <div class="notif-body" id="notifBody">
+    <div class="notif-item unread">
+      <div class="notif-dot"></div>
+      <div><div class="notif-text">আপনার অর্ডার #১২৩৪ ডেলিভারি হচ্ছে</div><div class="notif-time">১০ মিনিট আগে</div></div>
+    </div>
+    <div class="notif-item unread">
+      <div class="notif-dot"></div>
+      <div><div class="notif-text">Holcim সিমেন্টে ১০% ছাড় চলছে!</div><div class="notif-time">১ ঘন্টা আগে</div></div>
+    </div>
+    <div class="notif-item">
+      <div class="notif-dot read"></div>
+      <div><div class="notif-text">আপনার পেমেন্ট সফল হয়েছে</div><div class="notif-time">গতকাল</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ACCOUNT PANEL -->
+<div class="account-overlay" id="accountOverlay" onclick="toggleAccountMenu()"></div>
+<div class="account-panel" id="accountPanel">
+  <div class="account-header">
+    <div class="account-avatar" id="accountAvatar">?</div>
+    <div>
+      <div class="account-name" id="accountName">লগইন করুন</div>
+      <div class="account-sub" id="accountSub">আপনার অ্যাকাউন্ট দেখুন</div>
+    </div>
+  </div>
+  <div class="account-menu" id="accountMenu"></div>
+</div>
 
 <!-- CART PANEL -->
 <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
 <div class="cart-panel" id="cartPanel">
-  <div class="cart-header">
-    🛒 আমার কার্ট
-    <button class="cart-close" onclick="toggleCart()">✕</button>
-  </div>
-  <div class="cart-body" id="cartBody">
-    <div class="cart-empty">
-      <span>🛒</span>
-      কার্ট খালি আছে<br/>
-      <small>পণ্য যোগ করুন</small>
-    </div>
-  </div>
+  <div class="cart-header">🛒 আমার কার্ট<button class="cart-close" onclick="toggleCart()">✕</button></div>
+  <div class="cart-body" id="cartBody"><div class="cart-empty"><span>🛒</span>কার্ট খালি আছে<br/><small>পণ্য যোগ করুন</small></div></div>
   <div class="cart-footer" id="cartFooter" style="display:none">
-    <div class="cart-total">
-      <span>মোট:</span>
-      <span id="cartTotal">৳০</span>
-    </div>
-    <button class="checkout-btn" onclick="checkout()">অর্ডার করুন →</button>
+    <div class="cart-total"><span>মোট:</span><span id="cartTotal">৳০</span></div>
+    <button class="checkout-btn" onclick="window.location.href='order.html'">অর্ডার করুন →</button>
   </div>
 </div>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-  // ===== PRODUCT DATA =====
   const products = [
-    { id:1, name:"Holcim সিমেন্ট (৫০ কেজি)", brand:"Holcim", price:580, oldPrice:620, icon:"🧱", category:"cement", badge:"জনপ্রিয়", unit:"ব্যাগ" },
-    { id:2, name:"Shah সিমেন্ট (৫০ কেজি)", brand:"Shah", price:560, oldPrice:600, icon:"🧱", category:"cement", badge:"", unit:"ব্যাগ" },
-    { id:3, name:"BSRM রড (১২মিমি)", brand:"BSRM", price:95, oldPrice:0, icon:"🔩", category:"steel", badge:"নতুন", unit:"কেজি" },
-    { id:4, name:"Berger Interior Paint (4L)", brand:"Berger", price:1450, oldPrice:1600, icon:"🎨", category:"paint", badge:"ছাড়", unit:"টিন" },
-    { id:5, name:"LED Bulb 18W", brand:"General", price:180, oldPrice:220, icon:"💡", category:"electrical", badge:"", unit:"পিস" },
-    { id:6, name:"Safety Helmet", brand:"Local", price:350, oldPrice:0, icon:"⛑️", category:"safety", badge:"", unit:"পিস" },
-    { id:7, name:"RAK Tiles (60x60)", brand:"RAK", price:85, oldPrice:95, icon:"🔷", category:"tiles", badge:"জনপ্রিয়", unit:"পিস" },
-    { id:8, name:"Teflon Tape (5m)", brand:"Local", price:30, oldPrice:0, icon:"🪛", category:"plumbing", badge:"", unit:"রোল" },
+    { id:1, name:"Holcim সিমেন্ট (৫০ কেজি)", brand:"Holcim", price:580, oldPrice:620, icon:"🧱", badge:"জনপ্রিয়", unit:"ব্যাগ" },
+    { id:2, name:"Shah সিমেন্ট (৫০ কেজি)", brand:"Shah", price:560, oldPrice:600, icon:"🧱", badge:"", unit:"ব্যাগ" },
+    { id:3, name:"BSRM রড (১২মিমি)", brand:"BSRM", price:95, oldPrice:0, icon:"🔩", badge:"নতুন", unit:"কেজি" },
+    { id:4, name:"Berger Interior Paint (4L)", brand:"Berger", price:1450, oldPrice:1600, icon:"🎨", badge:"ছাড়", unit:"টিন" },
+    { id:5, name:"LED Bulb 18W", brand:"General", price:180, oldPrice:220, icon:"💡", badge:"", unit:"পিস" },
+    { id:6, name:"Safety Helmet", brand:"Local", price:350, oldPrice:0, icon:"⛑️", badge:"", unit:"পিস" },
+    { id:7, name:"RAK Tiles (60x60)", brand:"RAK", price:85, oldPrice:95, icon:"🔷", badge:"জনপ্রিয়", unit:"পিস" },
+    { id:8, name:"Teflon Tape (5m)", brand:"Local", price:30, oldPrice:0, icon:"🪛", badge:"", unit:"রোল" },
   ];
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
-  let cart = [];
-
-  // Render products
   function renderProducts() {
-    const grid = document.getElementById('productsGrid');
-    grid.innerHTML = products.map(p => `
-      <div class="product-card" onclick="addToCart(${p.id})">
-        <div class="product-img">
-          ${p.icon}
-          ${p.badge ? `<span class="product-badge ${p.badge==='নতুন'?'new':''}">${p.badge}</span>` : ''}
-        </div>
+    document.getElementById('productsGrid').innerHTML = products.map(p => `
+      <div class="product-card" onclick="window.location.href='product.html'">
+        <div class="product-img">${p.icon}${p.badge?`<span class="product-badge ${p.badge==='নতুন'?'new':''}">${p.badge}</span>`:''}</div>
         <div class="product-info">
           <div class="product-brand">${p.brand}</div>
           <div class="product-name">${p.name}</div>
-          <div>
-            <span class="product-price">৳${p.price.toLocaleString('bn-BD')} <span class="unit">/ ${p.unit}</span></span>
-            ${p.oldPrice ? `<span class="product-old-price">৳${p.oldPrice}</span>` : ''}
-          </div>
-          <button class="add-cart-btn">🛒 কার্টে যোগ করুন</button>
+          <div><span class="product-price">৳${p.price} <span class="unit">/ ${p.unit}</span></span>${p.oldPrice?`<span class="product-old-price">৳${p.oldPrice}</span>`:''}</div>
+          <button class="add-cart-btn" onclick="event.stopPropagation();addToCart(${p.id})">🛒 কার্টে যোগ করুন</button>
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 
-  // Cart functions
   function addToCart(id) {
-    const product = products.find(p => p.id === id);
-    const existing = cart.find(i => i.id === id);
-    if (existing) {
-      existing.qty++;
-    } else {
-      cart.push({ ...product, qty: 1 });
-    }
+    const p = products.find(p => p.id === id);
+    const ex = cart.find(i => i.id === id);
+    if (ex) ex.qty++; else cart.push({...p, qty:1});
+    localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
-    showToast(`✅ ${product.name} কার্টে যোগ হয়েছে`);
+    showToast(`✅ ${p.name} কার্টে যোগ হয়েছে`);
   }
 
   function updateCart() {
-    const total = cart.reduce((sum, i) => sum + i.price * i.qty, 0);
-    const count = cart.reduce((sum, i) => sum + i.qty, 0);
+    const total = cart.reduce((s,i) => s+i.price*i.qty, 0);
+    const count = cart.reduce((s,i) => s+i.qty, 0);
     document.getElementById('cartBadge').textContent = count;
-    document.getElementById('cartBadge2').textContent = count;
     document.getElementById('cartTotal').textContent = `৳${total.toLocaleString('bn-BD')}`;
-
     const body = document.getElementById('cartBody');
     const footer = document.getElementById('cartFooter');
-
     if (cart.length === 0) {
-      body.innerHTML = `<div class="cart-empty"><span>🛒</span>কার্ট খালি আছে<br/><small>পণ্য যোগ করুন</small></div>`;
+      body.innerHTML = `<div class="cart-empty"><span>🛒</span>কার্ট খালি আছে</div>`;
       footer.style.display = 'none';
     } else {
       footer.style.display = 'block';
@@ -912,15 +663,14 @@
           <div class="cart-item-icon">${item.icon}</div>
           <div class="cart-item-info">
             <div class="cart-item-name">${item.name}</div>
-            <div class="cart-item-price">৳${(item.price * item.qty).toLocaleString('bn-BD')}</div>
+            <div class="cart-item-price">৳${(item.price*item.qty).toLocaleString('bn-BD')}</div>
             <div class="cart-item-qty">
-              <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+              <button class="qty-btn" onclick="changeQty(${item.id},-1)">−</button>
               <span class="qty-num">${item.qty}</span>
-              <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+              <button class="qty-btn" onclick="changeQty(${item.id},1)">+</button>
             </div>
           </div>
-        </div>
-      `).join('');
+        </div>`).join('');
     }
   }
 
@@ -929,17 +679,30 @@
     if (!item) return;
     item.qty += delta;
     if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+    localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
   }
 
-  function toggleCart() {
+  function toggleCart_old_removed() {
     document.getElementById('cartOverlay').classList.toggle('open');
     document.getElementById('cartPanel').classList.toggle('open');
   }
 
-  function checkout() {
-    showToast('📞 অর্ডার নিশ্চিত করতে কল করুন: 01700-000000');
-    toggleCart();
+  function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('open');
+    document.getElementById('hamburgerBtn').classList.toggle('open');
+  }
+
+  function toggleSubcat(el) {
+    el.classList.toggle('expanded');
+    const sublist = el.nextElementSibling;
+    sublist.classList.toggle('open');
+  }
+
+  function goProduct() {
+    toggleSidebar();
+    window.location.href = 'product.html';
   }
 
   function handleSearch() {
@@ -949,13 +712,289 @@
 
   function showToast(msg) {
     const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
+    t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-  // Init
-  renderProducts();
+  // NOTIFICATION
+  let notifOpen = false;
+  function toggleNotifications() {
+    notifOpen = !notifOpen;
+    document.getElementById('notifOverlay').classList.toggle('open', notifOpen);
+    document.getElementById('notifPanel').classList.toggle('open', notifOpen);
+    if (accountOpen) toggleAccountMenu();
+    if (cartOpen) toggleCart();
+  }
+  // Show badge count
+  const unreadCount = 2;
+  const nb = document.getElementById('notifBadge');
+  nb.style.display = unreadCount > 0 ? 'flex' : 'none';
+  nb.textContent = unreadCount;
+
+  // ACCOUNT
+  let accountOpen = false;
+  let cartOpen = false;
+
+  function toggleCart() {
+    cartOpen = !cartOpen;
+    document.getElementById('cartOverlay').classList.toggle('open', cartOpen);
+    document.getElementById('cartPanel').classList.toggle('open', cartOpen);
+    if (notifOpen) { notifOpen=false; document.getElementById('notifOverlay').classList.remove('open'); document.getElementById('notifPanel').classList.remove('open'); }
+    if (accountOpen) { accountOpen=false; document.getElementById('accountOverlay').classList.remove('open'); document.getElementById('accountPanel').classList.remove('open'); }
+  }
+
+  function toggleAccountMenu() {
+    accountOpen = !accountOpen;
+    document.getElementById('accountOverlay').classList.toggle('open', accountOpen);
+    document.getElementById('accountPanel').classList.toggle('open', accountOpen);
+    if (notifOpen) { notifOpen=false; document.getElementById('notifOverlay').classList.remove('open'); document.getElementById('notifPanel').classList.remove('open'); }
+    renderAccountMenu();
+  }
+
+  function renderAccountMenu() {
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    const menu = document.getElementById('accountMenu');
+    const nameEl = document.getElementById('accountName');
+    const subEl = document.getElementById('accountSub');
+    const avatarEl = document.getElementById('accountAvatar');
+    if (user) {
+      nameEl.textContent = user.name || 'ব্যবহারকারী';
+      subEl.textContent = user.phone || '';
+      avatarEl.textContent = (user.name || 'U')[0].toUpperCase();
+      menu.innerHTML = `
+        <a class="account-item" href="order.html"><span class="ai">📦</span> আমার অর্ডার</a>
+        <a class="account-item" href="#"><span class="ai">👤</span> প্রোফাইল</a>
+        <a class="account-item" href="#"><span class="ai">🔔</span> নোটিফিকেশন সেটিং</a>
+        <div class="account-divider"></div>
+        <div class="account-item logout" onclick="logoutUser()"><span class="ai">🚪</span> লগআউট</div>`;
+    } else {
+      nameEl.textContent = 'লগইন করুন';
+      subEl.textContent = 'আপনার অ্যাকাউন্ট দেখুন';
+      avatarEl.textContent = '?';
+      menu.innerHTML = `
+        <a class="account-item" href="login.html"><span class="ai">🔑</span> লগইন করুন</a>
+        <a class="account-item" href="register.html"><span class="ai">📝</span> নতুন অ্যাকাউন্ট</a>
+        <div class="account-divider"></div>
+        <a class="account-item" href="order.html"><span class="ai">📦</span> অর্ডার ট্র্যাক করুন</a>`;
+    }
+  }
+
+  function logoutUser() {
+    localStorage.removeItem('user');
+    toggleAccountMenu();
+    showToast('✅ লগআউট সফল হয়েছে');
+  }
+
+  // ===================== BILLBOARD SLIDER =====================
+  const DEFAULT_SLIDES = [
+    {
+      title: 'ইঞ্জিনিয়ারিং সার্ভিস',
+      desc: 'বাড়ির ড্রয়িং, এস্টিমেট ও সুপারভিশন<br/>সিভিল ইঞ্জিনিয়ার দ্বারা',
+      btnText: 'বিস্তারিত →',
+      btnLink: '#services',
+      emoji: '🏗️',
+      bg: 'linear-gradient(135deg,#0d2b6e,#1a3f9f)',
+      titleColor: '#fbbf24',
+      btnBg: '#e8700a',
+      btnColor: '#fff'
+    },
+    {
+      title: 'প্রজেক্ট',
+      desc: 'নিজেই হিসাব করুন — পণ্য সিলেক্ট করুন<br/>সাথে সাথে মোট খরচ দেখুন',
+      btnText: 'ক্যালকুলেটর →',
+      btnLink: 'calculator.html',
+      emoji: '💰',
+      bg: 'linear-gradient(135deg,#0d3b1e,#1a5c2e)',
+      titleColor: '#4ade80',
+      btnBg: '#1a8a3c',
+      btnColor: '#fff'
+    }
+  ];
+
+  let bbSlides = JSON.parse(localStorage.getItem('billboardSlides') || 'null') || DEFAULT_SLIDES;
+  let bbCurrent = 0;
+  let bbTimer = null;
+
+  function renderBillboard() {
+    const track = document.getElementById('billboardTrack');
+    const dots = document.getElementById('billboardDots');
+    if (!track || bbSlides.length === 0) return;
+    track.innerHTML = bbSlides.map((s, i) => `
+      <div class="billboard-slide" style="background:${s.bg};">
+        <div class="bs-text">
+          <h3 style="color:${s.titleColor}">${s.title}</h3>
+          <p style="color:#e0eaff">${s.desc}</p>
+          <a href="${s.btnLink}" style="background:${s.btnBg};color:${s.btnColor}">${s.btnText}</a>
+        </div>
+        <div class="bs-emoji">${s.emoji}</div>
+      </div>`).join('');
+    dots.innerHTML = bbSlides.map((_, i) =>
+      `<button class="billboard-dot ${i===bbCurrent?'active':''}" onclick="bbGoTo(${i})"></button>`
+    ).join('');
+    track.style.transform = `translateX(-${bbCurrent * 100}%)`;
+  }
+
+  function bbGoTo(n) {
+    bbCurrent = (n + bbSlides.length) % bbSlides.length;
+    renderBillboard();
+    bbResetTimer();
+  }
+  function billboardNext() { bbGoTo(bbCurrent + 1); }
+  function billboardPrev() { bbGoTo(bbCurrent - 1); }
+
+  function bbResetTimer() {
+    clearInterval(bbTimer);
+    if (bbSlides.length > 1) bbTimer = setInterval(() => bbGoTo(bbCurrent + 1), 4000);
+  }
+
+  renderBillboard();
+  bbResetTimer();
+  // ============================================================
+
+  renderProducts(); updateCart(); renderAccountMenu();
 </script>
-</body>
-</html>
+<!-- BILLBOARD ADMIN PANEL (hidden, accessible from sidebar admin link) -->
+<div class="bb-admin-overlay" id="bbAdminOverlay" onclick="closeBbAdmin()"></div>
+<div class="bb-admin-panel" id="bbAdminPanel">
+  <div class="bb-admin-header">
+    ⚙️ বিলবোর্ড ম্যানেজমেন্ট
+    <button onclick="closeBbAdmin()" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;float:right">✕</button>
+  </div>
+  <div class="bb-admin-body">
+    <div id="bbSlideList"></div>
+    <button class="bb-add-btn" onclick="bbAddSlide()">+ নতুন স্লাইড যোগ করুন</button>
+  </div>
+</div>
+
+<script>
+  // BILLBOARD ADMIN
+  function openBbAdmin() {
+    document.getElementById('bbAdminOverlay').classList.add('open');
+    document.getElementById('bbAdminPanel').classList.add('open');
+    renderBbAdmin();
+  }
+  function closeBbAdmin() {
+    document.getElementById('bbAdminOverlay').classList.remove('open');
+    document.getElementById('bbAdminPanel').classList.remove('open');
+  }
+
+  function renderBbAdmin() {
+    const list = document.getElementById('bbSlideList');
+    list.innerHTML = bbSlides.map((s, i) => `
+      <div class="bb-slide-item">
+        <div class="bb-slide-preview" style="background:${s.bg}">
+          <span style="font-size:22px">${s.emoji}</span>
+          <span style="color:${s.titleColor};font-weight:700;font-size:13px">${s.title}</span>
+        </div>
+        <div class="bb-slide-actions">
+          <button class="bb-btn-edit" onclick="bbEditSlide(${i})">✏️ এডিট</button>
+          <button class="bb-btn-del" onclick="bbDeleteSlide(${i})">🗑️ মুছুন</button>
+          ${i > 0 ? `<button class="bb-btn-move" onclick="bbMoveSlide(${i},-1)">⬆️</button>` : ''}
+          ${i < bbSlides.length-1 ? `<button class="bb-btn-move" onclick="bbMoveSlide(${i},1)">⬇️</button>` : ''}
+        </div>
+      </div>`).join('');
+  }
+
+  function bbSave() {
+    localStorage.setItem('billboardSlides', JSON.stringify(bbSlides));
+    renderBillboard();
+    bbResetTimer();
+    renderBbAdmin();
+    showToast('✅ বিলবোর্ড আপডেট হয়েছে');
+  }
+
+  function bbDeleteSlide(i) {
+    if (bbSlides.length <= 1) { showToast('⚠️ কমপক্ষে একটি স্লাইড থাকতে হবে'); return; }
+    bbSlides.splice(i, 1);
+    if (bbCurrent >= bbSlides.length) bbCurrent = 0;
+    bbSave();
+  }
+
+  function bbMoveSlide(i, dir) {
+    const j = i + dir;
+    [bbSlides[i], bbSlides[j]] = [bbSlides[j], bbSlides[i]];
+    bbSave();
+  }
+
+  function bbAddSlide() {
+    bbOpenForm(-1, {
+      title: 'নতুন স্লাইড', desc: 'বিবরণ লিখুন', btnText: 'বিস্তারিত →',
+      btnLink: '#', emoji: '🏗️',
+      bg: 'linear-gradient(135deg,#0d2b6e,#1a3f9f)',
+      titleColor: '#fbbf24', btnBg: '#e8700a', btnColor: '#fff'
+    });
+  }
+
+  function bbEditSlide(i) { bbOpenForm(i, bbSlides[i]); }
+
+  function bbOpenForm(idx, data) {
+    const existing = document.getElementById('bbFormModal');
+    if (existing) existing.remove();
+    const modal = document.createElement('div');
+    modal.id = 'bbFormModal';
+    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:600;display:flex;align-items:flex-end;justify-content:center';
+    modal.innerHTML = `
+      <div style="background:white;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
+        <h3 style="font-size:15px;font-weight:700;color:#0d2b6e;margin-bottom:16px">${idx===-1?'নতুন স্লাইড':'স্লাইড এডিট'}</h3>
+        ${bbField('শিরোনাম','title',data.title,'text')}
+        ${bbField('বিবরণ','desc',data.desc,'text')}
+        ${bbField('বাটন লেখা','btnText',data.btnText,'text')}
+        ${bbField('বাটন লিংক','btnLink',data.btnLink,'text')}
+        ${bbField('ইমোজি','emoji',data.emoji,'text')}
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
+          <div><label style="font-size:12px;color:#5a6480;display:block;margin-bottom:4px">শিরোনাম রং</label><input type="color" id="f_titleColor" value="${data.titleColor}" style="width:100%;height:36px;border-radius:6px;border:1.5px solid #e2e6f0;cursor:pointer"></div>
+          <div><label style="font-size:12px;color:#5a6480;display:block;margin-bottom:4px">বাটন রং</label><input type="color" id="f_btnBg" value="${data.btnBg}" style="width:100%;height:36px;border-radius:6px;border:1.5px solid #e2e6f0;cursor:pointer"></div>
+        </div>
+        <div style="margin-bottom:16px"><label style="font-size:12px;color:#5a6480;display:block;margin-bottom:6px">ব্যাকগ্রাউন্ড স্টাইল</label>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="bgPicker">
+            ${[
+              ['linear-gradient(135deg,#0d2b6e,#1a3f9f)','নীল'],
+              ['linear-gradient(135deg,#0d3b1e,#1a5c2e)','সবুজ'],
+              ['linear-gradient(135deg,#7c2d12,#c2410c)','লাল'],
+              ['linear-gradient(135deg,#1e1b4b,#4338ca)','বেগুনি'],
+              ['linear-gradient(135deg,#164e63,#0891b2)','সিয়ান'],
+              ['linear-gradient(135deg,#3f3f46,#18181b)','কালো'],
+            ].map(([bg,label]) => `<div onclick="selectBg('${bg}',this)" data-bg="${bg}" style="height:40px;border-radius:8px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:11px;color:white;cursor:pointer;border:2px solid ${data.bg===bg?'#e8700a':'transparent'};transition:border 0.2s">${label}</div>`).join('')}
+          </div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button onclick="bbSaveForm(${idx})" style="flex:1;background:#0d2b6e;color:white;border:none;padding:13px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer">সেভ করুন</button>
+          <button onclick="document.getElementById('bbFormModal').remove()" style="background:#f5f6fa;color:#1a2340;border:none;padding:13px 18px;border-radius:8px;font-family:inherit;font-size:14px;cursor:pointer">বাতিল</button>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    modal._selectedBg = data.bg;
+    modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
+  }
+
+  function bbField(label, id, val, type) {
+    return `<div style="margin-bottom:12px"><label style="font-size:12px;color:#5a6480;display:block;margin-bottom:4px">${label}</label><input id="f_${id}" type="${type}" value="${val}" style="width:100%;padding:9px 12px;border:1.5px solid #e2e6f0;border-radius:7px;font-family:inherit;font-size:13px;outline:none"></div>`;
+  }
+
+  function selectBg(bg, el) {
+    document.querySelectorAll('#bgPicker div').forEach(d => d.style.border='2px solid transparent');
+    el.style.border = '2px solid #e8700a';
+    document.getElementById('bbFormModal')._selectedBg = bg;
+  }
+
+  function bbSaveForm(idx) {
+    const modal = document.getElementById('bbFormModal');
+    const newSlide = {
+      title: document.getElementById('f_title').value,
+      desc: document.getElementById('f_desc').value,
+      btnText: document.getElementById('f_btnText').value,
+      btnLink: document.getElementById('f_btnLink').value,
+      emoji: document.getElementById('f_emoji').value,
+      titleColor: document.getElementById('f_titleColor').value,
+      btnBg: document.getElementById('f_btnBg').value,
+      btnColor: '#fff',
+      bg: modal._selectedBg
+    };
+    if (idx === -1) bbSlides.push(newSlide);
+    else bbSlides[idx] = newSlide;
+    modal.remove();
+    bbSave();
+  }
+</script>
+
+
