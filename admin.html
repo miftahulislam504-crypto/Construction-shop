@@ -263,6 +263,21 @@
     /* OVERFLOW TABLE WRAPPER */
     .table-wrap { overflow-x: auto; }
 
+    /* BILLBOARD */
+    .bb-slide-row { background: white; border: 1.5px solid var(--gray2); border-radius: 10px; margin-bottom: 10px; overflow: hidden; }
+    .bb-slide-head { display: flex; align-items: center; gap: 12px; padding: 12px 14px; }
+    .bb-slide-thumb { width: 80px; height: 46px; border-radius: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-shrink: 0; }
+    .bb-slide-thumb span:first-child { font-size: 20px; }
+    .bb-slide-thumb span:last-child { font-size: 11px; font-weight: 700; color: white; max-width: 42px; line-height: 1.2; }
+    .bb-slide-info { flex: 1; min-width: 0; }
+    .bb-slide-name { font-size: 14px; font-weight: 700; color: var(--dark); }
+    .bb-slide-sub { font-size: 11px; color: #888; margin-top: 2px; }
+    .bb-slide-acts { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; }
+    .bb-bg-opt { height: 40px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: white; font-weight: 600; cursor: pointer; border: 2.5px solid transparent; transition: border-color 0.2s, transform 0.1s; }
+    .bb-bg-opt:hover { transform: scale(1.03); }
+    .bb-bg-opt.selected { border-color: var(--orange); }
+    .bb-preview-slide { min-width: 100%; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; box-sizing: border-box; border-radius: 10px; }
+
     /* CHART BAR */
     .mini-chart { padding: 16px; }
     .chart-bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
@@ -315,6 +330,7 @@
     <div class="anav-item" onclick="switchSection('products')">🧱 পণ্য</div>
     <div class="anav-item" onclick="switchSection('stock')">🏪 স্টক</div>
     <div class="anav-item" onclick="switchSection('customers')">👥 কাস্টমার</div>
+    <div class="anav-item" onclick="switchSection('billboard')">🖼️ বিলবোর্ড</div>
   </div>
 
   <!-- CONTENT -->
@@ -537,6 +553,99 @@
       </div>
     </div>
 
+    <!-- BILLBOARD -->
+    <div id="sec-billboard" style="display:none">
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">🖼️ বিলবোর্ড স্লাইড ম্যানেজমেন্ট</div>
+          <button class="btn-add" onclick="bbAddSlide()">➕ নতুন স্লাইড</button>
+        </div>
+        <div style="padding:16px">
+          <!-- LIVE PREVIEW -->
+          <div style="margin-bottom:20px">
+            <div style="font-size:12px;font-weight:700;color:#666;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">লাইভ প্রিভিউ</div>
+            <div style="border-radius:10px;overflow:hidden;position:relative" id="bbPreviewWrap">
+              <div id="bbPreviewTrack" style="display:flex;transition:transform 0.4s ease"></div>
+              <div id="bbPreviewDots" style="display:flex;justify-content:center;gap:6px;padding:8px;background:#f5f5f5"></div>
+            </div>
+          </div>
+          <!-- SLIDE LIST -->
+          <div style="font-size:12px;font-weight:700;color:#666;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">স্লাইড তালিকা</div>
+          <div id="bbSlideList"></div>
+        </div>
+      </div>
+
+      <!-- SLIDE FORM (hidden by default) -->
+      <div class="section-card" id="bbFormCard" style="display:none">
+        <div class="section-card-header">
+          <div class="section-card-title" id="bbFormTitle">নতুন স্লাইড</div>
+          <button class="btn-sm btn-delete" onclick="closeBbForm()">✕ বাতিল</button>
+        </div>
+        <div style="padding:16px">
+          <input type="hidden" id="bbEditIdx" value="-1"/>
+          <div class="form-row-2">
+            <div class="form-group-sm">
+              <label class="form-label-sm">শিরোনাম *</label>
+              <input class="form-input-sm" type="text" id="bb_title" placeholder="যেমন: ইঞ্জিনিয়ারিং সার্ভিস"/>
+            </div>
+            <div class="form-group-sm">
+              <label class="form-label-sm">ইমোজি আইকন</label>
+              <input class="form-input-sm" type="text" id="bb_emoji" placeholder="🏗️"/>
+            </div>
+          </div>
+          <div class="form-group-sm">
+            <label class="form-label-sm">বিবরণ</label>
+            <input class="form-input-sm" type="text" id="bb_desc" placeholder="যেমন: বাড়ির ড্রয়িং, এস্টিমেট ও সুপারভিশন"/>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group-sm">
+              <label class="form-label-sm">বাটনের লেখা</label>
+              <input class="form-input-sm" type="text" id="bb_btnText" placeholder="বিস্তারিত →"/>
+            </div>
+            <div class="form-group-sm">
+              <label class="form-label-sm">বাটন লিংক</label>
+              <input class="form-input-sm" type="text" id="bb_btnLink" placeholder="#services"/>
+            </div>
+          </div>
+          <div class="form-group-sm">
+            <label class="form-label-sm">ব্যাকগ্রাউন্ড কালার</label>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px" id="bbBgPicker">
+              <div class="bb-bg-opt" data-bg="linear-gradient(135deg,#0d2b6e,#1a3f9f)" style="background:linear-gradient(135deg,#0d2b6e,#1a3f9f)">নীল</div>
+              <div class="bb-bg-opt" data-bg="linear-gradient(135deg,#0d3b1e,#1a5c2e)" style="background:linear-gradient(135deg,#0d3b1e,#1a5c2e)">সবুজ</div>
+              <div class="bb-bg-opt" data-bg="linear-gradient(135deg,#7c2d12,#c2410c)" style="background:linear-gradient(135deg,#7c2d12,#c2410c)">লাল</div>
+              <div class="bb-bg-opt" data-bg="linear-gradient(135deg,#1e1b4b,#4338ca)" style="background:linear-gradient(135deg,#1e1b4b,#4338ca)">বেগুনি</div>
+              <div class="bb-bg-opt" data-bg="linear-gradient(135deg,#164e63,#0891b2)" style="background:linear-gradient(135deg,#164e63,#0891b2)">সিয়ান</div>
+              <div class="bb-bg-opt" data-bg="linear-gradient(135deg,#3f3f46,#18181b)" style="background:linear-gradient(135deg,#3f3f46,#18181b)">কালো</div>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group-sm">
+              <label class="form-label-sm">শিরোনামের রং</label>
+              <input type="color" id="bb_titleColor" value="#fbbf24" style="width:100%;height:38px;border-radius:6px;border:1.5px solid var(--gray2);cursor:pointer"/>
+            </div>
+            <div class="form-group-sm">
+              <label class="form-label-sm">বাটনের রং</label>
+              <input type="color" id="bb_btnBg" value="#e8700a" style="width:100%;height:38px;border-radius:6px;border:1.5px solid var(--gray2);cursor:pointer"/>
+            </div>
+          </div>
+          <!-- LIVE MINI PREVIEW -->
+          <div style="margin-bottom:16px">
+            <div style="font-size:12px;font-weight:700;color:#666;margin-bottom:6px">স্লাইড প্রিভিউ</div>
+            <div id="bbMiniPreview" style="border-radius:10px;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,#0d2b6e,#1a3f9f)">
+              <div>
+                <div id="mp_title" style="font-size:15px;font-weight:700;color:#fbbf24;margin-bottom:4px">শিরোনাম</div>
+                <div id="mp_desc" style="font-size:12px;color:#b8cef0">বিবরণ...</div>
+                <div id="mp_btn" style="display:inline-block;margin-top:10px;background:#e8700a;color:white;padding:7px 14px;border-radius:6px;font-size:12px;font-weight:700">বাটন</div>
+              </div>
+              <div id="mp_emoji" style="font-size:40px">🏗️</div>
+            </div>
+          </div>
+          <button class="form-save-btn" onclick="bbSaveForm()">✅ সেভ করুন</button>
+          <button class="form-cancel-btn" onclick="closeBbForm()">বাতিল</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -591,6 +700,8 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminLayout').style.display = 'block';
       renderAll();
+      const goto = localStorage.getItem('adminGoto');
+      if (goto) { localStorage.removeItem('adminGoto'); switchSection(goto); }
     } else {
       document.getElementById('loginErr').style.display = 'block';
     }
@@ -605,13 +716,14 @@
 
   // ===== NAV =====
   function switchSection(name) {
-    ['dashboard','orders','products','stock','customers'].forEach(s => {
+    ['dashboard','orders','products','stock','customers','billboard'].forEach(s => {
       document.getElementById('sec-' + s).style.display = s === name ? 'block' : 'none';
     });
     document.querySelectorAll('.anav-item').forEach((el, i) => {
-      const names = ['dashboard','orders','products','stock','customers'];
+      const names = ['dashboard','orders','products','stock','customers','billboard'];
       el.classList.toggle('active', names[i] === name);
     });
+    if (name === 'billboard') renderBbSection();
   }
 
   // ===== RENDER =====
@@ -800,7 +912,190 @@
     closeModal();
   }
 
-  // ===== TOAST =====
+  // ===== BILLBOARD =====
+  const BB_DEFAULTS = [
+    { title:'ইঞ্জিনিয়ারিং সার্ভিস', desc:'বাড়ির ড্রয়িং, এস্টিমেট ও সুপারভিশন<br/>সিভিল ইঞ্জিনিয়ার দ্বারা', btnText:'বিস্তারিত →', btnLink:'#services', emoji:'🏗️', bg:'linear-gradient(135deg,#0d2b6e,#1a3f9f)', titleColor:'#fbbf24', btnBg:'#e8700a', btnColor:'#fff' },
+    { title:'প্রজেক্ট', desc:'নিজেই হিসাব করুন — পণ্য সিলেক্ট করুন<br/>সাথে সাথে মোট খরচ দেখুন', btnText:'ক্যালকুলেটর →', btnLink:'calculator.html', emoji:'💰', bg:'linear-gradient(135deg,#0d3b1e,#1a5c2e)', titleColor:'#4ade80', btnBg:'#1a8a3c', btnColor:'#fff' }
+  ];
+  let bbSlides = JSON.parse(localStorage.getItem('billboardSlides') || 'null') || BB_DEFAULTS;
+  let bbPreviewIdx = 0;
+  let bbSelBg = 'linear-gradient(135deg,#0d2b6e,#1a3f9f)';
+
+  function renderBbSection() {
+    renderBbList();
+    renderBbPreview();
+  }
+
+  function renderBbList() {
+    const list = document.getElementById('bbSlideList');
+    if (!list) return;
+    if (bbSlides.length === 0) {
+      list.innerHTML = '<div style="text-align:center;padding:24px;color:#aaa;font-size:13px">কোনো স্লাইড নেই। নতুন স্লাইড যোগ করুন।</div>';
+      return;
+    }
+    list.innerHTML = bbSlides.map((s, i) => `
+      <div class="bb-slide-row">
+        <div class="bb-slide-head">
+          <div class="bb-slide-thumb" style="background:${s.bg}">
+            <span>${s.emoji}</span>
+            <span style="color:${s.titleColor}">${s.title}</span>
+          </div>
+          <div class="bb-slide-info">
+            <div class="bb-slide-name">${s.title}</div>
+            <div class="bb-slide-sub">${s.btnText} · ${s.btnLink}</div>
+          </div>
+          <div class="bb-slide-acts">
+            <button class="btn-sm btn-edit" onclick="bbEditSlide(${i})">✏️ এডিট</button>
+            ${i > 0 ? `<button class="btn-sm btn-status" onclick="bbMove(${i},-1)" title="উপরে">⬆️</button>` : ''}
+            ${i < bbSlides.length-1 ? `<button class="btn-sm btn-status" onclick="bbMove(${i},1)" title="নিচে">⬇️</button>` : ''}
+            <button class="btn-sm btn-delete" onclick="bbDelete(${i})">🗑️</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderBbPreview() {
+    const track = document.getElementById('bbPreviewTrack');
+    const dots = document.getElementById('bbPreviewDots');
+    if (!track) return;
+    track.innerHTML = bbSlides.map(s => `
+      <div class="bb-preview-slide" style="background:${s.bg};min-width:100%">
+        <div>
+          <div style="font-size:15px;font-weight:700;color:${s.titleColor};margin-bottom:4px">${s.title}</div>
+          <div style="font-size:11px;color:#b8cef0;line-height:1.5">${s.desc}</div>
+          <div style="display:inline-block;margin-top:10px;background:${s.btnBg};color:${s.btnColor};padding:7px 14px;border-radius:6px;font-size:11px;font-weight:700">${s.btnText}</div>
+        </div>
+        <div style="font-size:36px;flex-shrink:0">${s.emoji}</div>
+      </div>`).join('');
+    dots.innerHTML = bbSlides.map((_,i) =>
+      `<div onclick="bbPreviewGo(${i})" style="width:${i===bbPreviewIdx?'20px':'8px'};height:8px;border-radius:4px;background:${i===bbPreviewIdx?'#e8700a':'#ccc'};cursor:pointer;transition:all 0.2s"></div>`
+    ).join('');
+    track.style.transform = `translateX(-${bbPreviewIdx*100}%)`;
+    track.parentElement.style.overflow = 'hidden';
+    track.parentElement.style.borderRadius = '10px';
+  }
+
+  function bbPreviewGo(i) { bbPreviewIdx = i; renderBbPreview(); }
+
+  function bbSaveTLS() {
+    localStorage.setItem('billboardSlides', JSON.stringify(bbSlides));
+    showToast('✅ বিলবোর্ড সেভ হয়েছে — সাইটে লাইভ হবে');
+  }
+
+  function bbDelete(i) {
+    if (bbSlides.length <= 1) { showToast('⚠️ কমপক্ষে একটি স্লাইড থাকতে হবে'); return; }
+    bbSlides.splice(i, 1);
+    if (bbPreviewIdx >= bbSlides.length) bbPreviewIdx = 0;
+    bbSaveTLS();
+    renderBbSection();
+  }
+
+  function bbMove(i, dir) {
+    const j = i + dir;
+    [bbSlides[i], bbSlides[j]] = [bbSlides[j], bbSlides[i]];
+    bbSaveTLS();
+    renderBbSection();
+  }
+
+  function bbAddSlide() {
+    document.getElementById('bbEditIdx').value = -1;
+    document.getElementById('bbFormTitle').textContent = '➕ নতুন স্লাইড';
+    document.getElementById('bb_title').value = '';
+    document.getElementById('bb_emoji').value = '🏗️';
+    document.getElementById('bb_desc').value = '';
+    document.getElementById('bb_btnText').value = 'বিস্তারিত →';
+    document.getElementById('bb_btnLink').value = '#';
+    document.getElementById('bb_titleColor').value = '#fbbf24';
+    document.getElementById('bb_btnBg').value = '#e8700a';
+    bbSelBg = 'linear-gradient(135deg,#0d2b6e,#1a3f9f)';
+    setBgPicker(bbSelBg);
+    updateMiniPreview();
+    document.getElementById('bbFormCard').style.display = 'block';
+    document.getElementById('bbFormCard').scrollIntoView({behavior:'smooth'});
+    bindPreviewListeners();
+  }
+
+  function bbEditSlide(i) {
+    const s = bbSlides[i];
+    document.getElementById('bbEditIdx').value = i;
+    document.getElementById('bbFormTitle').textContent = '✏️ স্লাইড এডিট করুন';
+    document.getElementById('bb_title').value = s.title;
+    document.getElementById('bb_emoji').value = s.emoji;
+    document.getElementById('bb_desc').value = s.desc;
+    document.getElementById('bb_btnText').value = s.btnText;
+    document.getElementById('bb_btnLink').value = s.btnLink;
+    document.getElementById('bb_titleColor').value = s.titleColor;
+    document.getElementById('bb_btnBg').value = s.btnBg;
+    bbSelBg = s.bg;
+    setBgPicker(s.bg);
+    updateMiniPreview();
+    document.getElementById('bbFormCard').style.display = 'block';
+    document.getElementById('bbFormCard').scrollIntoView({behavior:'smooth'});
+    bindPreviewListeners();
+  }
+
+  function closeBbForm() {
+    document.getElementById('bbFormCard').style.display = 'none';
+  }
+
+  function setBgPicker(selected) {
+    document.querySelectorAll('.bb-bg-opt').forEach(el => {
+      el.classList.toggle('selected', el.dataset.bg === selected);
+    });
+  }
+
+  function bindPreviewListeners() {
+    ['bb_title','bb_emoji','bb_desc','bb_btnText'].forEach(id => {
+      const el = document.getElementById(id);
+      el.oninput = updateMiniPreview;
+    });
+    ['bb_titleColor','bb_btnBg'].forEach(id => {
+      document.getElementById(id).oninput = updateMiniPreview;
+    });
+    document.querySelectorAll('.bb-bg-opt').forEach(el => {
+      el.onclick = () => { bbSelBg = el.dataset.bg; setBgPicker(bbSelBg); updateMiniPreview(); };
+    });
+  }
+
+  function updateMiniPreview() {
+    const title = document.getElementById('bb_title').value || 'শিরোনাম';
+    const emoji = document.getElementById('bb_emoji').value || '🏗️';
+    const desc = document.getElementById('bb_desc').value || 'বিবরণ লিখুন...';
+    const btnText = document.getElementById('bb_btnText').value || 'বাটন';
+    const titleColor = document.getElementById('bb_titleColor').value;
+    const btnBg = document.getElementById('bb_btnBg').value;
+    document.getElementById('bbMiniPreview').style.background = bbSelBg;
+    document.getElementById('mp_title').style.color = titleColor;
+    document.getElementById('mp_title').textContent = title;
+    document.getElementById('mp_desc').textContent = desc;
+    document.getElementById('mp_btn').style.background = btnBg;
+    document.getElementById('mp_btn').textContent = btnText;
+    document.getElementById('mp_emoji').textContent = emoji;
+  }
+
+  function bbSaveForm() {
+    const idx = parseInt(document.getElementById('bbEditIdx').value);
+    const title = document.getElementById('bb_title').value.trim();
+    if (!title) { showToast('⚠️ শিরোনাম দিন'); return; }
+    const slide = {
+      title,
+      emoji: document.getElementById('bb_emoji').value || '🏗️',
+      desc: document.getElementById('bb_desc').value,
+      btnText: document.getElementById('bb_btnText').value || 'বিস্তারিত →',
+      btnLink: document.getElementById('bb_btnLink').value || '#',
+      titleColor: document.getElementById('bb_titleColor').value,
+      btnBg: document.getElementById('bb_btnBg').value,
+      btnColor: '#fff',
+      bg: bbSelBg
+    };
+    if (idx === -1) bbSlides.push(slide);
+    else bbSlides[idx] = slide;
+    bbSaveTLS();
+    closeBbForm();
+    renderBbSection();
+  }
+
+
   function showToast(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
