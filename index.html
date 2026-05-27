@@ -88,17 +88,8 @@
     .sidebar-footer a:hover { background: var(--blue-light); color: var(--blue); }
 
     /* HERO */
-    .hero { background: linear-gradient(135deg, var(--blue) 0%, var(--blue2) 60%, #2255c0 100%); padding: 28px 16px; text-align: center; position: relative; overflow: hidden; }
-    .hero::after { content: '🏗️'; position: absolute; right: -10px; bottom: -10px; font-size: 100px; opacity: 0.07; }
-    .hero-tag { display: inline-block; background: var(--orange); color: white; font-size: 11px; font-weight: 600; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; }
-    .hero h1 { font-family: 'Tiro Bangla', serif; color: white; font-size: 24px; line-height: 1.35; margin-bottom: 8px; }
-    .hero h1 span { color: #fbbf24; }
-    .hero p { color: #b8cef0; font-size: 13px; margin-bottom: 20px; line-height: 1.6; }
-    .hero-btns { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
     .btn-primary { background: var(--orange); color: white; border: none; padding: 11px 22px; border-radius: 8px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.2s, transform 0.1s; }
     .btn-primary:hover { background: #c45e08; transform: translateY(-1px); }
-    .btn-white { background: white; color: var(--blue); border: none; padding: 11px 22px; border-radius: 8px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.2s; }
-    .btn-white:hover { background: var(--blue-light); }
 
     /* STATS */
     .stats-bar { display: grid; grid-template-columns: repeat(4, 1fr); background: var(--white); border-bottom: 2px solid var(--blue-light); }
@@ -147,20 +138,48 @@
     .add-cart-btn:hover { background: var(--blue2); }
 
     /* BILLBOARD SLIDER */
-    .billboard-wrap { position: relative; margin: 0 0 4px; overflow: hidden; }
-    .billboard-track { display: flex; transition: transform 0.45s cubic-bezier(0.4,0,0.2,1); will-change: transform; }
-    .billboard-slide { min-width: 100%; padding: 20px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; box-sizing: border-box; }
-    .billboard-slide .bs-text h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-    .billboard-slide .bs-text p { font-size: 12px; line-height: 1.6; opacity: 0.85; }
-    .billboard-slide .bs-text a { display: inline-block; margin-top: 12px; font-size: 12px; font-weight: 700; padding: 8px 18px; border-radius: 7px; text-decoration: none; }
-    .billboard-slide .bs-emoji { font-size: 48px; flex-shrink: 0; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.18)); }
-    .billboard-dots { display: flex; justify-content: center; gap: 6px; padding: 10px 0 6px; background: white; }
-    .billboard-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray2); cursor: pointer; transition: all 0.25s; border: none; padding: 0; }
+    /* ===== ROKOMARI-STYLE SLIDER ===== */
+    .billboard-section { background: #fff; padding: 8px 0 0; }
+    .billboard-outer { overflow: hidden; position: relative; padding: 0 10px; }
+    .billboard-wrap { position: relative; overflow: visible; }
+    /* Track: shows peek of prev/next slide */
+    .billboard-track {
+      display: flex;
+      transition: transform 0.42s cubic-bezier(0.4,0,0.2,1);
+      will-change: transform;
+    }
+    /* Each slide: 88% wide so neighbors peek out */
+    .billboard-slide,
+    .billboard-slide-gradient {
+      min-width: 88%;
+      max-width: 88%;
+      box-sizing: border-box;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-right: 8px;
+      flex-shrink: 0;
+      text-decoration: none;
+      display: block;
+    }
+    .billboard-slide img { width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 16/6; }
+    .billboard-slide-gradient {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 20px 16px;
+      min-height: 120px;
+    }
+    .billboard-slide-gradient .bs-text h3 { font-size: 15px; font-weight: 700; margin-bottom: 5px; line-height: 1.35; }
+    .billboard-slide-gradient .bs-text p { font-size: 11px; line-height: 1.55; opacity: 0.88; color: #ddeaff; }
+    .billboard-slide-gradient .bs-emoji { font-size: 46px; flex-shrink: 0; filter: drop-shadow(0 2px 8px rgba(0,0,0,0.25)); }
+    /* Dots row — below the slider, white background */
+    .billboard-dots-row { display: flex; justify-content: center; align-items: center; gap: 5px; padding: 8px 0 6px; background: #fff; }
+    .billboard-dot { width: 7px; height: 7px; border-radius: 50%; background: #d0d5e8; cursor: pointer; transition: all 0.25s; border: none; padding: 0; flex-shrink: 0; }
     .billboard-dot.active { background: var(--orange); width: 22px; border-radius: 4px; }
-    .billboard-arrow { position: absolute; top: 50%; transform: translateY(-60%); background: rgba(255,255,255,0.25); border: none; color: white; font-size: 26px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: background 0.2s; z-index: 2; line-height: 1; }
-    .billboard-arrow:hover { background: rgba(255,255,255,0.45); }
-    .billboard-arrow.left { left: 8px; }
-    .billboard-arrow.right { right: 8px; }
+    /* No side arrows needed (rokomari uses peek+swipe) */
+    .billboard-arrow { display: none; }
+    /* ================================== */
 
     /* PROMO BANNERS */
     .promo-banner { margin: 0 16px 16px; background: linear-gradient(135deg, var(--blue), var(--blue2)); border-radius: var(--radius); padding: 18px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -172,9 +191,26 @@
     .calc-banner .text p { color: #a7d9b8; font-size: 12px; }
 
     /* SERVICE */
-    .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .service-card { background: var(--white); border: 1.5px solid var(--blue-light); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.2s; border-left: 4px solid var(--blue); }
-    .service-card:hover { border-color: var(--blue2); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(13,43,110,0.10); }
+    /* === SERVICE BAR === */
+    .service-bar { display: flex; align-items: center; justify-content: space-between; background: #3b1f8c; padding: 0 16px; cursor: pointer; user-select: none; border-top: 2.5px solid #6c3fc5; border-bottom: 2.5px solid #6c3fc5; height: 42px; }
+    .service-bar-left { display: flex; align-items: center; gap: 8px; }
+    .service-bar-icon { font-size: 16px; }
+    .service-bar-text { color: #e8d5ff; font-size: 13px; font-weight: 700; letter-spacing: 0.3px; }
+    .service-bar-badge { background: #6c3fc5; color: #e8d5ff; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+    .service-bar-arrow { color: #c4a0ff; font-size: 18px; transition: transform 0.3s; font-weight: 300; line-height: 1; }
+    .service-bar.open .service-bar-arrow { transform: rotate(180deg); }
+    /* Accordion panel */
+    .service-panel { max-height: 0; overflow: hidden; transition: max-height 0.38s cubic-bezier(0.4,0,0.2,1); background: #f8f5ff; }
+    .service-panel.open { max-height: 600px; }
+    .service-panel-inner { padding: 12px 12px 16px; }
+    /* Cards */
+    .services-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .service-card { background: var(--white); border: 1.5px solid #ddd5f5; border-radius: var(--radius); padding: 14px 12px; cursor: pointer; transition: all 0.2s; border-left: 3.5px solid #6c3fc5; }
+    .service-card:hover { border-color: #3b1f8c; transform: translateY(-2px); box-shadow: 0 4px 14px rgba(59,31,140,0.12); }
+    .service-icon { font-size: 26px; margin-bottom: 6px; }
+    .service-name { font-size: 13px; font-weight: 700; color: #1a2340; margin-bottom: 3px; }
+    .service-desc { font-size: 11px; color: #5a6480; line-height: 1.45; margin-bottom: 6px; }
+    .service-price { font-size: 11px; font-weight: 700; color: #6c3fc5; }
     .service-icon { font-size: 28px; margin-bottom: 8px; }
     .service-name { font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
     .service-desc { font-size: 11px; color: var(--text2); line-height: 1.5; }
@@ -487,32 +523,114 @@
     <a href="#services">⚙️ ইঞ্জিনিয়ারিং সার্ভিস</a>
     <a href="order.html">📦 আমার অর্ডার</a>
     <a href="admin.html">🔐 Admin Panel</a>
-    <a href="admin.html" onclick="localStorage.setItem('adminGoto','billboard')" style="color:var(--orange);font-weight:700">🖼️ বিলবোর্ড এডিট</a>
   </div>
 </div>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-tag">🏗️ সিরাজগঞ্জের সেরা নির্মাণ হাব</div>
-  <h1>বাড়ি বানানোর <span>সব কিছু</span><br/>এক জায়গায়</h1>
-  <p>সিমেন্ট থেকে শুরু করে স্যানিটারি — সব ব্র্যান্ডের অরিজিনাল পণ্য<br/>+ সিভিল ইঞ্জিনিয়ারিং সার্ভিস</p>
-  <div class="hero-btns">
-    <a href="product.html" class="btn-primary">🛍️ পণ্য দেখুন</a>
-    <a href="calculator.html" class="btn-white">🧮 হিসাব করুন</a>
+
+<!-- SLIDING BILLBOARD (Rokomari-style) -->
+<div class="billboard-section">
+  <div class="billboard-outer">
+    <div class="billboard-wrap">
+      <div class="billboard-track" id="billboardTrack"></div>
+    </div>
+  </div>
+  <div class="billboard-dots-row" id="billboardDots"></div>
+</div>
+
+<!-- SERVICE BAR (accordion) -->
+<div class="service-bar" id="serviceBar" onclick="toggleServicePanel()">
+  <div class="service-bar-left">
+    <span class="service-bar-icon">⚙️</span>
+    <span class="service-bar-text">ইঞ্জিনিয়ারিং সার্ভিস</span>
+    <span class="service-bar-badge">৪টি সার্ভিস</span>
+  </div>
+  <span class="service-bar-arrow">&#8964;</span>
+</div>
+<div class="service-panel" id="servicePanel">
+  <div class="service-panel-inner">
+    <div class="services-grid">
+      <div class="service-card" onclick="location.href='#contact'"><div class="service-icon">📐</div><div class="service-name">বিল্ডিং ড্রয়িং</div><div class="service-desc">আর্কিটেকচারাল ও স্ট্রাকচারাল ড্রয়িং তৈরি</div><div class="service-price">যোগাযোগ করুন →</div></div>
+      <div class="service-card" onclick="location.href='calculator.html'"><div class="service-icon">🧮</div><div class="service-name">বিল্ডিং এস্টিমেট</div><div class="service-desc">পুরো বাড়ির মালামালের হিসাব ও খরচ</div><div class="service-price">যোগাযোগ করুন →</div></div>
+      <div class="service-card" onclick="location.href='#contact'"><div class="service-icon">👷</div><div class="service-name">সাইট সুপারভিশন</div><div class="service-desc">নির্মাণ কাজের সার্বক্ষণিক তদারকি</div><div class="service-price">যোগাযোগ করুন →</div></div>
+      <div class="service-card" onclick="location.href='#contact'"><div class="service-icon">💬</div><div class="service-name">পরামর্শ সেবা</div><div class="service-desc">অনলাইন বা সরাসরি ইঞ্জিনিয়ারিং পরামর্শ</div><div class="service-price">যোগাযোগ করুন →</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- BRAND SLIDER -->
+<style>
+  .brand-marquee-wrap { overflow: hidden; position: relative; padding: 4px 0; }
+  .brand-marquee-wrap::before,
+  .brand-marquee-wrap::after {
+    content: ''; position: absolute; top: 0; bottom: 0; width: 32px; z-index: 2; pointer-events: none;
+  }
+  .brand-marquee-wrap::before { left: 0; background: linear-gradient(to right, white, transparent); }
+  .brand-marquee-wrap::after  { right: 0; background: linear-gradient(to left, white, transparent); }
+
+  .brand-marquee-track {
+    display: flex;
+    gap: 12px;
+    width: max-content;
+    animation: brandScroll 18s linear infinite;
+  }
+  .brand-marquee-track:hover { animation-play-state: paused; }
+
+  @keyframes brandScroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  .brand-card {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .brand-card:active { transform: scale(0.93); }
+  .brand-card-box {
+    width: 74px; height: 74px;
+    border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    border: 1.5px solid rgba(0,0,0,0.07);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.09);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+  .brand-card:hover .brand-card-box { box-shadow: 0 6px 18px rgba(0,0,0,0.15); transform: translateY(-3px); }
+  .brand-card-name { font-size: 11px; font-weight: 700; color: #333; text-align: center; max-width: 74px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+</style>
+
+<section class="section" style="padding:16px 0 14px;background:white">
+  <div class="section-header" style="margin-bottom:10px;padding:0 16px">
+    <h2 class="section-title">ব্র্যান্ড সমূহ</h2>
+  </div>
+  <div class="brand-marquee-wrap">
+    <div class="brand-marquee-track" id="brandMarqueeTrack"></div>
   </div>
 </section>
 
+<!-- CATEGORY GRID -->
+<style>
+  .cat-grid-section { background:#fff; padding:16px 16px 20px; border-bottom:8px solid var(--gray); }
+  .cat-grid-wrap { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:12px; }
+  .cat-grid-item { display:flex; flex-direction:column; align-items:center; gap:7px; cursor:pointer; text-decoration:none; transition:transform 0.18s; }
+  .cat-grid-item:active { transform:scale(0.93); }
+  .cat-grid-img-box { width:68px; height:68px; border-radius:14px; overflow:hidden; border:1.5px solid var(--gray2); background:var(--blue-light); display:flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(13,43,110,0.09); transition:box-shadow 0.2s,transform 0.2s; }
+  .cat-grid-item:hover .cat-grid-img-box { box-shadow:0 6px 20px rgba(13,43,110,0.18); transform:translateY(-3px); border-color:var(--blue2); }
+  .cat-grid-img-box img { width:100%; height:100%; object-fit:cover; }
+  .cat-emoji { font-size:30px; }
+  .cat-grid-label { font-size:11px; font-weight:700; color:var(--text); text-align:center; line-height:1.3; max-width:72px; word-break:break-word; }
+</style>
 
-
-
-
-<!-- SLIDING BILLBOARD -->
-<div class="billboard-wrap">
-  <div class="billboard-track" id="billboardTrack"></div>
-  <div class="billboard-dots" id="billboardDots"></div>
-  <button class="billboard-arrow left" onclick="billboardPrev()">&#8249;</button>
-  <button class="billboard-arrow right" onclick="billboardNext()">&#8250;</button>
-</div>
+<section class="cat-grid-section">
+  <div class="section-header" style="margin-bottom:0">
+    <h2 class="section-title">ক্যাটাগরি</h2>
+  </div>
+  <div class="cat-grid-wrap" id="catGridWrap"></div>
+</section>
 
 <!-- PRODUCTS -->
 <section class="section gray">
@@ -521,17 +639,6 @@
     <a class="see-all" href="product.html">সব দেখুন →</a>
   </div>
   <div class="products-grid" id="productsGrid"></div>
-</section>
-
-<!-- SERVICES -->
-<section class="section" id="services">
-  <div class="section-header"><h2 class="section-title">ইঞ্জিনিয়ারিং সার্ভিস</h2></div>
-  <div class="services-grid">
-    <div class="service-card"><div class="service-icon">📐</div><div class="service-name">বিল্ডিং ড্রয়িং</div><div class="service-desc">আর্কিটেকচারাল ও স্ট্রাকচারাল ড্রয়িং তৈরি</div><div class="service-price">যোগাযোগ করুন →</div></div>
-    <div class="service-card"><div class="service-icon">🧮</div><div class="service-name">বিল্ডিং এস্টিমেট</div><div class="service-desc">পুরো বাড়ির মালামালের হিসাব ও খরচ</div><div class="service-price">যোগাযোগ করুন →</div></div>
-    <div class="service-card"><div class="service-icon">👷</div><div class="service-name">সাইট সুপারভিশন</div><div class="service-desc">নির্মাণ কাজের সার্বক্ষণিক তদারকি</div><div class="service-price">যোগাযোগ করুন →</div></div>
-    <div class="service-card"><div class="service-icon">💬</div><div class="service-name">পরামর্শ সেবা</div><div class="service-desc">অনলাইন বা সরাসরি ইঞ্জিনিয়ারিং পরামর্শ</div><div class="service-price">যোগাযোগ করুন →</div></div>
-  </div>
 </section>
 
 <!-- TRUST -->
@@ -612,35 +719,114 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  const products = [
-    { id:1, name:"Holcim সিমেন্ট (৫০ কেজি)", brand:"Holcim", price:580, oldPrice:620, icon:"🧱", badge:"জনপ্রিয়", unit:"ব্যাগ" },
-    { id:2, name:"Shah সিমেন্ট (৫০ কেজি)", brand:"Shah", price:560, oldPrice:600, icon:"🧱", badge:"", unit:"ব্যাগ" },
-    { id:3, name:"BSRM রড (১২মিমি)", brand:"BSRM", price:95, oldPrice:0, icon:"🔩", badge:"নতুন", unit:"কেজি" },
-    { id:4, name:"Berger Interior Paint (4L)", brand:"Berger", price:1450, oldPrice:1600, icon:"🎨", badge:"ছাড়", unit:"টিন" },
-    { id:5, name:"LED Bulb 18W", brand:"General", price:180, oldPrice:220, icon:"💡", badge:"", unit:"পিস" },
-    { id:6, name:"Safety Helmet", brand:"Local", price:350, oldPrice:0, icon:"⛑️", badge:"", unit:"পিস" },
-    { id:7, name:"RAK Tiles (60x60)", brand:"RAK", price:85, oldPrice:95, icon:"🔷", badge:"জনপ্রিয়", unit:"পিস" },
-    { id:8, name:"Teflon Tape (5m)", brand:"Local", price:30, oldPrice:0, icon:"🪛", badge:"", unit:"রোল" },
-  ];
+  // ===== SUPABASE CONFIG =====
+  const SUPA_URL = 'https://ageqcspndzhsjglwsewi.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnZXFjc3BuZHpoc2pnbHdzZXdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NjQ3MzksImV4cCI6MjA5NTQ0MDczOX0.YeMXfUwZXGE04Gw3COHTCyIosI4BkU8dZliydjYkd3U';
+  const HEADERS = { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY };
+
+  async function sbGet(table, params = '') {
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}?${params}`, { headers: HEADERS });
+    return r.json();
+  }
+
+  let allProducts = [];
+  let allBrands = [];
+  let allCategories = [];
+  let activeBrand = 'সব';
   let cart = JSON.parse(localStorage.getItem('cart') || '[]');
 
+  async function loadData() {
+    try {
+      const [prods, brands, cats] = await Promise.all([
+        sbGet('products', 'order=id.asc'),
+        sbGet('brands', 'order=name.asc'),
+        sbGet('categories', 'order=id.asc'),
+      ]);
+      allProducts = Array.isArray(prods) ? prods : [];
+      allBrands = Array.isArray(brands) ? brands : [];
+      allCategories = Array.isArray(cats) ? cats : [];
+    } catch(e) {
+      console.error('Supabase load error:', e);
+    }
+    renderCategoryGrid();
+    renderBrandFilter();
+    renderProducts();
+    renderBrandSlider();
+  }
+
+  function renderCategoryGrid() {
+    const wrap = document.getElementById('catGridWrap');
+    if (!wrap) return;
+    wrap.innerHTML = allCategories.map(c => `
+      <a class="cat-grid-item" href="category.html?id=${c.id}&name=${encodeURIComponent(c.name)}">
+        <div class="cat-grid-img-box">
+          ${c.image
+            ? `<img src="${c.image}" alt="${c.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span class="cat-emoji" style="display:none">${c.emoji||'📦'}</span>`
+            : `<span class="cat-emoji">${c.emoji||'📦'}</span>`}
+        </div>
+        <span class="cat-grid-label">${c.name}</span>
+      </a>
+    `).join('');
+  }
+
+  // ===== BRAND FILTER ROW =====
+  function renderBrandFilter() {
+    const row = document.getElementById('brandFilterRow');
+    if (!row) return;
+    const brands = ['সব', ...allBrands.map(b => b.name)];
+    row.innerHTML = brands.map(b => `
+      <button onclick="filterBrand('${b}')"
+        style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1.5px solid ${b===activeBrand?'var(--blue)':'var(--gray2)'};
+        background:${b===activeBrand?'var(--blue)':'white'};color:${b===activeBrand?'white':'var(--text2)'};
+        font-family:'Hind Siliguri',sans-serif;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;transition:all 0.15s">${b}</button>
+    `).join('');
+  }
+
+  function filterBrand(brand) {
+    activeBrand = brand;
+    renderBrandFilter();
+    renderProducts();
+  }
+
+  // ===== PRODUCTS GRID =====
   function renderProducts() {
-    document.getElementById('productsGrid').innerHTML = products.map(p => `
-      <div class="product-card" onclick="window.location.href='product.html'">
-        <div class="product-img">${p.icon}${p.badge?`<span class="product-badge ${p.badge==='নতুন'?'new':''}">${p.badge}</span>`:''}</div>
+    const list = activeBrand === 'সব' ? allProducts : allProducts.filter(p => p.brand === activeBrand);
+    document.getElementById('productsGrid').innerHTML = list.map(p => {
+      const disc = p.discount || 0;
+      const oldPrice = disc > 0 ? p.price : 0;
+      const curPrice = disc > 0 ? Math.round(p.price * (1 - disc/100)) : p.price;
+      const imgHtml = p.image
+        ? `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"/>`
+        : `<span style="font-size:48px">${p.icon||'📦'}</span>`;
+      const discBadge = disc > 0
+        ? `<span style="position:absolute;top:8px;left:8px;background:#e53935;color:white;border-radius:50%;width:42px;height:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;line-height:1.2;font-weight:700;padding:0">${disc}%<br/>OFF</span>`
+        : (p.badge ? `<span class="product-badge ${p.badge==='নতুন'?'new':''}">${p.badge}</span>` : '');
+      return `
+      <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'">
+        <div class="product-img" style="position:relative;overflow:hidden">
+          ${imgHtml}${discBadge}
+        </div>
         <div class="product-info">
-          <div class="product-brand">${p.brand}</div>
+          <div class="product-brand" style="cursor:pointer" onclick="event.stopPropagation();filterBrand('${p.brand}')">${p.brand}</div>
           <div class="product-name">${p.name}</div>
-          <div><span class="product-price">৳${p.price} <span class="unit">/ ${p.unit}</span></span>${p.oldPrice?`<span class="product-old-price">৳${p.oldPrice}</span>`:''}</div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span class="product-price" style="color:var(--blue)">৳${curPrice} <span class="unit">/ ${p.unit}</span></span>
+            ${oldPrice ? `<span class="product-old-price">৳${oldPrice}</span>` : ''}
+          </div>
+          ${disc > 0 ? `<div style="font-size:11px;color:#1a8a3c;font-weight:600;margin-top:2px">৳${oldPrice-curPrice} সাশ্রয়</div>` : ''}
           <button class="add-cart-btn" onclick="event.stopPropagation();addToCart(${p.id})">🛒 কার্টে যোগ করুন</button>
         </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 
   function addToCart(id) {
-    const p = products.find(p => p.id === id);
+    const p = allProducts.find(p => p.id === id);
+    if (!p) return;
+    const disc = p.discount || 0;
+    const price = disc > 0 ? Math.round(p.price*(1-disc/100)) : p.price;
     const ex = cart.find(i => i.id === id);
-    if (ex) ex.qty++; else cart.push({...p, qty:1});
+    if (ex) ex.qty++; else cart.push({...p, price, qty:1});
     localStorage.setItem('cart', JSON.stringify(cart));
     updateCart();
     showToast(`✅ ${p.name} কার্টে যোগ হয়েছে`);
@@ -660,7 +846,7 @@
       footer.style.display = 'block';
       body.innerHTML = cart.map(item => `
         <div class="cart-item">
-          <div class="cart-item-icon">${item.icon}</div>
+          <div class="cart-item-icon">${item.icon||'📦'}</div>
           <div class="cart-item-info">
             <div class="cart-item-name">${item.name}</div>
             <div class="cart-item-price">৳${(item.price*item.qty).toLocaleString('bn-BD')}</div>
@@ -683,10 +869,30 @@
     updateCart();
   }
 
-  function toggleCart_old_removed() {
-    document.getElementById('cartOverlay').classList.toggle('open');
-    document.getElementById('cartPanel').classList.toggle('open');
+  // ===== BRAND MARQUEE (CSS infinite scroll) =====
+  function renderBrandSlider() {
+    const track = document.getElementById('brandMarqueeTrack');
+    if (!track || allBrands.length === 0) return;
+
+    // Duplicate 3× so marquee never shows empty
+    const items = [...allBrands, ...allBrands, ...allBrands];
+    track.innerHTML = items.map(b => `
+      <div class="brand-card" onclick="window.location.href='category.html?brand=${encodeURIComponent(b.name)}'">
+        <div class="brand-card-box" style="background:${b.bg||'#f0f0f0'}">
+          ${b.logo
+            ? `<img src="${b.logo}" style="max-width:56px;max-height:56px;object-fit:contain"
+                onerror="this.outerHTML='<span style=\\'font-size:26px;font-weight:700;color:#555\\'>${b.name[0]}</span>'">`
+            : `<span style="font-size:26px;font-weight:700;color:#555">${b.name[0]}</span>`}
+        </div>
+        <div class="brand-card-name">${b.name}</div>
+      </div>`).join('');
+
+    // Adjust speed based on brand count: more brands = longer duration
+    const speed = Math.max(14, allBrands.length * 2.5);
+    track.style.animationDuration = speed + 's';
   }
+
+  function bsResetTimer() {} // no-op, CSS handles it
 
   function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
@@ -787,56 +993,65 @@
 
   // ===================== BILLBOARD SLIDER =====================
   const DEFAULT_SLIDES = [
-    {
-      title: 'ইঞ্জিনিয়ারিং সার্ভিস',
-      desc: 'বাড়ির ড্রয়িং, এস্টিমেট ও সুপারভিশন<br/>সিভিল ইঞ্জিনিয়ার দ্বারা',
-      btnText: 'বিস্তারিত →',
-      btnLink: '#services',
-      emoji: '🏗️',
-      bg: 'linear-gradient(135deg,#0d2b6e,#1a3f9f)',
-      titleColor: '#fbbf24',
-      btnBg: '#e8700a',
-      btnColor: '#fff'
-    },
-    {
-      title: 'প্রজেক্ট',
-      desc: 'নিজেই হিসাব করুন — পণ্য সিলেক্ট করুন<br/>সাথে সাথে মোট খরচ দেখুন',
-      btnText: 'ক্যালকুলেটর →',
-      btnLink: 'calculator.html',
-      emoji: '💰',
-      bg: 'linear-gradient(135deg,#0d3b1e,#1a5c2e)',
-      titleColor: '#4ade80',
-      btnBg: '#1a8a3c',
-      btnColor: '#fff'
-    }
+    { title: 'বাড়ি বানানোর সব কিছু এক জায়গায়', desc: 'সিমেন্ট থেকে স্যানিটারি — সব ব্র্যান্ডের অরিজিনাল পণ্য + সিভিল ইঞ্জিনিয়ারিং সার্ভিস', btnLink: 'product.html', emoji: '🏗️', bg: 'linear-gradient(135deg,#0d2b6e,#1a3f9f)', titleColor: '#fbbf24', btnBg: '#e8700a', btnColor: '#fff', imageUrl: '' },
+    { title: 'ইঞ্জিনিয়ারিং সার্ভিস', desc: 'বাড়ির ড্রয়িং, এস্টিমেট ও সুপারভিশন — সিভিল ইঞ্জিনিয়ার দ্বারা', btnLink: '#services', emoji: '📐', bg: 'linear-gradient(135deg,#0d3b1e,#1a5c2e)', titleColor: '#4ade80', btnBg: '#1a8a3c', btnColor: '#fff', imageUrl: '' },
+    { title: 'বিল্ডিং কস্ট ক্যালকুলেটর', desc: 'নিজেই হিসাব করুন — পণ্য সিলেক্ট করুন, সাথে সাথে মোট খরচ দেখুন', btnLink: 'calculator.html', emoji: '🧮', bg: 'linear-gradient(135deg,#7c2d12,#c2410c)', titleColor: '#fef08a', btnBg: '#0d2b6e', btnColor: '#fff', imageUrl: '' }
   ];
 
   let bbSlides = JSON.parse(localStorage.getItem('billboardSlides') || 'null') || DEFAULT_SLIDES;
   let bbCurrent = 0;
   let bbTimer = null;
 
+  async function loadBbSlidesFromDB() {
+    try {
+      const r = await sbGet('billboard_slides', 'order=sort_order.asc');
+      if (Array.isArray(r) && r.length > 0) {
+        bbSlides = r;
+        renderBillboard();
+      }
+    } catch(e) {}
+  }
+
   function renderBillboard() {
     const track = document.getElementById('billboardTrack');
     const dots = document.getElementById('billboardDots');
     if (!track || bbSlides.length === 0) return;
-    track.innerHTML = bbSlides.map((s, i) => `
-      <div class="billboard-slide" style="background:${s.bg};">
-        <div class="bs-text">
-          <h3 style="color:${s.titleColor}">${s.title}</h3>
-          <p style="color:#e0eaff">${s.desc}</p>
-          <a href="${s.btnLink}" style="background:${s.btnBg};color:${s.btnColor}">${s.btnText}</a>
-        </div>
-        <div class="bs-emoji">${s.emoji}</div>
-      </div>`).join('');
-    dots.innerHTML = bbSlides.map((_, i) =>
-      `<button class="billboard-dot ${i===bbCurrent?'active':''}" onclick="bbGoTo(${i})"></button>`
+    track.innerHTML = bbSlides.map((s) => {
+      if (s.imageUrl) {
+        return `<a href="${s.btnLink || '#'}" class="billboard-slide">
+          <img src="${s.imageUrl}" alt="${s.title}"/>
+        </a>`;
+      } else {
+        return `<a href="${s.btnLink || '#'}" class="billboard-slide-gradient" style="background:${s.bg};">
+          <div class="bs-text">
+            <h3 style="color:${s.titleColor}">${s.title}</h3>
+            <p>${s.desc}</p>
+          </div>
+          <div class="bs-emoji">${s.emoji || '🏗️'}</div>
+        </a>`;
+      }
+    }).join('');
+    if (dots) dots.innerHTML = bbSlides.map((_, i) =>
+      `<button class="billboard-dot ${i===bbCurrent?'active':''}" onclick="event.preventDefault();bbGoTo(${i})"></button>`
     ).join('');
-    track.style.transform = `translateX(-${bbCurrent * 100}%)`;
+    // Each slide is 88% wide + 8px gap; offset = index × (88% + 8px)
+    const slideW = track.parentElement.offsetWidth * 0.88 + 8;
+    track.style.transform = `translateX(-${bbCurrent * slideW}px)`;
   }
+
+  // After resize, re-render to fix offset
+  window.addEventListener('resize', () => renderBillboard());
 
   function bbGoTo(n) {
     bbCurrent = (n + bbSlides.length) % bbSlides.length;
-    renderBillboard();
+    // Update dots
+    document.querySelectorAll('.billboard-dot').forEach((d,i) => d.classList.toggle('active', i===bbCurrent));
+    // Update transform
+    const track = document.getElementById('billboardTrack');
+    if (track) {
+      const slideW = track.parentElement.offsetWidth * 0.88 + 8;
+      track.style.transform = `translateX(-${bbCurrent * slideW}px)`;
+    }
     bbResetTimer();
   }
   function billboardNext() { bbGoTo(bbCurrent + 1); }
@@ -847,154 +1062,43 @@
     if (bbSlides.length > 1) bbTimer = setInterval(() => bbGoTo(bbCurrent + 1), 4000);
   }
 
-  renderBillboard();
-  bbResetTimer();
+  // Touch/swipe support
+  (function() {
+    let startX = 0, startY = 0, moved = false;
+    const outer = document.querySelector('.billboard-outer');
+    if (!outer) return;
+    outer.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      moved = false;
+    }, { passive: true });
+    outer.addEventListener('touchmove', e => { moved = true; }, { passive: true });
+    outer.addEventListener('touchend', e => {
+      if (!moved) return;
+      const dx = e.changedTouches[0].clientX - startX;
+      const dy = e.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 35) {
+        dx < 0 ? billboardNext() : billboardPrev();
+      }
+    }, { passive: true });
+  })();
+
   // ============================================================
 
-  renderProducts(); updateCart(); renderAccountMenu();
-</script>
-<!-- BILLBOARD ADMIN PANEL (hidden, accessible from sidebar admin link) -->
-<div class="bb-admin-overlay" id="bbAdminOverlay" onclick="closeBbAdmin()"></div>
-<div class="bb-admin-panel" id="bbAdminPanel">
-  <div class="bb-admin-header">
-    ⚙️ বিলবোর্ড ম্যানেজমেন্ট
-    <button onclick="closeBbAdmin()" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;float:right">✕</button>
-  </div>
-  <div class="bb-admin-body">
-    <div id="bbSlideList"></div>
-    <button class="bb-add-btn" onclick="bbAddSlide()">+ নতুন স্লাইড যোগ করুন</button>
-  </div>
-</div>
-
-<script>
-  // BILLBOARD ADMIN
-  function openBbAdmin() {
-    document.getElementById('bbAdminOverlay').classList.add('open');
-    document.getElementById('bbAdminPanel').classList.add('open');
-    renderBbAdmin();
-  }
-  function closeBbAdmin() {
-    document.getElementById('bbAdminOverlay').classList.remove('open');
-    document.getElementById('bbAdminPanel').classList.remove('open');
+  // Service bar accordion
+  function toggleServicePanel() {
+    const bar = document.getElementById('serviceBar');
+    const panel = document.getElementById('servicePanel');
+    bar.classList.toggle('open');
+    panel.classList.toggle('open');
   }
 
-  function renderBbAdmin() {
-    const list = document.getElementById('bbSlideList');
-    list.innerHTML = bbSlides.map((s, i) => `
-      <div class="bb-slide-item">
-        <div class="bb-slide-preview" style="background:${s.bg}">
-          <span style="font-size:22px">${s.emoji}</span>
-          <span style="color:${s.titleColor};font-weight:700;font-size:13px">${s.title}</span>
-        </div>
-        <div class="bb-slide-actions">
-          <button class="bb-btn-edit" onclick="bbEditSlide(${i})">✏️ এডিট</button>
-          <button class="bb-btn-del" onclick="bbDeleteSlide(${i})">🗑️ মুছুন</button>
-          ${i > 0 ? `<button class="bb-btn-move" onclick="bbMoveSlide(${i},-1)">⬆️</button>` : ''}
-          ${i < bbSlides.length-1 ? `<button class="bb-btn-move" onclick="bbMoveSlide(${i},1)">⬇️</button>` : ''}
-        </div>
-      </div>`).join('');
-  }
-
-  function bbSave() {
-    localStorage.setItem('billboardSlides', JSON.stringify(bbSlides));
+  updateCart(); renderAccountMenu();
+  requestAnimationFrame(async () => {
+    await loadData();
     renderBillboard();
     bbResetTimer();
-    renderBbAdmin();
-    showToast('✅ বিলবোর্ড আপডেট হয়েছে');
-  }
-
-  function bbDeleteSlide(i) {
-    if (bbSlides.length <= 1) { showToast('⚠️ কমপক্ষে একটি স্লাইড থাকতে হবে'); return; }
-    bbSlides.splice(i, 1);
-    if (bbCurrent >= bbSlides.length) bbCurrent = 0;
-    bbSave();
-  }
-
-  function bbMoveSlide(i, dir) {
-    const j = i + dir;
-    [bbSlides[i], bbSlides[j]] = [bbSlides[j], bbSlides[i]];
-    bbSave();
-  }
-
-  function bbAddSlide() {
-    bbOpenForm(-1, {
-      title: 'নতুন স্লাইড', desc: 'বিবরণ লিখুন', btnText: 'বিস্তারিত →',
-      btnLink: '#', emoji: '🏗️',
-      bg: 'linear-gradient(135deg,#0d2b6e,#1a3f9f)',
-      titleColor: '#fbbf24', btnBg: '#e8700a', btnColor: '#fff'
-    });
-  }
-
-  function bbEditSlide(i) { bbOpenForm(i, bbSlides[i]); }
-
-  function bbOpenForm(idx, data) {
-    const existing = document.getElementById('bbFormModal');
-    if (existing) existing.remove();
-    const modal = document.createElement('div');
-    modal.id = 'bbFormModal';
-    modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:600;display:flex;align-items:flex-end;justify-content:center';
-    modal.innerHTML = `
-      <div style="background:white;border-radius:16px 16px 0 0;padding:20px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
-        <h3 style="font-size:15px;font-weight:700;color:#0d2b6e;margin-bottom:16px">${idx===-1?'নতুন স্লাইড':'স্লাইড এডিট'}</h3>
-        ${bbField('শিরোনাম','title',data.title,'text')}
-        ${bbField('বিবরণ','desc',data.desc,'text')}
-        ${bbField('বাটন লেখা','btnText',data.btnText,'text')}
-        ${bbField('বাটন লিংক','btnLink',data.btnLink,'text')}
-        ${bbField('ইমোজি','emoji',data.emoji,'text')}
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">
-          <div><label style="font-size:12px;color:#5a6480;display:block;margin-bottom:4px">শিরোনাম রং</label><input type="color" id="f_titleColor" value="${data.titleColor}" style="width:100%;height:36px;border-radius:6px;border:1.5px solid #e2e6f0;cursor:pointer"></div>
-          <div><label style="font-size:12px;color:#5a6480;display:block;margin-bottom:4px">বাটন রং</label><input type="color" id="f_btnBg" value="${data.btnBg}" style="width:100%;height:36px;border-radius:6px;border:1.5px solid #e2e6f0;cursor:pointer"></div>
-        </div>
-        <div style="margin-bottom:16px"><label style="font-size:12px;color:#5a6480;display:block;margin-bottom:6px">ব্যাকগ্রাউন্ড স্টাইল</label>
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px" id="bgPicker">
-            ${[
-              ['linear-gradient(135deg,#0d2b6e,#1a3f9f)','নীল'],
-              ['linear-gradient(135deg,#0d3b1e,#1a5c2e)','সবুজ'],
-              ['linear-gradient(135deg,#7c2d12,#c2410c)','লাল'],
-              ['linear-gradient(135deg,#1e1b4b,#4338ca)','বেগুনি'],
-              ['linear-gradient(135deg,#164e63,#0891b2)','সিয়ান'],
-              ['linear-gradient(135deg,#3f3f46,#18181b)','কালো'],
-            ].map(([bg,label]) => `<div onclick="selectBg('${bg}',this)" data-bg="${bg}" style="height:40px;border-radius:8px;background:${bg};display:flex;align-items:center;justify-content:center;font-size:11px;color:white;cursor:pointer;border:2px solid ${data.bg===bg?'#e8700a':'transparent'};transition:border 0.2s">${label}</div>`).join('')}
-          </div>
-        </div>
-        <div style="display:flex;gap:10px">
-          <button onclick="bbSaveForm(${idx})" style="flex:1;background:#0d2b6e;color:white;border:none;padding:13px;border-radius:8px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer">সেভ করুন</button>
-          <button onclick="document.getElementById('bbFormModal').remove()" style="background:#f5f6fa;color:#1a2340;border:none;padding:13px 18px;border-radius:8px;font-family:inherit;font-size:14px;cursor:pointer">বাতিল</button>
-        </div>
-      </div>`;
-    document.body.appendChild(modal);
-    modal._selectedBg = data.bg;
-    modal.addEventListener('click', e => { if(e.target===modal) modal.remove(); });
-  }
-
-  function bbField(label, id, val, type) {
-    return `<div style="margin-bottom:12px"><label style="font-size:12px;color:#5a6480;display:block;margin-bottom:4px">${label}</label><input id="f_${id}" type="${type}" value="${val}" style="width:100%;padding:9px 12px;border:1.5px solid #e2e6f0;border-radius:7px;font-family:inherit;font-size:13px;outline:none"></div>`;
-  }
-
-  function selectBg(bg, el) {
-    document.querySelectorAll('#bgPicker div').forEach(d => d.style.border='2px solid transparent');
-    el.style.border = '2px solid #e8700a';
-    document.getElementById('bbFormModal')._selectedBg = bg;
-  }
-
-  function bbSaveForm(idx) {
-    const modal = document.getElementById('bbFormModal');
-    const newSlide = {
-      title: document.getElementById('f_title').value,
-      desc: document.getElementById('f_desc').value,
-      btnText: document.getElementById('f_btnText').value,
-      btnLink: document.getElementById('f_btnLink').value,
-      emoji: document.getElementById('f_emoji').value,
-      titleColor: document.getElementById('f_titleColor').value,
-      btnBg: document.getElementById('f_btnBg').value,
-      btnColor: '#fff',
-      bg: modal._selectedBg
-    };
-    if (idx === -1) bbSlides.push(newSlide);
-    else bbSlides[idx] = newSlide;
-    modal.remove();
-    bbSave();
-  }
+    bsResetTimer();
+    loadBbSlidesFromDB();
+  });
 </script>
-
-

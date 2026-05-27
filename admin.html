@@ -331,6 +331,8 @@
     <div class="anav-item" onclick="switchSection('stock')">🏪 স্টক</div>
     <div class="anav-item" onclick="switchSection('customers')">👥 কাস্টমার</div>
     <div class="anav-item" onclick="switchSection('billboard')">🖼️ বিলবোর্ড</div>
+    <div class="anav-item" onclick="switchSection('brands')">🏷️ ব্র্যান্ড</div>
+    <div class="anav-item" onclick="switchSection('categories')">📂 ক্যাটাগরি</div>
   </div>
 
   <!-- CONTENT -->
@@ -465,6 +467,7 @@
 
         <!-- ADD PRODUCT FORM -->
         <div class="product-form" id="productForm">
+          <input type="hidden" id="pEditId" value=""/>
           <div class="form-row-2">
             <div class="form-group-sm">
               <label class="form-label-sm">পণ্যের নাম *</label>
@@ -472,14 +475,29 @@
             </div>
             <div class="form-group-sm">
               <label class="form-label-sm">ব্র্যান্ড *</label>
-              <input class="form-input-sm" type="text" id="pBrand" placeholder="যেমন: Holcim"/>
+              <select class="form-input-sm" id="pBrand">
+                <option value="">-- ব্র্যান্ড বেছে নিন --</option>
+              </select>
             </div>
           </div>
           <div class="form-row-2">
             <div class="form-group-sm">
-              <label class="form-label-sm">দাম (৳) *</label>
-              <input class="form-input-sm" type="number" id="pPrice" placeholder="০"/>
+              <label class="form-label-sm">মূল দাম (৳) *</label>
+              <input class="form-input-sm" type="number" id="pPrice" placeholder="০" oninput="calcDiscountedPrice()"/>
             </div>
+            <div class="form-group-sm">
+              <label class="form-label-sm">ডিসকাউন্ট (%)</label>
+              <input class="form-input-sm" type="number" id="pDiscount" placeholder="০" min="0" max="99" oninput="calcDiscountedPrice()"/>
+            </div>
+          </div>
+          <!-- Discounted price preview -->
+          <div id="discountPreview" style="display:none;background:rgba(45,158,58,0.08);border:1.5px solid rgba(45,158,58,0.3);border-radius:8px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <span style="font-size:12px;color:#555;">বিক্রয় মূল্য:</span>
+            <span id="dpFinal" style="font-size:18px;font-weight:700;color:var(--green)">৳০</span>
+            <span id="dpOld" style="font-size:13px;color:#aaa;text-decoration:line-through"></span>
+            <span id="dpBadge" style="background:var(--orange);color:white;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px"></span>
+          </div>
+          <div class="form-row-2">
             <div class="form-group-sm">
               <label class="form-label-sm">ইউনিট</label>
               <select class="form-input-sm" id="pUnit">
@@ -492,6 +510,10 @@
                 <option>সেট</option>
                 <option>ঘনফুট</option>
               </select>
+            </div>
+            <div class="form-group-sm">
+              <label class="form-label-sm">স্টক পরিমাণ</label>
+              <input class="form-input-sm" type="number" id="pStock" placeholder="০"/>
             </div>
           </div>
           <div class="form-row-2">
@@ -511,16 +533,31 @@
               </select>
             </div>
             <div class="form-group-sm">
-              <label class="form-label-sm">স্টক পরিমাণ</label>
-              <input class="form-input-sm" type="number" id="pStock" placeholder="০"/>
+              <label class="form-label-sm">আইকন (ইমোজি)</label>
+              <input class="form-input-sm" type="text" id="pIcon" placeholder="🧱"/>
             </div>
           </div>
+
+          <!-- IMAGE UPLOAD -->
           <div class="form-group-sm">
-            <label class="form-label-sm">আইকন (ইমোজি)</label>
-            <input class="form-input-sm" type="text" id="pIcon" placeholder="🧱"/>
+            <label class="form-label-sm" style="color:#0d2b6e;font-weight:700">🖼️ পণ্যের ছবি</label>
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              <button type="button" onclick="document.getElementById('pImgFile').click()" style="background:var(--blue);color:white;border:none;padding:8px 14px;border-radius:6px;font-family:'Hind Siliguri',sans-serif;font-size:12px;font-weight:600;cursor:pointer;">
+                📁 ছবি আপলোড
+              </button>
+              <input type="file" id="pImgFile" accept="image/*" onchange="handleProductImgUpload(this)" style="display:none"/>
+              <button type="button" onclick="clearProductImg()" style="background:rgba(229,57,53,0.1);color:var(--red);border:none;padding:8px 12px;border-radius:6px;font-family:'Hind Siliguri',sans-serif;font-size:12px;cursor:pointer;">
+                🗑️ ছবি সরান
+              </button>
+            </div>
+            <input class="form-input-sm" type="text" id="pImgUrl" placeholder="অথবা ছবির URL দিন (https://...)" oninput="previewProductImg(this.value)" style="margin-bottom:8px;"/>
+            <div id="pImgPreviewBox" style="display:none;margin-top:6px;">
+              <img id="pImgPreview" src="" style="max-width:120px;max-height:120px;object-fit:contain;border-radius:8px;border:1.5px solid var(--gray2);padding:4px;background:white;" onerror="this.parentElement.style.display='none'"/>
+            </div>
           </div>
+
           <button class="form-save-btn" onclick="saveProduct()">✅ সংরক্ষণ করুন</button>
-          <button class="form-cancel-btn" onclick="toggleProductForm()">বাতিল</button>
+          <button class="form-cancel-btn" onclick="cancelProductForm()">বাতিল</button>
         </div>
 
         <div class="table-wrap">
@@ -597,6 +634,11 @@
             <label class="form-label-sm">বিবরণ</label>
             <input class="form-input-sm" type="text" id="bb_desc" placeholder="যেমন: বাড়ির ড্রয়িং, এস্টিমেট ও সুপারভিশন"/>
           </div>
+          <div class="form-group-sm" style="background:#f0f4ff;border-radius:8px;padding:10px;border:1.5px solid #c7d4f5">
+            <label class="form-label-sm" style="color:#0d2b6e;font-weight:700">🖼️ ব্যানার ইমেজ URL <span style="font-weight:400;color:#888">(দিলে ইমেজ দেখাবে — গ্রেডিয়েন্ট লাগবে না)</span></label>
+            <input class="form-input-sm" type="text" id="bb_imageUrl" placeholder="https://example.com/banner.jpg"/>
+            <div id="bb_imgPreviewWrap" style="margin-top:8px;display:none"><img id="bb_imgPreview" src="" style="width:100%;border-radius:6px;max-height:80px;object-fit:cover" onerror="this.parentElement.style.display='none'"></div>
+          </div>
           <div class="form-row-2">
             <div class="form-group-sm">
               <label class="form-label-sm">বাটনের লেখা</label>
@@ -646,6 +688,159 @@
       </div>
     </div>
 
+    <!-- BRANDS -->
+    <div id="sec-brands" style="display:none">
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">🏷️ ব্র্যান্ড ম্যানেজমেন্ট</div>
+          <button class="btn-add" onclick="openBrandForm(-1)">➕ নতুন ব্র্যান্ড</button>
+        </div>
+
+        <!-- BRAND PREVIEW (slider preview) -->
+        <div style="padding:16px 16px 0">
+          <div style="font-size:12px;font-weight:700;color:#666;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">স্লাইডার প্রিভিউ</div>
+          <div style="overflow:hidden;border-radius:10px;background:#f7f7f7;padding:12px 0">
+            <div id="brandPreviewTrack" style="display:flex;gap:10px;padding:0 12px;transition:transform 0.5s ease"></div>
+          </div>
+        </div>
+
+        <!-- BRAND LIST -->
+        <div style="padding:16px">
+          <div style="font-size:12px;font-weight:700;color:#666;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">ব্র্যান্ড তালিকা</div>
+          <div id="brandList"></div>
+        </div>
+      </div>
+
+      <!-- BRAND FORM -->
+      <div class="section-card" id="brandFormCard" style="display:none">
+        <div class="section-card-header">
+          <div class="section-card-title" id="brandFormTitle">➕ নতুন ব্র্যান্ড</div>
+          <button class="btn-sm btn-delete" onclick="closeBrandForm()">✕ বাতিল</button>
+        </div>
+        <div style="padding:16px">
+          <input type="hidden" id="brandEditIdx" value="-1"/>
+          <div class="form-row-2">
+            <div class="form-group-sm">
+              <label class="form-label-sm">ব্র্যান্ডের নাম *</label>
+              <input class="form-input-sm" type="text" id="brName" placeholder="যেমন: Holcim"/>
+            </div>
+            <div class="form-group-sm">
+              <label class="form-label-sm">ব্যাকগ্রাউন্ড রং</label>
+              <input type="color" id="brBg" value="#e8f0fe" style="width:100%;height:40px;border-radius:6px;border:1.5px solid var(--gray2);cursor:pointer"/>
+            </div>
+          </div>
+
+          <!-- LOGO IMAGE -->
+          <div class="form-group-sm" style="background:#f0f6ff;border-radius:8px;padding:12px;border:1.5px solid #c7d4f5">
+            <label class="form-label-sm" style="color:#0d2b6e;font-weight:700">🖼️ ব্র্যান্ড লোগো/ছবি</label>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <label style="display:flex;align-items:center;justify-content:center;gap:8px;background:#0d2b6e;color:white;padding:10px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600">
+                📁 লোগো আপলোড করুন
+                <input type="file" id="brLogoFile" accept="image/*" onchange="handleBrandLogoUpload(this)" style="display:none"/>
+              </label>
+              <div style="text-align:center;color:#aaa;font-size:12px">— অথবা —</div>
+              <input class="form-input-sm" type="text" id="brLogoUrl" placeholder="লোগো URL দিন (https://...)" oninput="previewBrandLogo(this.value)"/>
+            </div>
+            <div id="brLogoPreviewBox" style="margin-top:10px;display:none;text-align:center">
+              <div style="display:inline-flex;flex-direction:column;align-items:center;gap:8px">
+                <div id="brCardPreview" style="width:72px;height:72px;border-radius:12px;background:#e8f0fe;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--gray2)">
+                  <img id="brLogoPreview" src="" style="max-width:60px;max-height:60px;object-fit:contain"/>
+                </div>
+                <div id="brNamePreview" style="font-size:11px;font-weight:700;color:#333">প্রিভিউ</div>
+                <button class="btn-sm btn-delete" onclick="clearBrandLogo()" style="font-size:11px">🗑️ লোগো সরান</button>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="form-save-btn" onclick="saveBrand()">✅ সংরক্ষণ করুন</button>
+            <button class="form-cancel-btn" onclick="closeBrandForm()">বাতিল</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div id="sec-categories" style="display:none">
+      <div class="section-card">
+        <div class="section-card-header">
+          <div class="section-card-title">📂 ক্যাটাগরি ম্যানেজমেন্ট</div>
+          <button class="btn-add" onclick="openCatForm(-1)">➕ নতুন ক্যাটাগরি</button>
+        </div>
+
+        <!-- CATEGORY PREVIEW GRID -->
+        <div style="padding:16px 16px 0">
+          <div style="font-size:12px;font-weight:700;color:#666;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">হোমপেজ প্রিভিউ</div>
+          <div id="catPreviewGrid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;background:#f7f7f7;border-radius:10px;padding:14px"></div>
+        </div>
+
+        <!-- CATEGORY LIST -->
+        <div style="padding:16px">
+          <div style="font-size:12px;font-weight:700;color:#666;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px">ক্যাটাগরি তালিকা</div>
+          <div id="catList"></div>
+        </div>
+      </div>
+
+      <!-- CATEGORY FORM -->
+      <div class="section-card" id="catFormCard" style="display:none">
+        <div class="section-card-header">
+          <div class="section-card-title" id="catFormTitle">➕ নতুন ক্যাটাগরি</div>
+          <button class="btn-sm btn-delete" onclick="closeCatForm()">✕ বাতিল</button>
+        </div>
+        <div style="padding:16px">
+          <input type="hidden" id="catEditIdx" value="-1"/>
+          <div class="form-row-2">
+            <div class="form-group-sm">
+              <label class="form-label-sm">ক্যাটাগরির নাম *</label>
+              <input class="form-input-sm" type="text" id="catName" placeholder="যেমন: সিমেন্ট"/>
+            </div>
+            <div class="form-group-sm">
+              <label class="form-label-sm">ইমোজি আইকন</label>
+              <input class="form-input-sm" type="text" id="catEmoji" placeholder="যেমন: 🧱" maxlength="2"/>
+            </div>
+          </div>
+
+          <!-- IMAGE UPLOAD -->
+          <div class="form-group-sm" style="background:#f0f6ff;border-radius:8px;padding:12px;border:1.5px solid #c7d4f5">
+            <label class="form-label-sm" style="color:#0d2b6e;font-weight:700">🖼️ ক্যাটাগরি ছবি</label>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <label style="display:flex;align-items:center;justify-content:center;gap:8px;background:#0d2b6e;color:white;padding:10px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600">
+                📁 ছবি আপলোড করুন
+                <input type="file" id="catImgFile" accept="image/*" onchange="handleCatImgUpload(this)" style="display:none"/>
+              </label>
+              <div style="text-align:center;color:#aaa;font-size:12px">— অথবা —</div>
+              <input class="form-input-sm" type="text" id="catImgUrl" placeholder="ছবির URL দিন (https://...)" oninput="previewCatImg(this.value)"/>
+            </div>
+            <div id="catImgPreviewBox" style="margin-top:10px;display:none;text-align:center">
+              <div style="display:inline-flex;flex-direction:column;align-items:center;gap:8px">
+                <div id="catImgPreviewCard" style="width:72px;height:72px;border-radius:14px;background:#e8f0fe;display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--gray2)">
+                  <img id="catImgPreview" src="" style="width:100%;height:100%;object-fit:cover"/>
+                </div>
+                <div id="catImgPreviewLabel" style="font-size:11px;font-weight:700;color:#333">প্রিভিউ</div>
+                <button class="btn-sm btn-delete" onclick="clearCatImg()" style="font-size:11px">🗑️ ছবি সরান</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- LIVE PREVIEW CARD -->
+          <div style="margin-top:14px;margin-bottom:12px">
+            <div style="font-size:12px;font-weight:700;color:#666;margin-bottom:8px">কার্ড প্রিভিউ</div>
+            <div style="display:flex;align-items:center;gap:14px;background:#f7f7f7;border-radius:10px;padding:12px">
+              <div id="cp_imgBox" style="width:68px;height:68px;border-radius:14px;background:#e8edf8;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1.5px solid #d0d8f0;flex-shrink:0">
+                <span id="cp_emoji" style="font-size:30px">📦</span>
+              </div>
+              <div id="cp_name" style="font-size:13px;font-weight:700;color:#1a2340">ক্যাটাগরির নাম</div>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:4px">
+            <button class="form-save-btn" onclick="saveCat()">✅ সংরক্ষণ করুন</button>
+            <button class="form-cancel-btn" onclick="closeCatForm()">বাতিল</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -664,41 +859,76 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // ===== SUPABASE =====
+  const SUPA_URL = 'https://ageqcspndzhsjglwsewi.supabase.co';
+  const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFnZXFjc3BuZHpoc2pnbHdzZXdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4NjQ3MzksImV4cCI6MjA5NTQ0MDczOX0.YeMXfUwZXGE04Gw3COHTCyIosI4BkU8dZliydjYkd3U';
+  const SB = { headers: { 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Content-Type': 'application/json', 'Prefer': 'return=representation' } };
+
+  async function sbFetch(table, params = '') {
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}?${params}`, { headers: SB.headers });
+    if (!r.ok) throw new Error(await r.text());
+    return r.json();
+  }
+  async function sbInsert(table, body) {
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}`, { method: 'POST', headers: SB.headers, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error(await r.text());
+    return r.json();
+  }
+  async function sbUpdate(table, id, body) {
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'PATCH', headers: SB.headers, body: JSON.stringify(body) });
+    if (!r.ok) throw new Error(await r.text());
+    return r.json();
+  }
+  async function sbDelete(table, id) {
+    const r = await fetch(`${SUPA_URL}/rest/v1/${table}?id=eq.${id}`, { method: 'DELETE', headers: SB.headers });
+    if (!r.ok) throw new Error(await r.text());
+  }
+
   // ===== DATA =====
-  let orders = [
-    { id: '#NB-10021', name: 'রাশেদুল ইসলাম', phone: '01712-345678', area: 'সিরাজগঞ্জ সদর', items: 'Holcim সিমেন্ট ×৫', total: 2900, status: 'পেন্ডিং', date: '২৩ মে ২০২৫' },
-    { id: '#NB-10020', name: 'মোঃ কামাল হোসেন', phone: '01819-456789', area: 'শাহজাদপুর', items: 'BSRM রড ×৫০কেজি', total: 4750, status: 'কনফার্মড', date: '২২ মে ২০২৫' },
-    { id: '#NB-10019', name: 'নাজমুল হক', phone: '01611-567890', area: 'উল্লাপাড়া', items: 'Berger পেইন্ট ×৩', total: 4350, status: 'ডেলিভারড', date: '২১ মে ২০২৫' },
-    { id: '#NB-10018', name: 'সালমা বেগম', phone: '01911-678901', area: 'কামারখন্দ', items: 'LED বাল্ব ×১০', total: 1800, status: 'ডেলিভারড', date: '২০ মে ২০২৫' },
-    { id: '#NB-10017', name: 'আবু তালেব', phone: '01512-789012', area: 'রায়গঞ্জ', items: 'RAK টাইলস ×৫০', total: 4250, status: 'বাতিল', date: '১৯ মে ২০২৫' },
-  ];
+  let orders = [];
+  let products = [];
+  let customers = [];
+  let brands = [];
+  let categories = [];
 
-  let products = [
-    { id: 1, name: 'Holcim সিমেন্ট (৫০কেজি)', brand: 'Holcim', price: 580, unit: 'ব্যাগ', category: 'সিমেন্ট', stock: 120, icon: '🧱' },
-    { id: 2, name: 'Shah সিমেন্ট (৫০কেজি)', brand: 'Shah', price: 560, unit: 'ব্যাগ', category: 'সিমেন্ট', stock: 85, icon: '🧱' },
-    { id: 3, name: 'BSRM রড (১২মিমি)', brand: 'BSRM', price: 95, unit: 'কেজি', category: 'রড/স্টিল', stock: 500, icon: '🔩' },
-    { id: 4, name: 'Berger Interior Paint (4L)', brand: 'Berger', price: 1450, unit: 'টিন', category: 'পেইন্ট', stock: 40, icon: '🎨' },
-    { id: 5, name: 'LED Bulb 18W', brand: 'General', price: 180, unit: 'পিস', category: 'ইলেকট্রিক্যাল', stock: 8, icon: '💡' },
-    { id: 6, name: 'RAK Tiles (60x60)', brand: 'RAK', price: 85, unit: 'পিস', category: 'টাইলস', stock: 0, icon: '🔷' },
-  ];
-
-  let customers = [
-    { name: 'রাশেদুল ইসলাম', phone: '01712-345678', area: 'সিরাজগঞ্জ সদর', orders: 3, total: 8700 },
-    { name: 'মোঃ কামাল হোসেন', phone: '01819-456789', area: 'শাহজাদপুর', orders: 2, total: 9500 },
-    { name: 'নাজমুল হক', phone: '01611-567890', area: 'উল্লাপাড়া', orders: 1, total: 4350 },
-    { name: 'সালমা বেগম', phone: '01911-678901', area: 'কামারখন্দ', orders: 2, total: 3600 },
-  ];
+  async function loadAllData() {
+    try {
+      const [o, p, b, c] = await Promise.all([
+        sbFetch('orders', 'order=id.desc'),
+        sbFetch('products', 'order=id.asc'),
+        sbFetch('brands', 'order=name.asc'),
+        sbFetch('categories', 'order=id.asc'),
+      ]);
+      orders = Array.isArray(o) ? o : [];
+      products = Array.isArray(p) ? p : [];
+      brands = Array.isArray(b) ? b : [];
+      categories = Array.isArray(c) ? c : [];
+      // Build customers from orders
+      const custMap = {};
+      orders.forEach(ord => {
+        const k = ord.phone;
+        if (!custMap[k]) custMap[k] = { name: ord.name, phone: ord.phone, area: ord.area || ord.upazila || '', orders: 0, total: 0 };
+        custMap[k].orders++;
+        custMap[k].total += ord.total || 0;
+      });
+      customers = Object.values(custMap);
+    } catch(e) {
+      showToast('⚠️ ডেটা লোড হয়নি: ' + e.message);
+    }
+  }
 
   let deleteTarget = null;
   let filterStatus = 'all';
 
   // ===== LOGIN =====
-  function doLogin() {
+  async function doLogin() {
     const u = document.getElementById('loginUser').value;
     const p = document.getElementById('loginPass').value;
     if (u === 'admin' && p === 'admin123') {
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('adminLayout').style.display = 'block';
+      showToast('⏳ ডেটা লোড হচ্ছে...');
+      await loadAllData();
       renderAll();
       const goto = localStorage.getItem('adminGoto');
       if (goto) { localStorage.removeItem('adminGoto'); switchSection(goto); }
@@ -716,14 +946,16 @@
 
   // ===== NAV =====
   function switchSection(name) {
-    ['dashboard','orders','products','stock','customers','billboard'].forEach(s => {
+    ['dashboard','orders','products','stock','customers','billboard','brands','categories'].forEach(s => {
       document.getElementById('sec-' + s).style.display = s === name ? 'block' : 'none';
     });
     document.querySelectorAll('.anav-item').forEach((el, i) => {
-      const names = ['dashboard','orders','products','stock','customers','billboard'];
+      const names = ['dashboard','orders','products','stock','customers','billboard','brands','categories'];
       el.classList.toggle('active', names[i] === name);
     });
     if (name === 'billboard') renderBbSection();
+    if (name === 'brands') renderBrandsSection();
+    if (name === 'categories') renderCatSection();
   }
 
   // ===== RENDER =====
@@ -788,29 +1020,44 @@
 
   function filterOrders(val) { filterStatus = val; renderOrders(); }
 
-  function changeOrderStatus(i, val) {
+  async function changeOrderStatus(i, val) {
+    const ord = orders[i];
     orders[i].status = val;
     renderOrders();
     renderDashboard();
-    showToast('✅ স্ট্যাটাস আপডেট হয়েছে');
+    try {
+      await sbUpdate('orders', ord.id, { status: val });
+      showToast('✅ স্ট্যাটাস আপডেট হয়েছে');
+    } catch(e) {
+      showToast('⚠️ আপডেট ব্যর্থ: ' + e.message);
+    }
   }
 
   function renderProducts() {
     document.getElementById('productsTable').innerHTML = `
-      <tr><th>আইকন</th><th>নাম</th><th>ব্র্যান্ড</th><th>ক্যাটাগরি</th><th>দাম</th><th>স্টক</th><th>অ্যাকশন</th></tr>
-      ${products.map((p, i) => `
+      <tr><th>ছবি</th><th>নাম</th><th>ব্র্যান্ড</th><th>ক্যাটাগরি</th><th>দাম</th><th>স্টক</th><th>অ্যাকশন</th></tr>
+      ${products.map((p, i) => {
+        const finalPrice = p.discount ? Math.round(p.price * (1 - p.discount/100)) : p.price;
+        const imgHtml = p.image
+          ? `<img src="${p.image}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid var(--gray2)" onerror="this.style.display='none'"/>`
+          : `<span style="font-size:28px">${p.icon||'📦'}</span>`;
+        const priceHtml = p.discount
+          ? `<b style="color:var(--green)">৳${finalPrice}</b> <span style="font-size:11px;text-decoration:line-through;color:#aaa">৳${p.price}</span> <span style="background:var(--orange);color:white;font-size:10px;padding:1px 6px;border-radius:10px">${p.discount}%</span>/${p.unit}`
+          : `<b>৳${p.price}</b>/${p.unit}`;
+        return `
         <tr>
-          <td style="font-size:22px">${p.icon}</td>
+          <td>${imgHtml}</td>
           <td><b>${p.name}</b></td>
           <td>${p.brand}</td>
           <td><small>${p.category}</small></td>
-          <td><b>৳${p.price}</b>/${p.unit}</td>
+          <td>${priceHtml}</td>
           <td>${stockBadge(p.stock)}</td>
           <td style="display:flex; gap:4px; flex-wrap:wrap;">
             <button class="btn-sm btn-edit" onclick="editProduct(${i})">✏️ সম্পাদনা</button>
             <button class="btn-sm btn-delete" onclick="openDeleteModal('product', ${i})">🗑️</button>
           </td>
-        </tr>`).join('')}
+        </tr>`;
+      }).join('')}
     `;
   }
 
@@ -836,12 +1083,18 @@
     `;
   }
 
-  function updateStock(i) {
+  async function updateStock(i) {
     const val = parseInt(document.getElementById('stock-' + i).value) || 0;
+    const p = products[i];
     products[i].stock = val;
     renderStock();
     renderProducts();
-    showToast('✅ স্টক আপডেট হয়েছে');
+    try {
+      await sbUpdate('products', p.id, { stock: val });
+      showToast('✅ স্টক আপডেট হয়েছে');
+    } catch(e) {
+      showToast('⚠️ স্টক আপডেট ব্যর্থ: ' + e.message);
+    }
   }
 
   function renderCustomers() {
@@ -858,39 +1111,149 @@
     `;
   }
 
+  // ===== PRODUCT IMAGE =====
+  let pImgData = '';
+
+  function handleProductImgUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      pImgData = e.target.result;
+      document.getElementById('pImgPreview').src = pImgData;
+      document.getElementById('pImgPreviewBox').style.display = 'block';
+      document.getElementById('pImgUrl').value = '';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function previewProductImg(url) {
+    if (url) {
+      pImgData = url;
+      document.getElementById('pImgPreview').src = url;
+      document.getElementById('pImgPreviewBox').style.display = 'block';
+    } else {
+      clearProductImg();
+    }
+  }
+
+  function clearProductImg() {
+    pImgData = '';
+    document.getElementById('pImgUrl').value = '';
+    document.getElementById('pImgPreviewBox').style.display = 'none';
+    document.getElementById('pImgPreview').src = '';
+    document.getElementById('pImgFile').value = '';
+  }
+
+  function calcDiscountedPrice() {
+    const price = parseInt(document.getElementById('pPrice').value) || 0;
+    const disc = parseInt(document.getElementById('pDiscount').value) || 0;
+    const preview = document.getElementById('discountPreview');
+    if (price > 0 && disc > 0) {
+      const final = Math.round(price * (1 - disc/100));
+      document.getElementById('dpFinal').textContent = '৳' + final;
+      document.getElementById('dpOld').textContent = '৳' + price;
+      document.getElementById('dpBadge').textContent = disc + '% OFF';
+      preview.style.display = 'flex';
+    } else if (price > 0) {
+      document.getElementById('dpFinal').textContent = '৳' + price;
+      document.getElementById('dpOld').textContent = '';
+      document.getElementById('dpBadge').textContent = '';
+      preview.style.display = 'flex';
+    } else {
+      preview.style.display = 'none';
+    }
+  }
+
+  function populateBrandDropdown() {
+    const sel = document.getElementById('pBrand');
+    if (!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">-- ব্র্যান্ড বেছে নিন --</option>';
+    brands.forEach(b => {
+      sel.innerHTML += `<option value="${b.name}">${b.name}</option>`;
+    });
+    if (current) sel.value = current;
+  }
+
   // ===== PRODUCT FORM =====
   function toggleProductForm() {
     const form = document.getElementById('productForm');
+    const isOpen = form.classList.contains('open');
+    if (!isOpen) {
+      document.getElementById('pEditId').value = '';
+      populateBrandDropdown();
+    }
     form.classList.toggle('open');
   }
 
-  function saveProduct() {
+  function cancelProductForm() {
+    document.getElementById('productForm').classList.remove('open');
+    clearProductImg();
+    document.getElementById('discountPreview').style.display = 'none';
+    ['pName','pPrice','pDiscount','pStock','pIcon','pImgUrl'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('pEditId').value = '';
+  }
+
+  async function saveProduct() {
     const name = document.getElementById('pName').value.trim();
     const brand = document.getElementById('pBrand').value.trim();
     const price = parseInt(document.getElementById('pPrice').value) || 0;
+    const discount = parseInt(document.getElementById('pDiscount').value) || 0;
     const unit = document.getElementById('pUnit').value;
     const category = document.getElementById('pCat').value;
     const stock = parseInt(document.getElementById('pStock').value) || 0;
     const icon = document.getElementById('pIcon').value || '📦';
+    const image = pImgData || document.getElementById('pImgUrl').value.trim() || '';
+    const editId = document.getElementById('pEditId').value;
 
     if (!name || !brand || !price) { showToast('⚠️ নাম, ব্র্যান্ড ও দাম আবশ্যক'); return; }
 
-    products.push({ id: Date.now(), name, brand, price, unit, category, stock, icon });
+    const productObj = { name, brand, price, discount, unit, category, stock, icon, image };
+
+    try {
+      if (editId) {
+        await sbUpdate('products', editId, productObj);
+        const idx = products.findIndex(p => p.id == editId);
+        if (idx > -1) products[idx] = { ...products[idx], ...productObj };
+        showToast('✅ পণ্য আপডেট হয়েছে');
+      } else {
+        const res = await sbInsert('products', productObj);
+        const newP = Array.isArray(res) ? res[0] : res;
+        if (newP) products.push(newP);
+        showToast('✅ পণ্য যোগ হয়েছে');
+      }
+    } catch(e) {
+      showToast('⚠️ সংরক্ষণ ব্যর্থ: ' + e.message);
+      return;
+    }
+
     renderProducts(); renderStock(); renderDashboard();
-    toggleProductForm();
-    ['pName','pBrand','pPrice','pStock','pIcon'].forEach(id => document.getElementById(id).value = '');
-    showToast('✅ পণ্য যোগ হয়েছে');
+    cancelProductForm();
   }
 
   function editProduct(i) {
     const p = products[i];
+    populateBrandDropdown();
+    document.getElementById('pEditId').value = p.id;
     document.getElementById('pName').value = p.name;
     document.getElementById('pBrand').value = p.brand;
     document.getElementById('pPrice').value = p.price;
+    document.getElementById('pDiscount').value = p.discount || 0;
     document.getElementById('pStock').value = p.stock;
-    document.getElementById('pIcon').value = p.icon;
+    document.getElementById('pIcon').value = p.icon || '';
+    if (p.image) {
+      pImgData = p.image;
+      document.getElementById('pImgUrl').value = p.image.startsWith('data:') ? '' : p.image;
+      document.getElementById('pImgPreview').src = p.image;
+      document.getElementById('pImgPreviewBox').style.display = 'block';
+    } else { clearProductImg(); }
+    document.getElementById('pUnit').value = p.unit || 'পিস';
+    document.getElementById('pCat').value = p.category || 'অন্যান্য';
+    calcDiscountedPrice();
     document.getElementById('productForm').classList.add('open');
-    showToast('✏️ সম্পাদনা মোড চালু — পরিবর্তন করে সংরক্ষণ করুন');
+    document.getElementById('productForm').scrollIntoView({ behavior: 'smooth' });
+    showToast('✏️ সম্পাদনা মোড চালু');
   }
 
   // ===== DELETE =====
@@ -902,26 +1265,42 @@
     document.getElementById('deleteModal').classList.remove('open');
     deleteTarget = null;
   }
-  function confirmDelete() {
+  async function confirmDelete() {
     if (!deleteTarget) return;
     if (deleteTarget.type === 'product') {
-      products.splice(deleteTarget.index, 1);
-      renderProducts(); renderStock(); renderDashboard();
-      showToast('🗑️ পণ্য মুছে ফেলা হয়েছে');
+      const p = products[deleteTarget.index];
+      try {
+        await sbDelete('products', p.id);
+        products.splice(deleteTarget.index, 1);
+        renderProducts(); renderStock(); renderDashboard();
+        showToast('🗑️ পণ্য মুছে ফেলা হয়েছে');
+      } catch(e) {
+        showToast('⚠️ মুছতে সমস্যা: ' + e.message);
+      }
     }
     closeModal();
   }
 
   // ===== BILLBOARD =====
   const BB_DEFAULTS = [
-    { title:'ইঞ্জিনিয়ারিং সার্ভিস', desc:'বাড়ির ড্রয়িং, এস্টিমেট ও সুপারভিশন<br/>সিভিল ইঞ্জিনিয়ার দ্বারা', btnText:'বিস্তারিত →', btnLink:'#services', emoji:'🏗️', bg:'linear-gradient(135deg,#0d2b6e,#1a3f9f)', titleColor:'#fbbf24', btnBg:'#e8700a', btnColor:'#fff' },
-    { title:'প্রজেক্ট', desc:'নিজেই হিসাব করুন — পণ্য সিলেক্ট করুন<br/>সাথে সাথে মোট খরচ দেখুন', btnText:'ক্যালকুলেটর →', btnLink:'calculator.html', emoji:'💰', bg:'linear-gradient(135deg,#0d3b1e,#1a5c2e)', titleColor:'#4ade80', btnBg:'#1a8a3c', btnColor:'#fff' }
+    { title:'ইঞ্জিনিয়ারিং সার্ভিস', desc:'বাড়ির ড্রয়িং, এস্টিমেট ও সুপারভিশন<br/>সিভিল ইঞ্জিনিয়ার দ্বারা', btnText:'বিস্তারিত →', btnLink:'#services', emoji:'🏗️', bg:'linear-gradient(135deg,#0d2b6e,#1a3f9f)', titleColor:'#fbbf24', btnBg:'#e8700a', btnColor:'#fff', imageUrl:'' },
+    { title:'প্রজেক্ট', desc:'নিজেই হিসাব করুন — পণ্য সিলেক্ট করুন<br/>সাথে সাথে মোট খরচ দেখুন', btnText:'ক্যালকুলেটর →', btnLink:'calculator.html', emoji:'💰', bg:'linear-gradient(135deg,#0d3b1e,#1a5c2e)', titleColor:'#4ade80', btnBg:'#1a8a3c', btnColor:'#fff', imageUrl:'' }
   ];
-  let bbSlides = JSON.parse(localStorage.getItem('billboardSlides') || 'null') || BB_DEFAULTS;
+  let bbSlides = [];
   let bbPreviewIdx = 0;
   let bbSelBg = 'linear-gradient(135deg,#0d2b6e,#1a3f9f)';
 
-  function renderBbSection() {
+  async function loadBbSlides() {
+    try {
+      const res = await sbFetch('billboard_slides', 'order=sort_order.asc');
+      bbSlides = Array.isArray(res) && res.length > 0 ? res : BB_DEFAULTS;
+    } catch(e) {
+      bbSlides = JSON.parse(localStorage.getItem('billboardSlides') || 'null') || BB_DEFAULTS;
+    }
+  }
+
+  async function renderBbSection() {
+    await loadBbSlides();
     renderBbList();
     renderBbPreview();
   }
@@ -936,13 +1315,12 @@
     list.innerHTML = bbSlides.map((s, i) => `
       <div class="bb-slide-row">
         <div class="bb-slide-head">
-          <div class="bb-slide-thumb" style="background:${s.bg}">
-            <span>${s.emoji}</span>
-            <span style="color:${s.titleColor}">${s.title}</span>
+          <div class="bb-slide-thumb" style="background:${s.imageUrl?'#eee':s.bg}">
+            ${s.imageUrl ? `<img src="${s.imageUrl}" style="width:100%;height:100%;object-fit:cover;border-radius:6px" onerror="this.style.display='none'">` : `<span>${s.emoji}</span><span style="color:${s.titleColor}">${s.title}</span>`}
           </div>
           <div class="bb-slide-info">
-            <div class="bb-slide-name">${s.title}</div>
-            <div class="bb-slide-sub">${s.btnText} · ${s.btnLink}</div>
+            <div class="bb-slide-name">${s.title}${s.imageUrl?'  🖼️':''}</div>
+            <div class="bb-slide-sub">${s.btnLink}</div>
           </div>
           <div class="bb-slide-acts">
             <button class="btn-sm btn-edit" onclick="bbEditSlide(${i})">✏️ এডিট</button>
@@ -977,9 +1355,19 @@
 
   function bbPreviewGo(i) { bbPreviewIdx = i; renderBbPreview(); }
 
-  function bbSaveTLS() {
-    localStorage.setItem('billboardSlides', JSON.stringify(bbSlides));
-    showToast('✅ বিলবোর্ড সেভ হয়েছে — সাইটে লাইভ হবে');
+  async function bbSaveTLS() {
+    try {
+      // Delete all then reinsert with sort_order
+      await fetch(`${SUPA_URL}/rest/v1/billboard_slides`, { method: 'DELETE', headers: { ...SB.headers, 'Prefer': 'return=minimal' } });
+      const rows = bbSlides.map((s, i) => ({ ...s, sort_order: i }));
+      await sbInsert('billboard_slides', rows);
+      // Also keep localStorage as fallback for index.html
+      localStorage.setItem('billboardSlides', JSON.stringify(bbSlides));
+      showToast('✅ বিলবোর্ড সেভ হয়েছে — সাইটে লাইভ হবে');
+    } catch(e) {
+      localStorage.setItem('billboardSlides', JSON.stringify(bbSlides));
+      showToast('✅ বিলবোর্ড সেভ হয়েছে (লোকাল)');
+    }
   }
 
   function bbDelete(i) {
@@ -1003,6 +1391,8 @@
     document.getElementById('bb_title').value = '';
     document.getElementById('bb_emoji').value = '🏗️';
     document.getElementById('bb_desc').value = '';
+    document.getElementById('bb_imageUrl').value = '';
+    document.getElementById('bb_imgPreviewWrap').style.display = 'none';
     document.getElementById('bb_btnText').value = 'বিস্তারিত →';
     document.getElementById('bb_btnLink').value = '#';
     document.getElementById('bb_titleColor').value = '#fbbf24';
@@ -1022,6 +1412,10 @@
     document.getElementById('bb_title').value = s.title;
     document.getElementById('bb_emoji').value = s.emoji;
     document.getElementById('bb_desc').value = s.desc;
+    const imgUrl = s.imageUrl || '';
+    document.getElementById('bb_imageUrl').value = imgUrl;
+    const prevWrap = document.getElementById('bb_imgPreviewWrap');
+    if (imgUrl) { document.getElementById('bb_imgPreview').src = imgUrl; prevWrap.style.display = 'block'; } else { prevWrap.style.display = 'none'; }
     document.getElementById('bb_btnText').value = s.btnText;
     document.getElementById('bb_btnLink').value = s.btnLink;
     document.getElementById('bb_titleColor').value = s.titleColor;
@@ -1052,6 +1446,12 @@
     ['bb_titleColor','bb_btnBg'].forEach(id => {
       document.getElementById(id).oninput = updateMiniPreview;
     });
+    document.getElementById('bb_imageUrl').oninput = function() {
+      const url = this.value.trim();
+      const wrap = document.getElementById('bb_imgPreviewWrap');
+      const img = document.getElementById('bb_imgPreview');
+      if (url) { img.src = url; wrap.style.display = 'block'; } else { wrap.style.display = 'none'; }
+    };
     document.querySelectorAll('.bb-bg-opt').forEach(el => {
       el.onclick = () => { bbSelBg = el.dataset.bg; setBgPicker(bbSelBg); updateMiniPreview(); };
     });
@@ -1081,6 +1481,7 @@
       title,
       emoji: document.getElementById('bb_emoji').value || '🏗️',
       desc: document.getElementById('bb_desc').value,
+      imageUrl: document.getElementById('bb_imageUrl').value.trim(),
       btnText: document.getElementById('bb_btnText').value || 'বিস্তারিত →',
       btnLink: document.getElementById('bb_btnLink').value || '#',
       titleColor: document.getElementById('bb_titleColor').value,
@@ -1095,6 +1496,344 @@
     renderBbSection();
   }
 
+
+  // ===== BRANDS =====
+  // brands already loaded in loadAllData()
+  let brLogoData = '';
+
+  function saveBrandsToStorage() {
+    // no-op: now using Supabase
+  }
+
+  async function deleteBrand(i) {
+    const b = brands[i];
+    try {
+      await sbDelete('brands', b.id);
+      brands.splice(i, 1);
+      renderBrandsSection();
+      showToast('🗑️ ব্র্যান্ড মুছে ফেলা হয়েছে');
+    } catch(e) {
+      showToast('⚠️ মুছতে সমস্যা: ' + e.message);
+    }
+  }
+
+  function renderBrandsSection() {
+    renderBrandList();
+    renderBrandPreview();
+    populateBrandDropdown();
+  }
+
+  function renderBrandList() {
+    const list = document.getElementById('brandList');
+    if (!list) return;
+    if (brands.length === 0) {
+      list.innerHTML = '<div style="text-align:center;padding:24px;color:#aaa;font-size:13px">কোনো ব্র্যান্ড নেই।</div>';
+      return;
+    }
+    list.innerHTML = brands.map((b, i) => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 12px;border:1.5px solid var(--gray2);border-radius:10px;margin-bottom:8px;background:white">
+        <div style="width:52px;height:52px;border-radius:10px;background:${b.bg};display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;border:1.5px solid var(--gray2)">
+          ${b.logo ? `<img src="${b.logo}" style="max-width:44px;max-height:44px;object-fit:contain" onerror="this.style.display='none'"/>` : `<span style="font-size:22px;font-weight:700;color:#555">${b.name[0]}</span>`}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:700;color:var(--dark)">${b.name}</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">${brands.filter(x=>x).length > 0 ? (products||[]).filter(p=>p.brand===b.name).length + 'টি পণ্য' : ''}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          ${i > 0 ? `<button class="btn-sm btn-status" onclick="brandMove(${i},-1)" title="বামে">◀</button>` : ''}
+          ${i < brands.length-1 ? `<button class="btn-sm btn-status" onclick="brandMove(${i},1)" title="ডানে">▶</button>` : ''}
+          <button class="btn-sm btn-edit" onclick="openBrandForm(${i})">✏️</button>
+          <button class="btn-sm btn-delete" onclick="deleteBrand(${i})">🗑️</button>
+        </div>
+      </div>`).join('');
+  }
+
+  function renderBrandPreview() {
+    const track = document.getElementById('brandPreviewTrack');
+    if (!track) return;
+    track.innerHTML = brands.map(b => `
+      <div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer">
+        <div style="width:68px;height:68px;border-radius:12px;background:${b.bg};display:flex;align-items:center;justify-content:center;overflow:hidden;border:2px solid var(--gray2);box-shadow:0 2px 8px rgba(0,0,0,0.08)">
+          ${b.logo ? `<img src="${b.logo}" style="max-width:56px;max-height:56px;object-fit:contain" onerror="this.style.display='none'"/>` : `<span style="font-size:24px;font-weight:700;color:#555">${b.name[0]}</span>`}
+        </div>
+        <div style="font-size:11px;font-weight:700;color:#333;text-align:center;max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.name}</div>
+      </div>`).join('');
+  }
+
+  function brandMove(i, dir) {
+    const j = i + dir;
+    [brands[i], brands[j]] = [brands[j], brands[i]];
+    renderBrandsSection();
+    showToast('↕️ ক্রম পরিবর্তিত হয়েছে');
+  }
+
+  async function saveBrand() {
+    const name = document.getElementById('brName').value.trim();
+    if (!name) { showToast('⚠️ ব্র্যান্ডের নাম দিন'); return; }
+    const bg = document.getElementById('brBg').value;
+    const logo = brLogoData || '';
+    const idx = parseInt(document.getElementById('brandEditIdx').value);
+    try {
+      if (idx === -1) {
+        const res = await sbInsert('brands', { name, logo, bg });
+        const newB = Array.isArray(res) ? res[0] : res;
+        if (newB) brands.push(newB);
+      } else {
+        const b = brands[idx];
+        await sbUpdate('brands', b.id, { name, logo, bg });
+        brands[idx] = { ...b, name, logo, bg };
+      }
+      showToast('✅ ব্র্যান্ড সংরক্ষণ হয়েছে');
+    } catch(e) {
+      showToast('⚠️ সংরক্ষণ ব্যর্থ: ' + e.message);
+      return;
+    }
+    closeBrandForm();
+    renderBrandsSection();
+  }
+
+  function openBrandForm(i) {
+    document.getElementById('brandEditIdx').value = i;
+    if (i === -1) {
+      document.getElementById('brandFormTitle').textContent = '➕ নতুন ব্র্যান্ড';
+      document.getElementById('brName').value = '';
+      document.getElementById('brBg').value = '#e8f0fe';
+      clearBrandLogo();
+    } else {
+      const b = brands[i];
+      document.getElementById('brandFormTitle').textContent = '✏️ ব্র্যান্ড সম্পাদনা';
+      document.getElementById('brName').value = b.name;
+      document.getElementById('brBg').value = b.bg || '#e8f0fe';
+      if (b.logo) {
+        brLogoData = b.logo;
+        document.getElementById('brLogoUrl').value = b.logo.startsWith('data:') ? '' : b.logo;
+        document.getElementById('brLogoPreview').src = b.logo;
+        document.getElementById('brLogoPreviewBox').style.display = 'block';
+        document.getElementById('brNamePreview').textContent = b.name;
+      } else { clearBrandLogo(); }
+    }
+    document.getElementById('brandFormCard').style.display = 'block';
+    document.getElementById('brandFormCard').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function closeBrandForm() {
+    document.getElementById('brandFormCard').style.display = 'none';
+    clearBrandLogo();
+  }
+
+  function handleBrandLogoUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      brLogoData = e.target.result;
+      document.getElementById('brLogoUrl').value = '';
+      document.getElementById('brLogoPreview').src = brLogoData;
+      document.getElementById('brLogoPreviewBox').style.display = 'block';
+      document.getElementById('brNamePreview').textContent = document.getElementById('brName').value || 'প্রিভিউ';
+      document.getElementById('brCardPreview').style.background = document.getElementById('brBg').value;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function previewBrandLogo(url) {
+    if (url) {
+      brLogoData = url;
+      document.getElementById('brLogoPreview').src = url;
+      document.getElementById('brLogoPreviewBox').style.display = 'block';
+      document.getElementById('brNamePreview').textContent = document.getElementById('brName').value || 'প্রিভিউ';
+    } else { clearBrandLogo(); }
+  }
+
+  function clearBrandLogo() {
+    brLogoData = '';
+    document.getElementById('brLogoFile').value = '';
+    document.getElementById('brLogoUrl').value = '';
+    document.getElementById('brLogoPreviewBox').style.display = 'none';
+  }
+
+
+  // ===== CATEGORIES =====
+  // categories already loaded in loadAllData()
+  // (no separate init needed)
+  let catImgData = '';
+
+  function saveCategoriesToStorage() {
+    localStorage.setItem('categories', JSON.stringify(categories));
+  }
+
+  function renderCatSection() {
+    renderCatPreview();
+    renderCatList();
+  }
+
+  function renderCatPreview() {
+    const grid = document.getElementById('catPreviewGrid');
+    if (!grid) return;
+    grid.innerHTML = categories.map(c => `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:6px;cursor:default">
+        <div style="width:60px;height:60px;border-radius:12px;background:#e8edf8;display:flex;align-items:center;justify-content:center;overflow:hidden;border:1.5px solid #d0d8f0">
+          ${c.image ? `<img src="${c.image}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/><span style="display:none;font-size:26px">${c.emoji||'📦'}</span>` : `<span style="font-size:26px">${c.emoji||'📦'}</span>`}
+        </div>
+        <span style="font-size:10px;font-weight:700;color:#1a2340;text-align:center;max-width:62px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${c.name}</span>
+      </div>
+    `).join('');
+  }
+
+  function renderCatList() {
+    const list = document.getElementById('catList');
+    if (!list) return;
+    if (categories.length === 0) {
+      list.innerHTML = '<div style="text-align:center;padding:24px;color:#aaa;font-size:13px">কোনো ক্যাটাগরি নেই। নতুন ক্যাটাগরি যোগ করুন।</div>';
+      return;
+    }
+    list.innerHTML = categories.map((c, i) => `
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;border-bottom:1px solid #f0f0f0;background:white">
+        <div style="width:50px;height:50px;border-radius:10px;background:#e8edf8;display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;border:1.5px solid #d0d8f0">
+          ${c.image ? `<img src="${c.image}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/>` : `<span style="font-size:22px">${c.emoji||'📦'}</span>`}
+        </div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700;color:#1a2340">${c.name}</div>
+          <div style="font-size:11px;color:#888;margin-top:2px">আইকন: ${c.emoji||'—'} | ${c.image?'📷 ছবি আছে':'ছবি নেই'}</div>
+        </div>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          <button class="btn-sm btn-edit" onclick="openCatForm(${i})">✏️</button>
+          <a href="category.html?id=${c.id}&name=${encodeURIComponent(c.name)}" target="_blank" class="btn-sm btn-status" style="text-decoration:none;display:inline-flex;align-items:center">👁️</a>
+          <button class="btn-sm btn-delete" onclick="deleteCat(${i})">🗑️</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function openCatForm(idx) {
+    document.getElementById('catEditIdx').value = idx;
+    catImgData = '';
+    document.getElementById('catImgFile').value = '';
+    document.getElementById('catImgUrl').value = '';
+    document.getElementById('catImgPreviewBox').style.display = 'none';
+
+    if (idx === -1) {
+      document.getElementById('catFormTitle').textContent = '➕ নতুন ক্যাটাগরি';
+      document.getElementById('catName').value = '';
+      document.getElementById('catEmoji').value = '';
+      updateCatPreviewCard('', '');
+    } else {
+      const c = categories[idx];
+      document.getElementById('catFormTitle').textContent = '✏️ ক্যাটাগরি সম্পাদনা';
+      document.getElementById('catName').value = c.name;
+      document.getElementById('catEmoji').value = c.emoji || '';
+      catImgData = c.image || '';
+      if (catImgData) {
+        document.getElementById('catImgPreview').src = catImgData;
+        document.getElementById('catImgPreviewBox').style.display = 'block';
+        document.getElementById('catImgPreviewLabel').textContent = c.name;
+      }
+      updateCatPreviewCard(c.name, c.image ? null : c.emoji, c.image);
+    }
+    document.getElementById('catFormCard').style.display = 'block';
+    document.getElementById('catFormCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function closeCatForm() {
+    document.getElementById('catFormCard').style.display = 'none';
+    catImgData = '';
+  }
+
+  function updateCatPreviewCard(name, emoji, imgUrl) {
+    document.getElementById('cp_name').textContent = name || 'ক্যাটাগরির নাম';
+    const box = document.getElementById('cp_imgBox');
+    const emojiEl = document.getElementById('cp_emoji');
+    if (imgUrl) {
+      box.innerHTML = `<img src="${imgUrl}" style="width:100%;height:100%;object-fit:cover" onerror="this.innerHTML='<span style=font-size:30px>${emoji||'📦'}</span>'"/>`;
+    } else {
+      box.innerHTML = `<span id="cp_emoji" style="font-size:30px">${emoji||'📦'}</span>`;
+    }
+  }
+
+  // Live update preview on input
+  document.addEventListener('input', function(e) {
+    if (e.target.id === 'catName' || e.target.id === 'catEmoji') {
+      const name = document.getElementById('catName').value;
+      const emoji = document.getElementById('catEmoji').value;
+      updateCatPreviewCard(name, emoji, catImgData);
+    }
+  });
+
+  function handleCatImgUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      catImgData = e.target.result;
+      document.getElementById('catImgUrl').value = '';
+      document.getElementById('catImgPreview').src = catImgData;
+      document.getElementById('catImgPreviewBox').style.display = 'block';
+      document.getElementById('catImgPreviewLabel').textContent = document.getElementById('catName').value || 'প্রিভিউ';
+      updateCatPreviewCard(document.getElementById('catName').value, document.getElementById('catEmoji').value, catImgData);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function previewCatImg(url) {
+    if (url) {
+      catImgData = url;
+      document.getElementById('catImgPreview').src = url;
+      document.getElementById('catImgPreviewBox').style.display = 'block';
+      document.getElementById('catImgPreviewLabel').textContent = document.getElementById('catName').value || 'প্রিভিউ';
+      updateCatPreviewCard(document.getElementById('catName').value, document.getElementById('catEmoji').value, url);
+    } else { clearCatImg(); }
+  }
+
+  function clearCatImg() {
+    catImgData = '';
+    document.getElementById('catImgFile').value = '';
+    document.getElementById('catImgUrl').value = '';
+    document.getElementById('catImgPreviewBox').style.display = 'none';
+    updateCatPreviewCard(document.getElementById('catName').value, document.getElementById('catEmoji').value, null);
+  }
+
+  function saveCategoriesToStorage() {
+    // no-op: now using Supabase
+  }
+
+  async function saveCat() {
+    const name = document.getElementById('catName').value.trim();
+    const emoji = document.getElementById('catEmoji').value.trim() || '📦';
+    if (!name) { showToast('⚠️ ক্যাটাগরির নাম দিন'); return; }
+    const idx = parseInt(document.getElementById('catEditIdx').value);
+    const urlInput = document.getElementById('catImgUrl').value.trim();
+    const image = catImgData || urlInput || '';
+    try {
+      if (idx === -1) {
+        const res = await sbInsert('categories', { name, emoji, image });
+        const newC = Array.isArray(res) ? res[0] : res;
+        if (newC) categories.push(newC);
+      } else {
+        const c = categories[idx];
+        await sbUpdate('categories', c.id, { name, emoji, image });
+        categories[idx] = { ...c, name, emoji, image };
+      }
+      showToast('✅ ক্যাটাগরি সংরক্ষণ হয়েছে');
+    } catch(e) {
+      showToast('⚠️ সংরক্ষণ ব্যর্থ: ' + e.message);
+      return;
+    }
+    closeCatForm();
+    renderCatSection();
+  }
+
+  async function deleteCat(i) {
+    if (!confirm('এই ক্যাটাগরি মুছে ফেলবেন?')) return;
+    const c = categories[i];
+    try {
+      await sbDelete('categories', c.id);
+      categories.splice(i, 1);
+      renderCatSection();
+      showToast('🗑️ ক্যাটাগরি মুছে ফেলা হয়েছে');
+    } catch(e) {
+      showToast('⚠️ মুছতে সমস্যা: ' + e.message);
+    }
+  }
 
   function showToast(msg) {
     const t = document.getElementById('toast');

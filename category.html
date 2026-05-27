@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ক্যাটাগরি — Build Engineering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Tiro+Bangla&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #0d2b6e;
+      --blue2: #1a3f9f;
+      --blue-light: #e8edf8;
+      --orange: #e8700a;
+      --white: #ffffff;
+      --gray: #f5f6fa;
+      --gray2: #e2e6f0;
+      --text: #1a2340;
+      --text2: #5a6480;
+      --green: #1a8a3c;
+      --red: #e53935;
+      --radius: 10px;
+    }
+    body { font-family: 'Hind Siliguri', sans-serif; background: var(--gray); color: var(--text); min-height: 100vh; padding-bottom: 80px; }
+
+    /* HEADER */
+    header {
+      background: var(--blue); padding: 0 16px;
+      position: sticky; top: 0; z-index: 200;
+      box-shadow: 0 2px 12px rgba(13,43,110,0.25);
+    }
+    .header-row { display: flex; align-items: center; gap: 12px; height: 52px; }
+    .back-btn {
+      background: none; border: none; color: white; font-size: 22px;
+      cursor: pointer; padding: 6px; display: flex; align-items: center;
+      flex-shrink: 0;
+    }
+    .header-title { flex: 1; color: white; font-size: 16px; font-weight: 700; font-family: 'Tiro Bangla', serif; }
+    .header-search-btn { color: white; background: none; border: none; font-size: 20px; cursor: pointer; padding: 6px; }
+
+    /* CATEGORY INFO BAR */
+    .cat-info-bar {
+      background: white; padding: 12px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1.5px solid var(--blue-light);
+    }
+    .cat-count { font-size: 13px; color: var(--text2); }
+    .cat-count strong { color: var(--blue); }
+
+    /* FILTER / SORT BAR */
+    .filter-sort-bar {
+      background: white;
+      display: flex;
+      border-bottom: 2px solid var(--gray2);
+      position: sticky; top: 52px; z-index: 100;
+    }
+    .fsbar-btn {
+      flex: 1; display: flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 11px 0; font-size: 13px; font-weight: 600;
+      color: var(--text2); cursor: pointer; background: none; border: none;
+      font-family: 'Hind Siliguri', sans-serif;
+      border-bottom: 2.5px solid transparent;
+      transition: color 0.2s;
+    }
+    .fsbar-btn:first-child { border-right: 1px solid var(--gray2); }
+    .fsbar-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+
+    /* SORT DROPDOWN */
+    .sort-dropdown {
+      display: none; position: fixed; top: 105px; left: 0; right: 0;
+      background: white; z-index: 300;
+      box-shadow: 0 8px 24px rgba(13,43,110,0.15);
+      border-radius: 0 0 12px 12px;
+    }
+    .sort-dropdown.open { display: block; }
+    .sort-item {
+      padding: 13px 20px; font-size: 14px; color: var(--text2);
+      cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--gray);
+      transition: background 0.15s;
+    }
+    .sort-item:last-child { border-bottom: none; }
+    .sort-item:hover { background: var(--blue-light); }
+    .sort-item.selected { color: var(--blue); font-weight: 700; }
+    .sort-item.selected::after { content: '✓'; color: var(--blue); font-size: 16px; }
+    .sort-overlay { display: none; position: fixed; inset: 0; z-index: 299; }
+    .sort-overlay.open { display: block; }
+
+    /* FILTER PANEL */
+    .filter-overlay { display: none; position: fixed; inset: 0; background: rgba(13,43,110,0.45); z-index: 400; }
+    .filter-overlay.open { display: block; }
+    .filter-panel {
+      position: fixed; left: -100%; top: 0; bottom: 0; width: min(300px, 85vw);
+      background: white; z-index: 401; transition: left 0.3s ease;
+      overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .filter-panel.open { left: 0; }
+    .filter-header {
+      background: var(--blue); padding: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-shrink: 0;
+    }
+    .filter-header-title { color: white; font-size: 16px; font-weight: 700; }
+    .filter-close { background: none; border: none; color: white; font-size: 22px; cursor: pointer; }
+    .filter-body { flex: 1; padding: 16px; }
+    .filter-section-title { font-size: 13px; font-weight: 700; color: var(--blue); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1.5px solid var(--blue-light); }
+    .filter-chip-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .filter-chip {
+      padding: 6px 14px; border-radius: 20px;
+      border: 1.5px solid var(--gray2); background: white;
+      font-family: 'Hind Siliguri', sans-serif; font-size: 12px;
+      font-weight: 600; color: var(--text2); cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-chip.selected { background: var(--blue); color: white; border-color: var(--blue); }
+    .filter-footer { padding: 16px; border-top: 2px solid var(--gray2); display: flex; gap: 10px; flex-shrink: 0; }
+    .filter-reset { flex: 1; background: white; color: var(--text2); border: 1.5px solid var(--gray2); padding: 12px; border-radius: 8px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
+    .filter-apply { flex: 2; background: var(--blue); color: white; border: none; padding: 12px; border-radius: 8px; font-family: 'Hind Siliguri', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; }
+
+    /* PRODUCT GRID */
+    .products-section { padding: 12px 12px 16px; }
+    .products-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    /* PRODUCT CARD (Rokomari style) */
+    .pcard {
+      background: white; border-radius: var(--radius);
+      border: 1.5px solid var(--blue-light);
+      overflow: hidden; position: relative;
+      transition: box-shadow 0.2s, transform 0.2s;
+      display: flex; flex-direction: column;
+    }
+    .pcard:hover { box-shadow: 0 6px 20px rgba(13,43,110,0.13); transform: translateY(-2px); }
+    .pcard-img-wrap { position: relative; }
+    .pcard-img {
+      width: 100%; aspect-ratio: 1;
+      background: var(--blue-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 52px; overflow: hidden;
+    }
+    .pcard-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pcard-discount-badge {
+      position: absolute; top: 8px; left: 8px;
+      background: #e8000a; color: white;
+      font-size: 10px; font-weight: 700;
+      padding: 3px 7px; border-radius: 4px;
+      line-height: 1.3;
+    }
+    .pcard-badge {
+      position: absolute; top: 8px; right: 8px;
+      background: var(--blue); color: white;
+      font-size: 9px; font-weight: 700;
+      padding: 2px 7px; border-radius: 3px;
+    }
+    .pcard-badge.new { background: var(--green); }
+    .pcard-body { padding: 8px 10px 10px; flex: 1; display: flex; flex-direction: column; }
+    .pcard-brand { font-size: 10px; color: var(--blue2); font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+    .pcard-name { font-size: 12px; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.4; flex: 1; }
+    .pcard-stock { font-size: 10px; color: var(--green); font-weight: 600; margin-bottom: 6px; }
+    .pcard-stock.out { color: var(--red); }
+    .pcard-prices { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; }
+    .pcard-price { font-size: 15px; font-weight: 700; color: var(--blue); }
+    .pcard-old-price { font-size: 11px; color: #bbb; text-decoration: line-through; }
+    .pcard-unit { font-size: 10px; color: var(--text2); }
+    .pcard-add-btn {
+      width: 100%; background: white; color: var(--blue);
+      border: 1.5px solid var(--blue); border-radius: 6px;
+      padding: 8px; font-family: 'Hind Siliguri', sans-serif;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pcard-add-btn:hover { background: var(--blue); color: white; }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 60px 20px; color: var(--text2); }
+    .empty-state span { font-size: 56px; display: block; margin-bottom: 14px; }
+    .empty-state h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .empty-state p { font-size: 13px; }
+
+    /* BOTTOM NAV */
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); display: flex; border-top: 2px solid var(--blue-light); z-index: 200; box-shadow: 0 -4px 16px rgba(13,43,110,0.08); }
+    .bnav-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 8px 4px 6px; color: var(--text2); font-size: 10px; gap: 3px; cursor: pointer; text-decoration: none; transition: color 0.2s; }
+    .bnav-item svg { width: 22px; height: 22px; }
+    .bnav-item.active, .bnav-item:hover { color: var(--blue); }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a2340; color: white; padding: 10px 20px; border-radius: 24px; font-size: 13px; font-weight: 600; opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 999; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* CART badge */
+    .badge { position: absolute; top: -4px; right: -4px; background: var(--orange); color: white; font-size: 9px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    .bnav-item { position: relative; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-row">
+    <button class="back-btn" onclick="history.back()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="22" height="22"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    </button>
+    <div class="header-title" id="pageTitle">ক্যাটাগরি</div>
+    <button class="header-search-btn" onclick="toggleSearch()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+  </div>
+  <!-- SEARCH ROW (hidden by default) -->
+  <div id="searchRow" style="display:none;padding:8px 12px 10px">
+    <div style="display:flex;background:rgba(255,255,255,0.15);border-radius:20px;overflow:hidden;align-items:center;padding:0 12px;gap:8px">
+      <input type="text" id="searchInput" placeholder="পণ্য খুঁজুন..." oninput="doSearch(this.value)"
+        style="flex:1;border:none;background:transparent;outline:none;font-family:'Hind Siliguri',sans-serif;font-size:14px;color:white;padding:9px 0"/>
+      <button onclick="clearSearch()" style="background:none;border:none;color:rgba(255,255,255,0.7);font-size:16px;cursor:pointer">✕</button>
+    </div>
+  </div>
+</header>
+
+<!-- FILTER + SORT BAR -->
+<div class="filter-sort-bar">
+  <button class="fsbar-btn" id="sortBtn" onclick="toggleSort()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    সর্ট <span id="sortLabel" style="color:var(--orange);font-size:11px"></span>
+  </button>
+  <button class="fsbar-btn" id="filterBtn" onclick="openFilter()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+    ফিল্টার <span id="filterCount" style="display:none;background:var(--orange);color:white;font-size:9px;padding:1px 6px;border-radius:10px;margin-left:3px"></span>
+  </button>
+</div>
+
+<!-- SORT DROPDOWN -->
+<div class="sort-overlay" id="sortOverlay" onclick="toggleSort()"></div>
+<div class="sort-dropdown" id="sortDropdown">
+  <div class="sort-item selected" onclick="setSort('default')" id="sort-default">ডিফল্ট</div>
+  <div class="sort-item" onclick="setSort('price-asc')" id="sort-price-asc">দাম: কম থেকে বেশি</div>
+  <div class="sort-item" onclick="setSort('price-desc')" id="sort-price-desc">দাম: বেশি থেকে কম</div>
+  <div class="sort-item" onclick="setSort('discount')" id="sort-discount">সর্বাধিক ছাড়</div>
+</div>
+
+<!-- FILTER PANEL -->
+<div class="filter-overlay" id="filterOverlay" onclick="closeFilter()"></div>
+<div class="filter-panel" id="filterPanel">
+  <div class="filter-header">
+    <span class="filter-header-title">🔍 ফিল্টার</span>
+    <button class="filter-close" onclick="closeFilter()">✕</button>
+  </div>
+  <div class="filter-body">
+    <div class="filter-section-title">ব্র্যান্ড</div>
+    <div class="filter-chip-wrap" id="brandChips"></div>
+    <div class="filter-section-title">স্টক</div>
+    <div class="filter-chip-wrap">
+      <div class="filter-chip" id="chip-instock" onclick="toggleStockFilter('instock')">স্টকে আছে</div>
+    </div>
+  </div>
+  <div class="filter-footer">
+    <button class="filter-reset" onclick="resetFilter()">রিসেট</button>
+    <button class="filter-apply" onclick="applyFilter()">প্রয়োগ করুন ✓</button>
+  </div>
+</div>
+
+<!-- CAT INFO BAR -->
+<div class="cat-info-bar">
+  <div class="cat-count">মোট <strong id="productCount">০</strong> টি পণ্য</div>
+</div>
+
+<!-- PRODUCTS -->
+<div class="products-section">
+  <div class="products-grid-2" id="productsGrid"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a href="index.html" class="bnav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    হোম
+  </a>
+  <a href="product.html" class="bnav-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    পণ্য
+  </a>
+  <a href="#" class="bnav-item" onclick="toggleCart()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg>
+    কার্ট
+    <span class="badge" id="cartBadge" style="display:none">0</span>
+  </a>
+  <a href="order.html" class="bnav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    অর্ডার
+  </a>
+  <a href="admin-1.html" class="bnav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M6 20v-2a6 6 0 0112 0v2"/></svg>
+    প্রোফাইল
+  </a>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ===== URL PARAMS =====
+  const params = new URLSearchParams(location.search);
+  const catId = parseInt(params.get('id')) || null;
+  const catName = params.get('name') ? decodeURIComponent(params.get('name')) : 'ক্যাটাগরি';
+  const brandParam = params.get('brand') ? decodeURIComponent(params.get('brand')) : null;
+
+  document.getElementById('pageTitle').textContent = brandParam ? (brandParam + ' ব্র্যান্ড') : catName;
+  document.title = (brandParam || catName) + ' — Build Engineering';
+
+  // ===== DATA =====
+  const DEFAULT_PRODUCTS = [
+    { id:1, name:"Holcim সিমেন্ট (৫০ কেজি)", brand:"Holcim", price:580, discount:6, icon:"🧱", badge:"জনপ্রিয়", unit:"ব্যাগ", image:"", category:"সিমেন্ট", stock:120 },
+    { id:2, name:"Shah সিমেন্ট (৫০ কেজি)", brand:"Shah", price:560, discount:7, icon:"🧱", badge:"", unit:"ব্যাগ", image:"", category:"সিমেন্ট", stock:85 },
+    { id:3, name:"BSRM রড (১২মিমি)", brand:"BSRM", price:95, discount:0, icon:"🔩", badge:"নতুন", unit:"কেজি", image:"", category:"রড/স্টিল", stock:500 },
+    { id:4, name:"Berger Interior Paint (4L)", brand:"Berger", price:1450, discount:9, icon:"🎨", badge:"ছাড়", unit:"টিন", image:"", category:"পেইন্ট", stock:40 },
+    { id:5, name:"LED Bulb 18W", brand:"General", price:180, discount:18, icon:"💡", badge:"", unit:"পিস", image:"", category:"ইলেকট্রিক্যাল", stock:8 },
+    { id:6, name:"Safety Helmet", brand:"Local", price:350, discount:0, icon:"⛑️", badge:"", unit:"পিস", image:"", category:"সেফটি", stock:0 },
+    { id:7, name:"RAK Tiles (60x60)", brand:"RAK", price:85, discount:11, icon:"🔷", badge:"জনপ্রিয়", unit:"পিস", image:"", category:"টাইলস", stock:60 },
+    { id:8, name:"Teflon Tape (5m)", brand:"Local", price:30, discount:0, icon:"🪛", badge:"", unit:"রোল", image:"", category:"ইলেকট্রিক্যাল", stock:200 },
+    { id:9, name:"Asian Paints Exterior (20L)", brand:"Asian", price:3200, discount:5, icon:"🎨", badge:"", unit:"বালতি", image:"", category:"পেইন্ট", stock:22 },
+    { id:10, name:"BRB Cable 2.5mm", brand:"BRB", price:280, discount:0, icon:"🔌", badge:"", unit:"মিটার", image:"", category:"ইলেকট্রিক্যাল", stock:400 },
+    { id:11, name:"Shine Basin Tap", brand:"Shine", price:1200, discount:12, icon:"🚿", badge:"", unit:"পিস", image:"", category:"স্যানিটারি", stock:18 },
+    { id:12, name:"RFL Door (7ft)", brand:"RFL", price:8500, discount:3, icon:"🪟", badge:"", unit:"পিস", image:"", category:"দরজা/জানালা", stock:5 },
+    { id:13, name:"GPH Ispat রড (10মিমি)", brand:"GPH", price:88, discount:0, icon:"🔩", badge:"", unit:"কেজি", image:"", category:"রড/স্টিল", stock:350 },
+    { id:14, name:"Crown সিমেন্ট (৫০কেজি)", brand:"Crown", price:570, discount:4, icon:"🧱", badge:"", unit:"ব্যাগ", image:"", category:"সিমেন্ট", stock:65 },
+  ];
+
+  let allProducts = JSON.parse(localStorage.getItem('products') || 'null') || DEFAULT_PRODUCTS;
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+
+  // State
+  let currentSort = 'default';
+  let selectedBrands = brandParam ? [brandParam] : [];
+  let filterInstock = false;
+  let searchQuery = '';
+  let searchOpen = false;
+
+  // Filter products by category name or brand param
+  function getCatProducts() {
+    // If brand param, show all products of that brand (ignore category)
+    if (brandParam) return allProducts.filter(p => p.brand === brandParam);
+    if (!catName || catName === 'ক্যাটাগরি') return allProducts;
+    // Match by category field; if stored products have matching category
+    const filtered = allProducts.filter(p => p.category === catName);
+    return filtered.length > 0 ? filtered : allProducts.filter(p => {
+      // Fallback: match by keyword in name if no category field
+      const n = catName.toLowerCase();
+      return (p.category || '').toLowerCase().includes(n) || p.name.toLowerCase().includes(n);
+    });
+  }
+
+  function getDisplayProducts() {
+    let list = getCatProducts();
+
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter(p => p.name.toLowerCase().includes(q) || (p.brand||'').toLowerCase().includes(q));
+    }
+
+    // Brand filter
+    if (selectedBrands.length > 0) {
+      list = list.filter(p => selectedBrands.includes(p.brand));
+    }
+
+    // Stock filter
+    if (filterInstock) {
+      list = list.filter(p => (p.stock === undefined || p.stock > 0));
+    }
+
+    // Sort
+    if (currentSort === 'price-asc') list = [...list].sort((a,b) => a.price - b.price);
+    else if (currentSort === 'price-desc') list = [...list].sort((a,b) => b.price - a.price);
+    else if (currentSort === 'discount') list = [...list].sort((a,b) => (b.discount||0) - (a.discount||0));
+
+    return list;
+  }
+
+  function renderProducts() {
+    const list = getDisplayProducts();
+    const grid = document.getElementById('productsGrid');
+    document.getElementById('productCount').textContent = list.length.toLocaleString('bn-BD');
+
+    if (list.length === 0) {
+      grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">
+        <span>🔍</span>
+        <h3>কোনো পণ্য পাওয়া যায়নি</h3>
+        <p>এই ক্যাটাগরিতে এখনো পণ্য নেই অথবা ফিল্টার পরিবর্তন করুন</p>
+      </div>`;
+      return;
+    }
+
+    grid.innerHTML = list.map(p => {
+      const finalPrice = p.discount ? Math.round(p.price * (1 - p.discount/100)) : p.price;
+      const oldPrice = p.discount ? p.price : 0;
+      const inStock = p.stock === undefined || p.stock > 0;
+
+      const imgHtml = p.image
+        ? `<img src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><span style="display:none;font-size:52px;align-items:center;justify-content:center;width:100%;height:100%">${p.icon||'📦'}</span>`
+        : `<span style="font-size:52px">${p.icon||'📦'}</span>`;
+
+      return `
+        <div class="pcard">
+          <div class="pcard-img-wrap">
+            <div class="pcard-img">${imgHtml}</div>
+            ${p.discount ? `<div class="pcard-discount-badge">${p.discount}%<br/>OFF</div>` : ''}
+            ${p.badge ? `<div class="pcard-badge ${p.badge==='নতুন'?'new':''}">${p.badge}</div>` : ''}
+          </div>
+          <div class="pcard-body">
+            <div class="pcard-brand" onclick="filterByBrand('${p.brand||''}')" style="cursor:pointer;text-decoration:underline dotted;" title="এই ব্র্যান্ড ফিল্টার করুন">${p.brand||''}</div>
+            <div class="pcard-name">${p.name}</div>
+            <div class="pcard-stock ${inStock?'':'out'}">${inStock?'● স্টকে আছে':'✕ স্টক নেই'}</div>
+            <div class="pcard-prices">
+              <span class="pcard-price">৳${finalPrice.toLocaleString('bn-BD')}</span>
+              ${oldPrice ? `<span class="pcard-old-price">৳${oldPrice.toLocaleString('bn-BD')}</span>` : ''}
+              <span class="pcard-unit">/${p.unit||'পিস'}</span>
+            </div>
+            <button class="pcard-add-btn" onclick="addToCart(${p.id})" ${!inStock?'disabled style="opacity:0.5;cursor:not-allowed"':''}>
+              ${inStock ? '🛒 কার্টে যোগ করুন' : 'স্টকে নেই'}
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ===== BRAND CHIPS FOR FILTER =====
+  function renderBrandChips() {
+    const catProds = getCatProducts();
+    const brands = [...new Set(catProds.map(p => p.brand).filter(Boolean))];
+    document.getElementById('brandChips').innerHTML = brands.map(b =>
+      `<div class="filter-chip ${selectedBrands.includes(b)?'selected':''}" onclick="toggleBrand('${b}')" id="chip-${b}">${b}</div>`
+    ).join('');
+  }
+
+  function toggleBrand(b) {
+    if (selectedBrands.includes(b)) selectedBrands = selectedBrands.filter(x => x !== b);
+    else selectedBrands.push(b);
+    renderBrandChips();
+    updateFilterCount();
+  }
+
+  function toggleStockFilter(type) {
+    filterInstock = !filterInstock;
+    document.getElementById('chip-instock').classList.toggle('selected', filterInstock);
+    updateFilterCount();
+  }
+
+  function updateFilterCount() {
+    const count = selectedBrands.length + (filterInstock ? 1 : 0);
+    const el = document.getElementById('filterCount');
+    if (count > 0) { el.style.display = 'inline'; el.textContent = count; }
+    else el.style.display = 'none';
+  }
+
+  function resetFilter() {
+    selectedBrands = []; filterInstock = false;
+    renderBrandChips();
+    document.getElementById('chip-instock').classList.remove('selected');
+    updateFilterCount();
+  }
+
+  // Brand click shortcut — directly filter by clicking brand name on card
+  function filterByBrand(brand) {
+    if (!brand) return;
+    if (selectedBrands.includes(brand)) {
+      selectedBrands = selectedBrands.filter(b => b !== brand);
+    } else {
+      selectedBrands = [brand];
+    }
+    renderBrandChips();
+    updateFilterCount();
+    renderProducts();
+    // Show toast
+    showToast(selectedBrands.length > 0 ? `🏷️ ${brand} ব্র্যান্ড ফিল্টার করা হয়েছে` : '🔄 ফিল্টার সরানো হয়েছে');
+  }
+
+  function applyFilter() {
+    closeFilter();
+    renderProducts();
+  }
+
+  // ===== SORT =====
+  function toggleSort() {
+    document.getElementById('sortDropdown').classList.toggle('open');
+    document.getElementById('sortOverlay').classList.toggle('open');
+    document.getElementById('sortBtn').classList.toggle('active');
+  }
+
+  function setSort(val) {
+    currentSort = val;
+    document.querySelectorAll('.sort-item').forEach(el => el.classList.remove('selected'));
+    document.getElementById('sort-' + val).classList.add('selected');
+    const labels = { 'default':'', 'price-asc':'↑ দাম', 'price-desc':'↓ দাম', 'discount':'ছাড়' };
+    document.getElementById('sortLabel').textContent = labels[val] || '';
+    toggleSort();
+    renderProducts();
+  }
+
+  // ===== FILTER PANEL =====
+  function openFilter() {
+    renderBrandChips();
+    document.getElementById('filterOverlay').classList.add('open');
+    document.getElementById('filterPanel').classList.add('open');
+    document.getElementById('filterBtn').classList.add('active');
+  }
+  function closeFilter() {
+    document.getElementById('filterOverlay').classList.remove('open');
+    document.getElementById('filterPanel').classList.remove('open');
+    document.getElementById('filterBtn').classList.remove('active');
+  }
+
+  // ===== SEARCH =====
+  function toggleSearch() {
+    searchOpen = !searchOpen;
+    const row = document.getElementById('searchRow');
+    row.style.display = searchOpen ? 'block' : 'none';
+    if (searchOpen) document.getElementById('searchInput').focus();
+    else { searchQuery = ''; document.getElementById('searchInput').value = ''; renderProducts(); }
+  }
+  function doSearch(val) { searchQuery = val; renderProducts(); }
+  function clearSearch() { toggleSearch(); }
+
+  // ===== CART =====
+  function addToCart(id) {
+    const p = allProducts.find(x => x.id === id);
+    if (!p) return;
+    const existing = cart.find(x => x.id === id);
+    if (existing) existing.qty = (existing.qty || 1) + 1;
+    else cart.push({ ...p, qty: 1 });
+    localStorage.setItem('cart', JSON.stringify(cart));
+    updateCartBadge();
+    showToast('✅ কার্টে যোগ হয়েছে: ' + p.name);
+  }
+
+  function updateCartBadge() {
+    const total = cart.reduce((s, x) => s + (x.qty||1), 0);
+    const badge = document.getElementById('cartBadge');
+    if (badge) { badge.style.display = total > 0 ? 'flex' : 'none'; badge.textContent = total; }
+  }
+
+  // ===== TOAST =====
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ===== INIT =====
+  renderProducts();
+  updateCartBadge();
+</script>
+</body>
+</html>
